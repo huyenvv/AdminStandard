@@ -8,9 +8,9 @@ namespace Standard.Controllers
 {
     public class HomeController : Controller
     {
-        public string Index()
+        public ActionResult Index()
         {
-            return "View()";
+            return View();
         }
 
         public ActionResult About()
