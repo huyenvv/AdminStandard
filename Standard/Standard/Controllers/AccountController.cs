@@ -9,9 +9,24 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using Standard.Models;
+using WebLib.Models;
+using WebLib.DAL;
+using System.Security.Principal;
 
 namespace Standard.Controllers
 {
+    public class DB
+    {
+        public static IPrincipal CurrentUser
+        {
+            get
+            {
+                HttpContextWrapper context =
+                    new HttpContextWrapper(System.Web.HttpContext.Current);
+                return context.User;
+            }
+        }
+    }
     [Authorize]
     public class AccountController : Controller
     {
@@ -26,6 +41,24 @@ namespace Standard.Controllers
         }
 
         public UserManager<ApplicationUser> UserManager { get; private set; }
+
+        [AllowAnonymous]
+        public List<fwMenu> BuildMenu()
+        {
+            if (!string.IsNullOrEmpty(DB.CurrentUser.Identity.Name))
+            {
+                if (DB.CurrentUser.Identity.Name == "admin")
+                {
+                    return new fwMenuDAL().ListAll();
+                }
+                var user = new fwUserDAL().GetByUserName(DB.CurrentUser.Identity.Name);
+                if (user != null)
+                {
+                    return new fwMenuDAL().ListByUser(user.ID);
+                }
+            }
+            return new List<fwMenu>();
+        }
 
         //
         // GET: /Account/Login
@@ -82,6 +115,14 @@ namespace Standard.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    var fwUser = new fwUser
+                    {
+                        AspnetUserID = user.Id,
+                        UserName = user.UserName,
+                        Locked = false,
+                        Status = 1
+                    };
+                    new fwUserDAL().Insert(fwUser);
                     await SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
@@ -378,7 +419,8 @@ namespace Standard.Controllers
 
         private class ChallengeResult : HttpUnauthorizedResult
         {
-            public ChallengeResult(string provider, string redirectUri) : this(provider, redirectUri, null)
+            public ChallengeResult(string provider, string redirectUri)
+                : this(provider, redirectUri, null)
             {
             }
 

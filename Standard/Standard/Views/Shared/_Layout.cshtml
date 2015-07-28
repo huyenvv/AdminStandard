@@ -6,6 +6,9 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @{
+        var listMenu = new Standard.Controllers.AccountController().BuildMenu();
+    }
 
 </head>
 <body>
@@ -24,7 +27,7 @@
 
             @Html.Partial("_Notification")
              
-            @Html.Partial("_MenuLeft")
+            @Html.Partial("_MenuLeft", listMenu)
         </nav>
         <div id="page-wrapper">
             @RenderBody()
