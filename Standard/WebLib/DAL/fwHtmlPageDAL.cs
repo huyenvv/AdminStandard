@@ -8,8 +8,12 @@ using WebLib.Models;
 
 namespace WebLib.DAL
 {
-    internal class fwHtmlPageDAL
+    internal class fwHtmlPageDAL:fwBaseDAL
     {
+        public fwHtmlPageDAL()
+        {
+            _TableName = "fwHtmlPage";
+        }
         private string query = "select * from fwHtmlPage";
 
         private fwHtmlPage CreateObj(DataRow row)
@@ -17,7 +21,7 @@ namespace WebLib.DAL
             var obj = new fwHtmlPage();
             obj.ID = (int)row["ID"];
             obj.KeyUrl = (string)row["KeyUrl"];
-            obj.Content = (string)row["Content"];
+            obj.Content = GetString( row["Content"]);
             return obj;
         }
 
@@ -50,11 +54,6 @@ namespace WebLib.DAL
             }
 
             return lst;
-        }
-
-        public void Delete(int id)
-        {
-            DataUtilities.Delete("fwHtmlPage", id);
         }
 
         public fwHtmlPage Insert(fwHtmlPage obj)

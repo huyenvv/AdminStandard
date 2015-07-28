@@ -8,21 +8,26 @@ using WebLib.Models;
 
 namespace WebLib.DAL
 {
-    internal class fwUserDAL
+    public class fwUserDAL: fwBaseDAL
     {
+        public fwUserDAL()
+        {
+            _TableName = "fwUser";
+        }
+
         private string query = "select * from fwUser";
 
         private fwUser CreateObj(DataRow row)
         {
             var obj = new fwUser();
             obj.ID = (int)row["ID"];
-            obj.AspnetUserID = (string)row["AspnetUserID"];
+            obj.AspnetUserID = row["AspnetUserID"].ToString();
             obj.UserName = (string)row["UserName"];
-            obj.Name = (string)row["Name"];
-            obj.Email = (string)row["Email"];
+            obj.Name = GetString(row["Name"]);
+            obj.Email = GetString(row["Email"]);
             obj.Status = (int)row["Status"];
             obj.Locked = (bool)row["Locked"];
-            obj.Avata = (string)row["Avata"];
+            obj.Avata = GetString(row["Avata"]);
             return obj;
         }
 
@@ -48,22 +53,17 @@ namespace WebLib.DAL
             return lst;
         }
 
-        public void Delete(int id)
-        {
-            DataUtilities.Delete("fwUser", id);
-        }
-
         public fwUser Insert(fwUser obj)
         {
-            var ID = DataUtilities.Insert(@"insert into fwUser([AspnetUserID], [UserName], [Email], [Status], [Locked], [Avata]) values(@UserName, @Name, @Email, @Status, @Locked, @Avata)",
-                CommandType.Text, "@UserName", obj.UserName, "@Name", obj.Name, "@Email", obj.Email, "@Status", obj.Status, "@Locked", obj.Locked, "@Avata", obj.Avata);
+            var ID = DataUtilities.Insert(@"insert into fwUser([AspnetUserID], [UserName], [Email], [Status], [Locked], [Avata]) values(@AspnetUserID, @UserName, @Name, @Email, @Status, @Locked, @Avata)",
+                CommandType.Text, "@AspnetUserID", obj.AspnetUserID, "@UserName", obj.UserName, "@Name", obj.Name, "@Email", obj.Email, "@Status", obj.Status, "@Locked", obj.Locked, "@Avata", obj.Avata);
             obj.ID = ID;
             return obj;
         }
 
         public fwUser Update(fwUser obj)
         {
-            var ID = DataUtilities.ExcuteNonQuery(@"update fwUser set [AspnetUserID] = @AspnetUserID, [UserName]=@UserName, [Email]=@Email, [Status]=@Status, [Locked]=@Locked, [Avata]=@Avata where ID=@ID",
+            var ID = DataUtilities.ExcuteNonQuery(@"update fwUser set [UserName]=@UserName, [Email]=@Email, [Status]=@Status, [Locked]=@Locked, [Avata]=@Avata where ID=@ID",
                 CommandType.Text, "@UserName", obj.UserName, "@Name", obj.Name, "@Email", obj.Email, "@Status", obj.Status, "@Locked", obj.Locked, "@Avata", obj.Avata, "@ID", obj.ID);
             return obj;
         }

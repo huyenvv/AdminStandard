@@ -8,8 +8,12 @@ using WebLib.Models;
 
 namespace WebLib.DAL
 {
-    internal class fwConfigDAL
+    internal class fwConfigDAL:fwBaseDAL
     {
+        public fwConfigDAL()
+        {
+            _TableName = "fwConfig";
+        }
         private string query = "select * from fwConfig";
 
         private fwConfig CreateObj(DataRow row)
@@ -17,9 +21,9 @@ namespace WebLib.DAL
             var obj = new fwConfig();
             obj.ID = (int)row["ID"];
             obj.Key = (string)row["Key"];
-            obj.Title = (string)row["Title"];
-            obj.Type = (string)row["Type"];
-            obj.Choise = (string)row["Choise"];
+            obj.Title = GetString(row["Title"]);
+            obj.Type = GetString(row["Type"]);
+            obj.Choise = GetString(row["Choise"]);
             return obj;
         }
 
@@ -52,11 +56,6 @@ namespace WebLib.DAL
             }
 
             return lst;
-        }
-
-        public void Delete(int id)
-        {
-            DataUtilities.Delete("fwConfig", id);
         }
 
         public fwConfig Insert(fwConfig obj)

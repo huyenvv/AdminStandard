@@ -18,6 +18,8 @@ namespace Standard
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            WebLib.DataUtilities.strConnection = System.Configuration.ConfigurationManager.ConnectionStrings["ApplicationServices"].ConnectionString;
         }
     }
 }

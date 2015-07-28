@@ -44,6 +44,7 @@
     <Compile Include="Common.cs" />
     <Compile Include="DAL\Class1.cs" />
     <Compile Include="DAL\fwConfigDAL.cs" />
+    <Compile Include="DAL\fwBaseDAL.cs" />
     <Compile Include="DAL\fwUserDAL.cs" />
     <Compile Include="DAL\fwMenuDAL.cs" />
     <Compile Include="DAL\fwRoleDAL.cs" />

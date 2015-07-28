@@ -8,8 +8,12 @@ using WebLib.Models;
 
 namespace WebLib.DAL
 {
-    internal class fwRoleDAL
+    internal class fwRoleDAL:fwBaseDAL
     {
+        public fwRoleDAL()
+        {
+            _TableName = "fwRole";
+        }
         private string query = "select * from fwRole";
 
         private fwRole CreateObj(DataRow row)
@@ -41,11 +45,6 @@ namespace WebLib.DAL
             }
 
             return lst;
-        }
-
-        public void Delete(int id)
-        {
-            DataUtilities.Delete("fwRole", id);
         }
 
         public fwRole Insert(fwRole obj)

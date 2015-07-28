@@ -8,8 +8,12 @@ using WebLib.Models;
 
 namespace WebLib.DAL
 {
-    internal class fwMenuDAL
+    public class fwMenuDAL : fwBaseDAL
     {
+        public fwMenuDAL()
+        {
+            _TableName = "fwMenu";
+        }
         private string query = "select * from fwMenu order by [Order]";
 
         private fwMenu CreateObj(DataRow row)
@@ -17,11 +21,11 @@ namespace WebLib.DAL
             var obj = new fwMenu();
             obj.ID = (int)row["ID"];
             obj.Title = (string)row["Title"];
-            obj.ParentID = row["ParentID"] != null ? (int)row["ParentID"] : 0;
-            obj.Url = (string)row["Url"];
-            obj.Icon = (string)row["Icon"];
-            obj.Order = row["Order"] == null ? 0 : (int)row["Order"];
-            obj.Actived = row["Actived"] == null ? false : (bool)row["Actived"];
+            obj.ParentID = GetInt(row["ParentID"]);
+            obj.Url = GetString(row["Url"]);
+            obj.Icon = GetString(row["Icon"]);
+            obj.Order = GetInt(row["Order"]);
+            obj.Actived = GetBool(row["Actived"]);
             return obj;
         }
 
@@ -63,11 +67,6 @@ where ug.UserID=@UserID";
             }
 
             return lst;
-        }
-
-        public void Delete(int id)
-        {
-            DataUtilities.Delete("fwMenu", id);
         }
 
         public fwMenu Insert(fwMenu obj)
