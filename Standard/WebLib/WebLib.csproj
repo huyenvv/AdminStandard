@@ -42,11 +42,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common.cs" />
-    <Compile Include="DAO\Class1.cs" />
-    <Compile Include="DAO\fwConfigDAL.cs" />
-    <Compile Include="DAO\fwHtmlPage.cs" />
+    <Compile Include="DAL\Class1.cs" />
+    <Compile Include="DAL\fwConfigDAL.cs" />
+    <Compile Include="DAL\fwUserDAL.cs" />
+    <Compile Include="DAL\fwMenuDAL.cs" />
+    <Compile Include="DAL\fwRoleDAL.cs" />
+    <Compile Include="DAL\fwGroupDAL.cs" />
+    <Compile Include="DAL\fwHtmlPageDAL.cs" />
     <Compile Include="DataUtilities.cs" />
     <Compile Include="FileUpload.cs" />
+    <Compile Include="Models\fwUser.cs" />
+    <Compile Include="Models\fwMenu.cs" />
+    <Compile Include="Models\fwRole.cs" />
+    <Compile Include="Models\fwGroup.cs" />
     <Compile Include="Models\fwHtmlPage.cs" />
     <Compile Include="Models\fwConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

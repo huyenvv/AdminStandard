@@ -8,6 +8,10 @@ namespace Standard.Controllers
 {
     public class HomeController : Controller
     {
+        public string test()
+        {
+            return null;
+        }
         public ActionResult Index()
         {
             return View();

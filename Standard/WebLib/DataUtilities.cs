@@ -8,6 +8,13 @@ namespace WebLib
     {
         public static string strConnection;
         /// <summary>
+        /// Delete row in table with id
+        /// </summary>
+        public static void Delete(string tableName, int id)
+        {
+            DataUtilities.ExcuteNonQuery("delete from " + tableName + " where id=@id", CommandType.Text, "@id", id);
+        }
+        /// <summary>
         /// Return the Identity of the last row has inserted to the table in current session
         /// </summary>
         /// <param name="command"></param>
@@ -36,16 +43,16 @@ namespace WebLib
             SqlParameter pa;
 
             if (pars.Length % 2 != 0) throw new Exception("Exception on parameter count");
-            for (int i = 0; i < pars.Length; i+=2)
+            for (int i = 0; i < pars.Length; i += 2)
             {
                 pa = new SqlParameter(pars[i].ToString(), pars[i + 1]);
                 co.Parameters.Add(pa);
             }
             if (conn.State == ConnectionState.Open)
                 conn.Close();
-                conn.Open();
-                int n = co.ExecuteNonQuery();
-            
+            conn.Open();
+            int n = co.ExecuteNonQuery();
+
             co.Dispose();
             conn.Close();
             return n;
@@ -107,7 +114,7 @@ namespace WebLib
             SqlParameter pa;
 
             if (pars.Length % 2 != 0) throw new Exception("Exception on parameter count");
-            for (int i = 0; i < pars.Length; i+=2)
+            for (int i = 0; i < pars.Length; i += 2)
             {
                 pa = new SqlParameter(pars[i].ToString(), pars[i + 1]);
                 co.Parameters.Add(pa);
@@ -120,7 +127,7 @@ namespace WebLib
             conn.Close();
             return n;
         }
-        
+
         /// <summary>
         /// Return the first row and first columm. Null if no date is selected
         /// </summary>
@@ -156,7 +163,7 @@ namespace WebLib
             SqlParameter pa;
 
             if (pars.Length % 2 != 0) throw new Exception("Exception on parameter count");
-            for (int i = 0; i < pars.Length; i+=2)
+            for (int i = 0; i < pars.Length; i += 2)
             {
                 pa = new SqlParameter(pars[i].ToString(), pars[i + 1]);
                 co.Parameters.Add(pa);

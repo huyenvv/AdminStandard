@@ -30,9 +30,9 @@ namespace WebLib.DAL
             return obj;
         }
 
-        public fwHtmlPage GetByKey(string key)
+        public fwHtmlPage GetByKey(string keyUrl)
         {
-            DataTable dt = DataUtilities.GetTable(query + " where [KeyUrl]=@KeyUrl", CommandType.Text, "@KeyUrl", key);
+            DataTable dt = DataUtilities.GetTable(query + " where [KeyUrl]=@KeyUrl", CommandType.Text, "@KeyUrl", keyUrl);
             if (dt.Rows.Count == 0) return null;
 
             var obj = CreateObj(dt.Rows[0]);
@@ -52,9 +52,9 @@ namespace WebLib.DAL
             return lst;
         }
 
-        public int Delete(int id)
+        public void Delete(int id)
         {
-            return DataUtilities.ExcuteNonQuery("delete from fwHtmlPage where id=@id", CommandType.Text, "@id", id);
+            DataUtilities.Delete("fwHtmlPage", id);
         }
 
         public fwHtmlPage Insert(fwHtmlPage obj)
@@ -67,8 +67,8 @@ namespace WebLib.DAL
 
         public fwHtmlPage Update(fwHtmlPage obj)
         {
-            var ID = DataUtilities.ExcuteNonQuery("update fwHtmlPage set [Key] = @Key, Title=@Title, [Type]=@Type, Choise= @Choise",
-                CommandType.Text, "@Key", obj.Key, "@Title", obj.Title, "@Type", obj.Type, "@Choise", obj.Choise);
+            var ID = DataUtilities.ExcuteNonQuery("update fwHtmlPage set [KeyUrl] = @KeyUrl, [Content]=@Content where ID=@ID",
+                CommandType.Text, "@KeyUrl", obj.KeyUrl, "@Content", obj.Content, "@ID", obj.ID);
             return obj;
         }
     }

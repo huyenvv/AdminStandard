@@ -54,9 +54,9 @@ namespace WebLib.DAL
             return lst;
         }
 
-        public int Delete(int id)
+        public void Delete(int id)
         {
-            return DataUtilities.ExcuteNonQuery("delete from fwConfig where id=@id", CommandType.Text, "@id", id);
+            DataUtilities.Delete("fwConfig", id);
         }
 
         public fwConfig Insert(fwConfig obj)
@@ -69,8 +69,8 @@ namespace WebLib.DAL
 
         public fwConfig Update(fwConfig obj)
         {
-            var ID = DataUtilities.ExcuteNonQuery("update fwConfig set [Key] = @Key, Title=@Title, [Type]=@Type, Choise= @Choise",
-                CommandType.Text, "@Key", obj.Key, "@Title", obj.Title, "@Type", obj.Type, "@Choise", obj.Choise);
+            var ID = DataUtilities.ExcuteNonQuery("update fwConfig set [Key] = @Key, Title=@Title, [Type]=@Type, Choise= @Choise where ID=@ID",
+                CommandType.Text, "@Key", obj.Key, "@Title", obj.Title, "@Type", obj.Type, "@Choise", obj.Choise, "@ID", obj.ID);
             return obj;
         }
     }
