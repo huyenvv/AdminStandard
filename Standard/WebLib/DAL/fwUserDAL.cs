@@ -40,6 +40,24 @@ namespace WebLib.DAL
             return obj;
         }
 
+        public fwUser GetByAspNetUserID(string aspNetID)
+        {
+            DataTable dt = DataUtilities.GetTable(query + " where AspnetUserID=@id", CommandType.Text, "@id", aspNetID);
+            if (dt.Rows.Count == 0) return null;
+
+            var obj = CreateObj(dt.Rows[0]);
+            return obj;
+        }
+
+        public fwUser GetByUserName(string userName)
+        {
+            DataTable dt = DataUtilities.GetTable(query + " where UserName=@userName", CommandType.Text, "@userName", userName);
+            if (dt.Rows.Count == 0) return null;
+
+            var obj = CreateObj(dt.Rows[0]);
+            return obj;
+        }
+
         public List<fwUser> ListAll()
         {
             var lst = new List<fwUser>();
