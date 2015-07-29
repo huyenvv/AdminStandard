@@ -52,7 +52,7 @@
         {
             <tr>
                 <td>
-                    <a href="@Url.Action("EditMenu", new {id=item1.ID})" style="margin-left:20px;">@item1.Title</a>
+                    <a href="@Url.Action("EditMenu", new { id = item1.ID, returnUrl = Request.RawUrl })" style="margin-left:20px;">@item1.Title</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item1.Order)

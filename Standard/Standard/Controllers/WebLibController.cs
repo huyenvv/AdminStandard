@@ -98,13 +98,13 @@ namespace Standard.Controllers
             return View(obj);
         }
         [HttpPost]
-        public ActionResult EditMenu(fwMenu model, string returnUrl)
+        public ActionResult EditMenu(fwMenu model)
         {
             if (model.ID == 0)
                 new fwMenuDAL().Insert(model);
             else
                 new fwMenuDAL().Update(model);
-            return Redirect(returnUrl);
+            return RedirectToAction("ListMenu");
         }
         #endregion
 
