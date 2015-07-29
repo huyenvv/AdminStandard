@@ -10,6 +10,13 @@ namespace WebLib.DAL
 {
     public class fwBaseDAL
     {
+        public fwBaseDAL()
+        {
+        }
+        public fwBaseDAL(string tableName)
+        {
+            _TableName = tableName;
+        }
         public string _TableName;
         public string GetString(object dr)
         {

@@ -46,6 +46,8 @@ namespace WebLib
             for (int i = 0; i < pars.Length; i += 2)
             {
                 pa = new SqlParameter(pars[i].ToString(), pars[i + 1]);
+                if (pars[i + 1] == null)
+                    pa.Value = DBNull.Value;
                 co.Parameters.Add(pa);
             }
             if (conn.State == ConnectionState.Open)
@@ -117,6 +119,8 @@ namespace WebLib
             for (int i = 0; i < pars.Length; i += 2)
             {
                 pa = new SqlParameter(pars[i].ToString(), pars[i + 1]);
+                if (pars[i + 1] == null)
+                    pa.Value = DBNull.Value;
                 co.Parameters.Add(pa);
             }
             if (conn.State == ConnectionState.Open)
@@ -166,6 +170,8 @@ namespace WebLib
             for (int i = 0; i < pars.Length; i += 2)
             {
                 pa = new SqlParameter(pars[i].ToString(), pars[i + 1]);
+                if (pars[i + 1] == null)
+                    pa.Value = DBNull.Value;
                 co.Parameters.Add(pa);
             }
             SqlDataAdapter da = new SqlDataAdapter(co);

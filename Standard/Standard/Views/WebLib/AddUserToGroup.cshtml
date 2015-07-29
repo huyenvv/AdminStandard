@@ -1,0 +1,41 @@
+﻿@using WebLib.DAL;
+@model List<WebLib.Models.fwUser>
+
+@{
+    ViewBag.Title = "Add User To Group";
+}
+
+<h3>@ViewBag.groupName</h3>
+
+@using (Html.BeginForm("AddUserToGroup", "WebLib", FormMethod.Post, new { @class = "form-inline" }))
+{
+    @Html.Hidden("groupID", (int)ViewBag.groupID)
+    <div class="form-group">
+        <select class="form-control" name="userID">
+            <option value="0">-:-</option>
+            @foreach (var item in (List<WebLib.Models.fwUser>)ViewBag.lstUser)
+            {
+                <option value="@item.ID">@item.UserName (@item.Name)</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary btn-small">Add User</button>
+}
+<br />
+<table class="table">
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <a href="@Url.Action("EditUser", new { id = item.ID, returnUrl = Request.RawUrl })">@item.UserName</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <a href="@Url.Action("RemoveFromGroup", new { userID = item.ID, groupID = ViewBag.groupID })" >Remove from group</a>
+            </td>
+        </tr>
+    }
+</table>
+<a href="@Url.Action("ListGroup")" class="btn btn-default">Back</a>

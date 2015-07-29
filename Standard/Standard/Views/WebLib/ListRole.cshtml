@@ -1,0 +1,20 @@
+﻿@model List<WebLib.Models.fwRole>
+
+@{
+    ViewBag.Title = "ListRole";
+}
+
+<h3>
+    Danh sách Role
+</h3>
+<table class="table">
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td></td>
+    </tr>
+}
+
+</table>

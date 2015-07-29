@@ -10,7 +10,7 @@ namespace WebLib.Models
         public int ID { get; set; }
         public string Title { get; set; }
         public string Code { get; set; }
-        public List<fwGroup> fwRole
+        public List<fwGroup> fwGroup
         {
             get
             {

@@ -19,16 +19,19 @@ namespace Standard
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-*"));
 
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js",
-                      "~/Scripts/metisMenu.js",
-                      "~/Scripts/respond.js"));
-
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/metisMenu.css",
-                      "~/Content/font-awesome.min.css",
-                      "~/Content/site.css"));
+                      "~/Content/lib/bootstrap/bootstrap.min.css",
+                      "~/Content/lib/metis/metisMenu.css",
+                      "~/Content/css/font-awesome.min.css",
+                      "~/Content/css/common.css",
+                      "~/Content/css/site.css"));
+
+            bundles.Add(new StyleBundle("~/Content/js").Include(
+                      "~/Content/lib/bootstrap/bootstrap.min.js",
+                      "~/Content/lib/metis/metisMenu.js",
+                      "~/Scripts/respond.js",
+                      "~/Content/js/common.js",
+                      "~/Content/js/layout.js"));
         }
     }
 }

@@ -8,7 +8,7 @@ using WebLib.Models;
 
 namespace WebLib.DAL
 {
-    internal class fwHtmlPageDAL:fwBaseDAL
+    public class fwHtmlPageDAL:fwBaseDAL
     {
         public fwHtmlPageDAL()
         {

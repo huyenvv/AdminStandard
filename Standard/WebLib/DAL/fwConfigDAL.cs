@@ -8,7 +8,7 @@ using WebLib.Models;
 
 namespace WebLib.DAL
 {
-    internal class fwConfigDAL:fwBaseDAL
+    public class fwConfigDAL:fwBaseDAL
     {
         public fwConfigDAL()
         {

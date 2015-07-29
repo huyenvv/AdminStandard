@@ -1,0 +1,57 @@
+﻿@model WebLib.Models.fwUser
+
+@{
+    ViewBag.Title = "User";
+}
+
+<h3>Cập nhật người dùng</h3>
+
+@using (Html.BeginForm("EditUser", "WebLib", new { returnUrl = Request.QueryString["returnUrl"] }, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.AspnetUserID)
+        @Html.HiddenFor(model => model.Avata)
+        @Html.HiddenFor(model => model.Locked)
+        @Html.HiddenFor(model => model.Status)
+
+        <div class="form-group">
+            <label for="UserName" class="control-label col-md-2">User name <span class="color-red">*</span></label>
+            <div class="col-md-10">
+                @if (Model.ID == 0)
+                {
+                    @Html.TextBoxFor(model => model.UserName, new { @class = "form-control" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", @readonly = "" })
+                }
+                @Html.ValidationMessageFor(model => model.UserName)
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Email" class="control-label col-md-2">Email <span class="color-red"></span></label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Email)
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Name" class="control-label col-md-2">Họ tên <span class="color-red">*</span></label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a href="@Request.QueryString["returnUrl"]" class="btn btn-default">Hủy</a>
+            </div>
+        </div>
+    </div>
+}

@@ -31,7 +31,7 @@ namespace WebLib.DAL
 
         public fwMenu GetByID(int id)
         {
-            DataTable dt = DataUtilities.GetTable(query + " where id=@id", CommandType.Text, "@id", id);
+            DataTable dt = DataUtilities.GetTable("select * from fwMenu where id=@id", CommandType.Text, "@id", id);
             if (dt.Rows.Count == 0) return null;
 
             var obj = CreateObj(dt.Rows[0]);
@@ -59,7 +59,7 @@ inner join fwRoleGroup rg on rg.RoleID=mr.RoleID
 inner join fwUserGroup ug on ug.GroupID=rg.GroupID
 where ug.UserID=@UserID";
             var lst = new List<fwMenu>();
-            DataTable dt = DataUtilities.GetTable(query, CommandType.Text, "@UserID", groupID);
+            DataTable dt = DataUtilities.GetTable(query, CommandType.Text, "@UserID", userID);
             foreach (DataRow row in dt.Rows)
             {
                 var obj = CreateObj(row);
