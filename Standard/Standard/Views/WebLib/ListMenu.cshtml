@@ -1,0 +1,79 @@
+﻿@model List<WebLib.Models.fwMenu>
+
+@{
+    ViewBag.Title = "ListMenu";
+}
+<h2>Menu</h2>
+
+<p>
+    <a href="@Url.Action("EditMenu", new { returnUrl = Request.RawUrl})" class="btn btn-primary">Thêm mới</a>
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Tiêu đề
+        </th>
+        <th>
+            Vị trí
+        </th>
+        <th>
+            Trạng thái
+        </th>
+        <th>
+        </th>
+    </tr>
+
+    @foreach (var item in Model.Where(m => m.ParentID == 0))
+    {
+        <tr>
+            <td>
+                <a href="@Url.Action("EditMenu", new {id=item.ID, returnUrl = Request.RawUrl})" style="font-weight: bold;">@item.Title</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Order)
+            </td>
+            @if (item.Actived)
+            {
+                <td class="color-blue">
+                    Actived
+                </td>
+            }
+            else
+            {
+                <td class="color-red">
+                    Disable
+                </td>
+            }
+            <td>
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID, tableName = "fwMenu", returnUrl = Request.RawUrl }, new { @class = "confirmDelete" })
+            </td>
+        </tr>
+        foreach (var item1 in Model.Where(m => m.ParentID == item.ID))
+        {
+            <tr>
+                <td>
+                    <a href="@Url.Action("EditMenu", new {id=item1.ID})" style="margin-left:20px;">@item1.Title</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item1.Order)
+                </td>
+                @if (item1.Actived)
+                {
+                    <td class="color-blue">
+                        Actived
+                    </td>
+                }
+                else
+                {
+                    <td class="color-red">
+                        Disable
+                    </td>
+                }
+                <td>
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID, tableName = "fwMenu", returnUrl = Request.RawUrl }, new { @class = "confirmDelete" })
+                </td>
+            </tr>
+        }
+    }
+
+</table>

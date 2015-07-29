@@ -1,0 +1,52 @@
+﻿@using WebLib.DAL;
+@model List<WebLib.Models.fwUser>
+
+@{
+    ViewBag.Title = "ListUser";
+    int k = 1;
+}
+
+<h3>Danh sách người dùng</h3>
+
+<p>
+    @Html.ActionLink("Tạo người dùng", "EditUser", new { returnUrl = Request.RawUrl }, new { @class = "btn btn-primary" })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            STT
+        </th>
+        <th>
+            Username
+        </th>
+        <th>
+            Họ tên
+        </th>
+        <th>
+            Email
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @(k++)
+        </td>
+        <td>
+            <a href="@Url.Action("EditUser", new { id = item.ID, returnUrl = Request.RawUrl })">@item.UserName</a>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "EditUser", new { id = item.ID, returnUrl = Request.RawUrl }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.ID, tableName = "fwUser", returnUrl = Request.RawUrl }, new { @class = "confirmDelete" })
+        </td>
+    </tr>
+}
+
+</table>
