@@ -1,7 +1,41 @@
-﻿
+﻿@model List<Standard.Dept>
+@using WebLib.DAL
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Danh sách bộ phận";
+    var gdal = new fwGroupDAL();
+    var udal = new fwUserDAL();
 }
 
-<h2>Index</h2>
+<h2>Các bộ phận</h2>
 
+<p>
+    <a href="@Url.Action("Edit", new { returnUrl = Request.RawUrl })" class="btn btn-primary">Thêm bộ phận</a>
+</p>
+<table class="table">
+    @foreach (var item in Model)
+    {
+        var g = gdal.GetByID(item.ID);
+        var u = item.LeaderUserID == null ? null : udal.GetByID(item.LeaderUserID.Value);
+        <tr>
+            <td>
+                <a href="@Url.Action("Edit", new { id = item.ID, returnUrl = Request.RawUrl })">@item.Title</a>
+            </td>
+            <td>
+                @if (g != null)
+                {
+                    <a href="@Url.Action("EditGroup", "WebLib", new { id = g.ID, returnUrl = Request.RawUrl })">@g.Title</a>
+                }
+            </td>
+            <td>
+                @if (u != null)
+                {
+                    <a href="@Url.Action("EditUser", "WebLib", new { id = u.ID, returnUrl = Request.RawUrl })">@u.Name</a>
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID, returnUrl = Request.RawUrl }, new { @class = "confirmDelete" })
+            </td>
+        </tr>
+    }
+
+</table>
