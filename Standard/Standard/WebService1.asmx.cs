@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Services;
 using WebLib;
 using WebLib.DAL;
@@ -24,6 +25,13 @@ namespace Standard
         {
             new fwMenuDAL().Delete(60);
             return new fwMenuDAL().ListAll();
+        }
+
+
+        [WebMethod]
+        public string Test(int x)
+        {
+            return "fuck";
         }
     }
 }

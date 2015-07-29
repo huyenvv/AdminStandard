@@ -51,7 +51,7 @@ namespace WebLib.DAL
             return lst;
         }
 
-        public List<fwMenu> List(int userID)
+        public List<fwMenu> ListByUser(int userID)
         {
             string query = @"select m.* from fwMenu m
 inner join fwMenuRole mr on mr.MenuID=m.ID
@@ -59,7 +59,7 @@ inner join fwRoleGroup rg on rg.RoleID=mr.RoleID
 inner join fwUserGroup ug on ug.GroupID=rg.GroupID
 where ug.UserID=@UserID";
             var lst = new List<fwMenu>();
-            DataTable dt = DataUtilities.GetTable(query, CommandType.Text, "@UserID", userID);
+            DataTable dt = DataUtilities.GetTable(query, CommandType.Text, "@UserID", groupID);
             foreach (DataRow row in dt.Rows)
             {
                 var obj = CreateObj(row);
@@ -68,7 +68,22 @@ where ug.UserID=@UserID";
 
             return lst;
         }
+        public List<fwMenu> ListByGroup(int groupID)
+        {
+            string query = @"select m.* from fwMenu m
+inner join fwMenuRole mr on mr.MenuID=m.ID
+inner join fwRoleGroup rg on rg.RoleID=mr.RoleID
+where rg.GroupID=@GroupID";
+            var lst = new List<fwMenu>();
+            DataTable dt = DataUtilities.GetTable(query, CommandType.Text, "@GroupID", groupID);
+            foreach (DataRow row in dt.Rows)
+            {
+                var obj = CreateObj(row);
+                lst.Add(obj);
+            }
 
+            return lst;
+        }
         public fwMenu Insert(fwMenu obj)
         {
             var ID = DataUtilities.Insert(@"insert into fwMenu([Title], [ParentID], [Url], [Icon], [Order], [Actived]) values(@Title, @ParentID, @Url, @Icon, @Order, @Actived)",

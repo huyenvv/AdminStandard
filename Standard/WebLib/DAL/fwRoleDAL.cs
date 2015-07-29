@@ -33,7 +33,19 @@ namespace WebLib.DAL
             var obj = CreateObj(dt.Rows[0]);
             return obj;
         }
+        public List<fwRole> ListByGroup(int userID)
+        {
+            string query = "select r.* from fwRole r inner join fwRoleGroup rg on rg.RoleID=r.ID where rg.RoleID=" + userID;
+            var lst = new List<fwRole>();
+            DataTable dt = DataUtilities.GetTable(query, CommandType.Text);
+            foreach (DataRow row in dt.Rows)
+            {
+                var obj = CreateObj(row);
+                lst.Add(obj);
+            }
 
+            return lst;
+        }
         public List<fwRole> ListAll()
         {
             var lst = new List<fwRole>();

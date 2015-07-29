@@ -8,7 +8,7 @@ using WebLib.Models;
 
 namespace WebLib.DAL
 {
-    public class fwUserDAL: fwBaseDAL
+    public class fwUserDAL : fwBaseDAL
     {
         public fwUserDAL()
         {
@@ -42,6 +42,20 @@ namespace WebLib.DAL
 
         public List<fwUser> ListAll()
         {
+            var lst = new List<fwUser>();
+            DataTable dt = DataUtilities.GetTable(query, CommandType.Text);
+            foreach (DataRow row in dt.Rows)
+            {
+                var obj = CreateObj(row);
+                lst.Add(obj);
+            }
+
+            return lst;
+        }
+
+        public List<fwUser> ListByGroup(int groupID)
+        {
+            string query = "select u.* from fwUser u inner join fwUserGroup ug on ug.UserID=u.ID where ug.GroupID=" + groupID;
             var lst = new List<fwUser>();
             DataTable dt = DataUtilities.GetTable(query, CommandType.Text);
             foreach (DataRow row in dt.Rows)
