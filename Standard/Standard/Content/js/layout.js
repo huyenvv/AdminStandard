@@ -22,7 +22,8 @@
 
     var url = window.location;
     var element = $('ul.nav a').filter(function () {
-        return this.href == url || url.href.indexOf(this.href) == 0;
+        var ahref = $(this).attr("data-href");
+        return this.href == url || url.href.indexOf(this.href) == 0 || (ahref != undefined && ahref != '' && (url.href + "/").indexOf(ahref) == 0);
     }).addClass('active').parent().parent().addClass('in').parent();
     if (element.is('li')) {
         element.addClass('active');
