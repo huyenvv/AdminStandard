@@ -18,7 +18,7 @@ namespace WebLib.Models
         }
         public void AddUser(int userID)
         {
-            int count = (int)DataUtilities.ExcuteScalar(string.Format("select count(1) from fwUserGroup where UserID={0} and GroupID={1}", userID, ID), System.Data.CommandType.Text);
+            int count = (int)DataUtilities.ExcuteScalar(string.Format("select top 1 count(1) from fwUserGroup where UserID={0} and GroupID={1}", userID, ID), System.Data.CommandType.Text);
             if (count == 0)
             {
                 DataUtilities.ExcuteNonQuery(string.Format("insert into fwUserGroup(UserID, GroupID) values({0},{1})", userID, ID), System.Data.CommandType.Text);
@@ -37,7 +37,7 @@ namespace WebLib.Models
         }
         public void AddRole(int roleID)
         {
-            int count = (int)DataUtilities.ExcuteScalar(string.Format("select count(1) from fwRoleGroup where RoleID={0} and GroupID={1}", roleID, ID), System.Data.CommandType.Text);
+            int count = (int)DataUtilities.ExcuteScalar(string.Format("select top 1 count(1) from fwRoleGroup where RoleID={0} and GroupID={1}", roleID, ID), System.Data.CommandType.Text);
             if (count == 0)
             {
                 DataUtilities.ExcuteNonQuery(string.Format("insert into fwRoleGroup(RoleID, GroupID) values({0},{1})", roleID, ID), System.Data.CommandType.Text);

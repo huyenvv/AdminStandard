@@ -35,7 +35,7 @@ namespace WebLib.DAL
         }
         public List<fwRole> ListByGroup(int groupID)
         {
-            string query = "select r.* from fwRole r inner join fwRoleGroup rg on rg.RoleID=r.ID where rg.Group=" + groupID;
+            string query = "select r.* from fwRole r inner join fwRoleGroup rg on rg.RoleID=r.ID where rg.GroupID=" + groupID;
             var lst = new List<fwRole>();
             DataTable dt = DataUtilities.GetTable(query, CommandType.Text);
             foreach (DataRow row in dt.Rows)

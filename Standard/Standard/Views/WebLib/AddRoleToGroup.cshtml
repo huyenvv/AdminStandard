@@ -2,20 +2,18 @@
 
 @{
     ViewBag.Title = ViewBag.groupTitle;
+    var lst = (List<int>)ViewBag.LstRole;
 }
-
-<h2>Phân quyền cho nhóm: @ViewBag.groupTitle</h2>
+@section scripts{
+    <script>
+        // Gọi hàm này để sử dụng checkAll chỉ cho class được thêm vào
+        checkAllByClassName("ListCheckBox");
+    </script>
+}
+<h3>Phân quyền cho nhóm: @ViewBag.groupTitle</h3>
 
 <div class="ListCheckBox">
-    <div class="checkbox">
-        <label>
-            <input type="checkbox" name="checkall" class="checkAll" />
-            Check all
-        </label>
-    </div>
-    @{
-        var lst = (List<int>)ViewBag.LstRole;
-    }
+    <hr />
     @foreach (var item in Model)
     {
         string s = "";
@@ -31,8 +29,8 @@
     @using (Html.BeginForm("AddRoleToGroup", "WebLib"))
     {
         @Html.Hidden("listID")
-        @Html.Hidden("userID", (string)ViewBag.UserID);
-        <input type="submit" name="submit" value="Save" class="btn btn-warning" onclick="return getListID('ListCheckBox','listID');" />
-        <input type="button" value=@Resources.User.BtnCancel class="btn btn-warning" onclick="window.location.href='@Url.Action("ListUser")'">
+        @Html.Hidden("groupID", (int)ViewBag.groupID);
+        <input type="submit" name="submit" value="Save" class="btn btn-primary" onclick="return getListID('ListCheckBox','listID');" />
+        <input type="button" value="Hủy" class="btn btn-default" onclick="window.location.href='@Url.Action("ListGroup")'">
     }
 </div>
