@@ -17,6 +17,10 @@ namespace Standard.Controllers
 {
     public class DB
     {
+        public static DB_9CF750_dbEntities Entites
+        {
+            get { return new DB_9CF750_dbEntities(); }
+        }
         public static IPrincipal CurrentUser
         {
             get

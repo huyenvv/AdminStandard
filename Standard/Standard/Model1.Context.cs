@@ -26,5 +26,8 @@ namespace Standard
         }
     
         public virtual DbSet<Dept> Dept { get; set; }
+        public virtual DbSet<Ticket> Ticket { get; set; }
+        public virtual DbSet<TicketDetails> TicketDetails { get; set; }
+        public virtual DbSet<TicketUser> TicketUser { get; set; }
     }
 }

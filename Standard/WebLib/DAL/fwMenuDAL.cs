@@ -26,6 +26,7 @@ namespace WebLib.DAL
             obj.Icon = GetString(row["Icon"]);
             obj.Order = GetInt(row["Order"]);
             obj.Actived = GetBool(row["Actived"]);
+            obj.SubAction = GetString(row["SubAction"]);
             return obj;
         }
 
@@ -86,17 +87,17 @@ where rg.GroupID=@GroupID";
         }
         public fwMenu Insert(fwMenu obj)
         {
-            var ID = DataUtilities.Insert(@"insert into fwMenu([Title], [ParentID], [Url], [Icon], [Order], [Actived]) values(@Title, @ParentID, @Url, @Icon, @Order, @Actived)",
-                CommandType.Text, "@Title", obj.Title, "@ParentID", obj.ParentID, "@Url", obj.Url, "@Icon", obj.Icon, "@Order", obj.Order, "@Actived", obj.Actived);
+            var ID = DataUtilities.Insert(@"insert into fwMenu([Title], [ParentID], [Url], [Icon], [Order], [Actived],[SubAction]) values(@Title, @ParentID, @Url, @Icon, @Order, @Actived, @SubAction)",
+                CommandType.Text, "@Title", obj.Title, "@ParentID", obj.ParentID, "@Url", obj.Url, "@Icon", obj.Icon, "@Order", obj.Order, "@Actived", obj.Actived, "@SubAction", obj.SubAction);
             obj.ID = ID;
             return obj;
         }
 
         public fwMenu Update(fwMenu obj)
         {
-            var ID = DataUtilities.ExcuteNonQuery(@"update fwMenu set [Title] = @Title, [ParentID]=@ParentID, [Url]=@Url, [Icon]=@Icon, [Order]=@Order, [Actived]=@Actived where ID=@ID",
+            var ID = DataUtilities.ExcuteNonQuery(@"update fwMenu set [Title] = @Title, [ParentID]=@ParentID, [Url]=@Url, [Icon]=@Icon, [Order]=@Order, [Actived]=@Actived, SubAction=@SubAction where ID=@ID",
                 CommandType.Text, "@Title", obj.Title, "@ParentID", obj.ParentID, "@Url", obj.Url, "@Icon", obj.Icon,
-                "@Order", obj.Order, "@Actived", obj.Actived, "@ID", obj.ID);
+                "@Order", obj.Order, "@Actived", obj.Actived, "@SubAction", obj.SubAction, "@ID", obj.ID);
             return obj;
         }
     }
