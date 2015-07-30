@@ -1,0 +1,145 @@
+﻿@model Ticket
+<link href="~/Content/css/ticket.css" rel="stylesheet" />
+@section  scripts{
+    <script src="~/Content/js/ticket.js"></script>
+}
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">VAN LAACK ASIA CO., LTD</h1>
+        <h3 class="text-center">ĐỀ NGHỊ DỤNG CỤ LÀM VIỆC/ REQUEST FOR WORKING FACILITIES</h3>
+        <br />
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm(null, null, new { returnUrl = Request.QueryString["returnUrl"] }, FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true)
+                @Html.HiddenFor(model => model.ID)
+
+                <div class="form-group">
+
+                    <div class="col-md-10">
+                        <label for="Type" class="control-label col-md-2">Loại ticket</label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" class="inlineCheckbox1" value="1"> (1) Mua <br />Purchase
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" class="inlineCheckbox1" value="2"> (2) Thay thế<br />Replacement
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" class="inlineCheckbox1" value="3"> (3) Bảo trì, sửa chữa<br />Maintenance/Repair
+                        </label>
+                        @Html.ValidationMessageFor(model => model.Type)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="NgayDenghi" class="control-label col-md-2">Ngày đề nghị</label>
+                    <div class="col-md-10">
+                        <input type="text" name="NgayDenghi" value="@DateTime.Now.ToString("dd/MM/yyyy")" class="form-control" readonly="readonly" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="NguoiDeNghi" class="control-label col-md-2">Người đề nghị <span class="color-red">*</span></label>
+                    <div class="col-md-10">
+                        <input type="text" name="NguoiDeNghi" value="@(Standard.Controllers.DB.CurrentUser.Identity.Name)" class=" form-control" readonly="readonly" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Url" class="control-label col-md-2">Bộ phận</label>
+                    <div class="col-md-10">
+                        <select class="form-control" name="DeptID">
+                            @foreach (var item in Standard.DB.Entities.Dept)
+                            {
+                                <option value="@item.ID">@item.Title</option>
+                            }
+                        </select>
+                        @Html.ValidationMessageFor(model => model.DeptID)
+                    </div>
+                </div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                TT<br />
+                                <i>No</i>
+                            </th>
+                            <th>
+                                Diễn giải <br />
+                                <i>Description</i>
+                            </th>
+                            <th>
+                                SL<br />
+                                <i>Q'tty</i>
+                            </th>
+                            <th>
+                                Mục đích, lý do<br />
+                                <i>Perpose, Reason</i>
+                            </th>
+                            <th>
+                                Ngày cần<br />
+                                <i>Date require</i>
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div id="frmChiTietYeuCau">
+                    <div class="form-group">
+                        <label for="DienGiai" class="control-label col-md-2">Diễn giải <br /><i>Description</i></label>
+                        <div class="col-md-10">
+                            <input type="text" id="DienGiai" name="DienGiai" value="" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Quantity" class="control-label col-md-2">
+                            Số lượng<br />
+                            <i>Quantity</i>
+                        </label>
+                        <div class="col-md-10">
+                            <input type="number" id="Quantity" name="Quantity" value="0" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="MucDich" class="control-label col-md-2">
+                            Mục đích, lý do<br />
+                            <i>Perpose, Reason</i>
+                        </label>
+                        <div class="col-md-10">
+                            <textarea class="form-control" id="MucDich" rows="3" name="MucDich"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="NgayCan" class="control-label col-md-2">
+                            Ngày cần<br />
+                            <i>Date require</i>
+                        </label>
+                        <div class="col-md-10">
+                            <input type="date" id="NgayCan" name="NgayCan" value="" class="form-control" />
+                            <br />
+                            <div id="messerror" class="hide field-validation-error">Bạn cần nhập đẩy đủ thông tin trên!</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        
+                        <a href="#" class="btn btn-primary btn-xs" id="ThemChiTiet"> Thêm chi tiết</a>
+                        <hr />
+                        <input type="submit" value="Gửi đề nghị" class="btn btn-primary" />
+                        <a href="@Request.QueryString["returnUrl"]" class="btn btn-default">Hủy</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
