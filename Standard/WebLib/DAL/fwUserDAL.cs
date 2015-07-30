@@ -84,7 +84,36 @@ namespace WebLib.DAL
 
             return lst;
         }
-
+        public bool UserInRole(int userID, params string[] roles)
+        {
+            var currentRoles = new fwRoleDAL().ListByUser(userID).Select(m => m.Code).ToArray();
+            bool kq = false;
+            foreach (var role in currentRoles)
+            {
+                if (roles.Contains(role))
+                {
+                    kq = true;
+                    break;
+                }
+            }
+            return kq;
+        }
+        public bool UserInRole(string userIdentity, params string[] roles)
+        {
+            var u = GetByAspNetUserID(userIdentity);
+            if (u == null) return false;
+            var currentRoles = new fwRoleDAL().ListByUser(u.ID).Select(m => m.Code).ToArray();
+            bool kq = false;
+            foreach (var role in currentRoles)
+            {
+                if (roles.Contains(role))
+                {
+                    kq = true;
+                    break;
+                }
+            }
+            return kq;
+        }
         public fwUser Insert(fwUser obj)
         {
             var ID = DataUtilities.Insert(@"insert into fwUser([AspnetUserID], [UserName], [Email], [Status], [Locked], [Avata]) values(@AspnetUserID, @UserName, @Name, @Email, @Status, @Locked, @Avata)",
