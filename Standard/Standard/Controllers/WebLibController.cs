@@ -85,6 +85,13 @@ namespace Standard.Controllers
             g.RemoveUser(userID);
             return RedirectToAction("AddUserToGroup", new { groupID = groupID });
         }
+        public ActionResult AddRoleToGroup(int id)
+        {
+            //var g = new fwGroup();
+            //g.ID = groupID;
+            //g.RemoveUser(userID);
+            return RedirectToAction("AddUserToGroup");
+        }
         #endregion
 
         #region Menu

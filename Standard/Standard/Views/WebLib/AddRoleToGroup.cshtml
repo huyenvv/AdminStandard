@@ -1,0 +1,38 @@
+﻿@model List<WebLib.Models.fwRole>
+
+@{
+    ViewBag.Title = ViewBag.groupTitle;
+}
+
+<h2>Phân quyền cho nhóm: @ViewBag.groupTitle</h2>
+
+<div class="ListCheckBox">
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" name="checkall" class="checkAll" />
+            Check all
+        </label>
+    </div>
+    @{
+        var lst = (List<int>)ViewBag.LstRole;
+    }
+    @foreach (var item in Model)
+    {
+        string s = "";
+        if (lst.Contains(item.ID))
+        {
+            s = "checked ='checked'";
+        }
+        <div class="checkbox">
+            <input type="checkbox" name="checkall" @s value="@item.ID" class="checkItem" />
+            @item.Title
+        </div>
+    }
+    @using (Html.BeginForm("AddRoleToGroup", "WebLib"))
+    {
+        @Html.Hidden("listID")
+        @Html.Hidden("userID", (string)ViewBag.UserID);
+        <input type="submit" name="submit" value="Save" class="btn btn-warning" onclick="return getListID('ListCheckBox','listID');" />
+        <input type="button" value=@Resources.User.BtnCancel class="btn btn-warning" onclick="window.location.href='@Url.Action("ListUser")'">
+    }
+</div>
