@@ -231,6 +231,41 @@
     <Content Include="Content\js\layout.js" />
     <Content Include="Content\js\ticket.js" />
     <Content Include="Content\lib\bootstrap\bootstrap.min.css" />
+    <Content Include="Content\lib\ma\fonts\Material-Design-Iconic-Font.svg" />
+    <Content Include="Content\lib\ma\img\Icons\32.png" />
+    <Content Include="Content\lib\ma\img\Icons\ellipsis.png" />
+    <Content Include="Content\lib\ma\img\Icons\menu-2.png" />
+    <Content Include="Content\lib\ma\img\Icons\message.png" />
+    <Content Include="Content\lib\ma\img\Icons\notification.png" />
+    <Content Include="Content\lib\ma\img\Icons\search-2.png" />
+    <Content Include="Content\lib\ma\img\Icons\search.png" />
+    <Content Include="Content\lib\ma\img\Icons\task.png" />
+    <Content Include="Content\lib\ma\img\notifications.png" />
+    <Content Include="Content\lib\ma\img\profile-menu.png" />
+    <Content Include="Content\lib\ma\img\1.jpg" />
+    <Content Include="Content\lib\ma\img\2.jpg" />
+    <Content Include="Content\lib\ma\img\3.jpg" />
+    <Content Include="Content\lib\ma\img\4.jpg" />
+    <Content Include="Content\lib\ma\img\5.jpg" />
+    <Content Include="Content\lib\ma\img\6.jpg" />
+    <Content Include="Content\lib\ma\img\7.jpg" />
+    <Content Include="Content\lib\ma\css\animate.min.css" />
+    <Content Include="Content\lib\ma\css\app.min.1.css" />
+    <Content Include="Content\lib\ma\css\app.min.2.css" />
+    <Content Include="Content\lib\ma\js\autosize.min.js" />
+    <Content Include="Content\lib\ma\js\bootstrap-growl.min.js" />
+    <Content Include="Content\lib\ma\js\bootstrap.min.js" />
+    <Content Include="Content\lib\ma\js\demo.js" />
+    <Content Include="Content\lib\ma\css\fullcalendar.min.css" />
+    <Content Include="Content\lib\ma\js\functions.js" />
+    <Content Include="Content\lib\ma\js\jquery.min.js" />
+    <Content Include="Content\lib\ma\js\jquery.nicescroll.min.js" />
+    <Content Include="Content\lib\ma\css\material-design-iconic-font.min.css" />
+    <Content Include="Content\lib\ma\css\material-design-iconic-font.min1.css" />
+    <Content Include="Content\lib\ma\css\socicon.min.css" />
+    <Content Include="Content\lib\ma\css\sweetalert-override.min.css" />
+    <Content Include="Content\lib\ma\js\sweetalert.min.js" />
+    <Content Include="Content\lib\ma\js\waves.min.js" />
     <Content Include="Content\lib\metis\metisMenu.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
@@ -261,6 +296,12 @@
       <DependentUpon>Model1.edmx</DependentUpon>
       <LastGenOutput>Model1.cs</LastGenOutput>
     </Content>
+    <Content Include="Content\lib\ma\fonts\Material-Design-Iconic-Font.eot" />
+    <Content Include="Content\lib\ma\fonts\Material-Design-Iconic-Font.ttf" />
+    <Content Include="Content\lib\ma\fonts\Material-Design-Iconic-Font.woff" />
+    <Content Include="Content\lib\ma\fonts\weather-icons.eot" />
+    <Content Include="Content\lib\ma\fonts\weather-icons.ttf" />
+    <Content Include="Content\lib\ma\fonts\weather-icons.woff" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -315,6 +356,8 @@
     <Content Include="Views\Ticket\Create.cshtml" />
     <Content Include="Views\Ticket\Index.cshtml" />
     <Content Include="Views\Shared\_AccessDenied.cshtml" />
+    <Content Include="Views\Shared\_Layout1.cshtml" />
+    <Content Include="Views\Shared\_ma-leftmenu.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
