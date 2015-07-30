@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DB_9CF750_dbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DB_9CF750_dbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Dept">
           <Key>
             <PropertyRef Name="ID" />
@@ -12,12 +12,91 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="GroupID" Type="int" Nullable="false" />
+          <Property Name="LeaderUserID" Type="int" />
         </EntityType>
+        <EntityType Name="Ticket">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="Created" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" Nullable="false" />
+          <Property Name="DeptID" Type="int" Nullable="false" />
+          <Property Name="Track" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Current" Type="int" Nullable="false" />
+          <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="1000" />
+        </EntityType>
+        <EntityType Name="TicketDetails">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TicketID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="Reason" Type="nvarchar" MaxLength="500" />
+          <Property Name="DateRequire" Type="datetime" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TicketUser">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="TicketID" />
+          </Key>
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="TicketID" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_TicketDetails_Ticket">
+          <End Role="Ticket" Type="Self.Ticket" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TicketDetails" Type="Self.TicketDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ticket">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TicketDetails">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketUser_Ticket">
+          <End Role="Ticket" Type="Self.Ticket" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TicketUser" Type="Self.TicketUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ticket">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TicketUser">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="DB_9CF750_dbModelStoreContainer">
           <EntitySet Name="Dept" EntityType="Self.Dept" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Ticket" EntityType="Self.Ticket" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TicketDetails" EntityType="Self.TicketDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TicketUser" EntityType="Self.TicketUser" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [TicketUser].[UserID] AS [UserID], 
+    [TicketUser].[TicketID] AS [TicketID]
+    FROM [dbo].[TicketUser] AS [TicketUser]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_TicketDetails_Ticket" Association="Self.FK_TicketDetails_Ticket">
+            <End Role="Ticket" EntitySet="Ticket" />
+            <End Role="TicketDetails" EntitySet="TicketDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketUser_Ticket" Association="Self.FK_TicketUser_Ticket">
+            <End Role="Ticket" EntitySet="Ticket" />
+            <End Role="TicketUser" EntitySet="TicketUser" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DB_9CF750_dbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -28,10 +107,87 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="GroupID" Type="Int32" Nullable="false" />
+          <Property Name="LeaderUserID" Type="Int32" />
         </EntityType>
         <EntityContainer Name="DB_9CF750_dbEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Dept" EntityType="Self.Dept" />
+          <EntitySet Name="Ticket" EntityType="DB_9CF750_dbModel.Ticket" />
+          <EntitySet Name="TicketDetails" EntityType="DB_9CF750_dbModel.TicketDetails" />
+          <EntitySet Name="TicketUser" EntityType="DB_9CF750_dbModel.TicketUser" />
+          <AssociationSet Name="FK_TicketDetails_Ticket" Association="DB_9CF750_dbModel.FK_TicketDetails_Ticket">
+            <End Role="Ticket" EntitySet="Ticket" />
+            <End Role="TicketDetails" EntitySet="TicketDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketUser_Ticket" Association="DB_9CF750_dbModel.FK_TicketUser_Ticket">
+            <End Role="Ticket" EntitySet="Ticket" />
+            <End Role="TicketUser" EntitySet="TicketUser" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Ticket">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="Created" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="DeptID" Type="Int32" Nullable="false" />
+          <Property Name="Track" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Current" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TicketDetails" Relationship="DB_9CF750_dbModel.FK_TicketDetails_Ticket" FromRole="Ticket" ToRole="TicketDetails" />
+          <NavigationProperty Name="TicketUser" Relationship="DB_9CF750_dbModel.FK_TicketUser_Ticket" FromRole="Ticket" ToRole="TicketUser" />
+          <Property Name="FilePath" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="TicketDetails">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TicketID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="Reason" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DateRequire" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Ticket" Relationship="DB_9CF750_dbModel.FK_TicketDetails_Ticket" FromRole="TicketDetails" ToRole="Ticket" />
+        </EntityType>
+        <EntityType Name="TicketUser">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="TicketID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="TicketID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Ticket" Relationship="DB_9CF750_dbModel.FK_TicketUser_Ticket" FromRole="TicketUser" ToRole="Ticket" />
+        </EntityType>
+        <Association Name="FK_TicketDetails_Ticket">
+          <End Type="DB_9CF750_dbModel.Ticket" Role="Ticket" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="DB_9CF750_dbModel.TicketDetails" Role="TicketDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ticket">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TicketDetails">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketUser_Ticket">
+          <End Type="DB_9CF750_dbModel.Ticket" Role="Ticket" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="DB_9CF750_dbModel.TicketUser" Role="TicketUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ticket">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TicketUser">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -41,9 +197,45 @@
           <EntitySetMapping Name="Dept">
             <EntityTypeMapping TypeName="DB_9CF750_dbModel.Dept">
               <MappingFragment StoreEntitySet="Dept">
+                <ScalarProperty Name="LeaderUserID" ColumnName="LeaderUserID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Ticket">
+            <EntityTypeMapping TypeName="DB_9CF750_dbModel.Ticket">
+              <MappingFragment StoreEntitySet="Ticket">
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Current" ColumnName="Current" />
+                <ScalarProperty Name="Track" ColumnName="Track" />
+                <ScalarProperty Name="DeptID" ColumnName="DeptID" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TicketDetails">
+            <EntityTypeMapping TypeName="DB_9CF750_dbModel.TicketDetails">
+              <MappingFragment StoreEntitySet="TicketDetails">
+                <ScalarProperty Name="DateRequire" ColumnName="DateRequire" />
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TicketUser">
+            <EntityTypeMapping TypeName="DB_9CF750_dbModel.TicketUser">
+              <MappingFragment StoreEntitySet="TicketUser">
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

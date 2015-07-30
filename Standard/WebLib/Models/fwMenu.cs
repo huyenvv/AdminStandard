@@ -14,5 +14,6 @@ namespace WebLib.Models
         public string Icon { get; set; }
         public int Order { get; set; }
         public bool Actived { get; set; }
+        public string SubAction { get; set; }
     }
 }

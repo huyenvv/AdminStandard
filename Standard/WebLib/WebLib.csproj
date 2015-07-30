@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common.cs" />
+    <Compile Include="Constant.cs" />
     <Compile Include="DAL\Class1.cs" />
     <Compile Include="DAL\fwConfigDAL.cs" />
     <Compile Include="DAL\fwBaseDAL.cs" />
