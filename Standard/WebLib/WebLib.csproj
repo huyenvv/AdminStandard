@@ -60,6 +60,7 @@
     <Compile Include="Models\fwHtmlPage.cs" />
     <Compile Include="Models\fwConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SessionUtilities.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
