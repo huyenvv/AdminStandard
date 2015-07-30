@@ -6,8 +6,11 @@ using System.Web.Mvc;
 
 namespace Standard.Controllers
 {
-    public class BaseController : Controller
+    public class DeptController : BaseController
     {
-        protected DB_9CF750_dbEntities db = DB.Entites;
+        public ActionResult Index()
+        {
+            return View(db.Dept.ToList());
+        }
 	}
 }

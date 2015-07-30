@@ -175,6 +175,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\DeptController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\WebLibController.cs" />
     <Compile Include="DB.cs" />
@@ -301,6 +302,7 @@
     <Content Include="Views\WebLib\EditGroup.cshtml" />
     <Content Include="Views\WebLib\AddUserToGroup.cshtml" />
     <Content Include="Views\WebLib\EditUser.cshtml" />
+    <Content Include="Views\Dept\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
