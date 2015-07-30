@@ -9,11 +9,13 @@ using WebLib.DAL;
 
 namespace Standard.Controllers
 {
-    [fuck]
+    [CustomAuthorize(RoleList.ApproveTicket)]
     public class TicketController : BaseController
     {
+        
         public ActionResult Index()
         {
+            
             return View(db.Ticket.ToList());
         }
 

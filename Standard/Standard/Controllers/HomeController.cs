@@ -6,7 +6,8 @@ using System.Web.Mvc;
 
 namespace Standard.Controllers
 {
-    public class HomeController : Controller
+    [CustomAuthorize]
+    public class HomeController : BaseController
     {
         public string test()
         {
@@ -17,18 +18,5 @@ namespace Standard.Controllers
             return View();
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
     }
 }

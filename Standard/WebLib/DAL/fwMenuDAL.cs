@@ -54,11 +54,14 @@ namespace WebLib.DAL
 
         public List<fwMenu> ListByUser(int userID)
         {
+            var u = new fwUserDAL().GetByID(userID);
+            if (u == null) return new List<fwMenu>();
+            if (u.UserName.ToLower() == Constant.AdminFix) return ListAll();
             string query = @"select m.* from fwMenu m
 inner join fwMenuRole mr on mr.MenuID=m.ID
 inner join fwRoleGroup rg on rg.RoleID=mr.RoleID
 inner join fwUserGroup ug on ug.GroupID=rg.GroupID
-where ug.UserID=@UserID";
+where ug.UserID=@UserID order by [Order]";
             var lst = new List<fwMenu>();
             DataTable dt = DataUtilities.GetTable(query, CommandType.Text, "@UserID", userID);
             foreach (DataRow row in dt.Rows)

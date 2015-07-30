@@ -15,6 +15,8 @@ namespace WebLib.Models
         public int Status { get; set; }
         public bool Locked { get; set; }
         public string Avata { get; set; }
+        public int NotiCount { get; set; }
+        public string Pass { get; set; }
         public List<fwMenu> Menu()
         {
             return new DAL.fwMenuDAL().ListByUser(ID);

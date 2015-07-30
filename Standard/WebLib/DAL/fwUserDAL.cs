@@ -10,6 +10,7 @@ namespace WebLib.DAL
 {
     public class fwUserDAL : fwBaseDAL
     {
+        #region DAL
         public fwUserDAL()
         {
             _TableName = "fwUser";
@@ -28,6 +29,8 @@ namespace WebLib.DAL
             obj.Status = (int)row["Status"];
             obj.Locked = (bool)row["Locked"];
             obj.Avata = GetString(row["Avata"]);
+            obj.NotiCount = GetInt(row["NotiCount"]);
+            obj.Avata = GetString(row["Pass"]);
             return obj;
         }
 
@@ -51,7 +54,7 @@ namespace WebLib.DAL
 
         public fwUser GetByUserName(string userName)
         {
-            DataTable dt = DataUtilities.GetTable(query + " where UserName=@userName", CommandType.Text, "@userName", userName);
+            DataTable dt = DataUtilities.GetTable(query + " where UserName=@userName COLLATE SQL_Latin1_General_CP1_CI_AS", CommandType.Text, "@userName", userName);
             if (dt.Rows.Count == 0) return null;
 
             var obj = CreateObj(dt.Rows[0]);
@@ -84,6 +87,59 @@ namespace WebLib.DAL
 
             return lst;
         }
+
+        public fwUser Insert(fwUser obj)
+        {
+            var ID = DataUtilities.Insert(@"insert into fwUser([AspnetUserID], [UserName], [Email], [Status], [Locked], [Avata], [NotiCount], [Pass]) values(@AspnetUserID, @UserName, @Name, @Email, @Status, @Locked, @Avata, @NotiCount, @Pass)",
+                CommandType.Text, "@AspnetUserID", obj.AspnetUserID, "@UserName", obj.UserName, "@Name", obj.Name, "@Email", obj.Email, "@Status", obj.Status, "@Locked", obj.Locked, "@Avata", obj.Avata, "@NotiCount", obj.NotiCount, "@Pass", obj.Pass);
+            obj.ID = ID;
+            return obj;
+        }
+
+        public fwUser Update(fwUser obj)
+        {
+            var ID = DataUtilities.ExcuteNonQuery(@"update fwUser set [UserName]=@UserName, [Email]=@Email, [Status]=@Status, [Locked]=@Locked, [Avata]=@Avata, [NotiCount] = @NotiCount, [Pass]=@Pass where ID=@ID",
+                CommandType.Text, "@UserName", obj.UserName, "@Name", obj.Name, "@Email", obj.Email, "@Status", obj.Status, "@Locked", obj.Locked, "@Avata", obj.Avata, "@NotiCount", obj.NotiCount, "@Pass", obj.Pass, "@ID", obj.ID);
+            return obj;
+        }
+        #endregion
+
+        #region bussiness
+        public static fwUser GetCurrentUser()
+        {
+            if (!SessionUtilities.Exist(Constant.Session_CurrentUser)) return null;
+            return (fwUser)SessionUtilities.Get(Constant.Session_CurrentUser);
+        }
+        public bool Login(string username, string pass)
+        {
+            var user = GetByUserName(username);
+            if (user == null || user.Pass != pass) return false;
+            SessionUtilities.Add(Constant.Session_CurrentUser, user);
+            return true;
+        }
+        public static void Logout()
+        {
+            SessionUtilities.Remove(Constant.Session_CurrentUser);
+        }
+        public int Authorize(params string[] roles)
+        {
+            if (!SessionUtilities.Exist(Constant.Session_CurrentUser)) return 1;
+            if (roles == null || roles.Length == 0) return 0;
+            var user = (fwUser)SessionUtilities.Get(Constant.Session_CurrentUser);
+            if (!UserInRole(user.ID, roles)) return 2;
+            return 0;
+        }
+        public bool UserInRole(params string[] roles)
+        {
+            var user = (fwUser)SessionUtilities.Get(Constant.Session_CurrentUser);
+            if (user == null) return false;
+            return UserInRole(user.ID, roles);
+        }
+        public bool UserInRole(fwUser user, params string[] roles)
+        {
+            if (user == null) return false;
+            return UserInRole(user.ID, roles);
+        }
         public bool UserInRole(int userID, params string[] roles)
         {
             var currentRoles = new fwRoleDAL().ListByUser(userID).Select(m => m.Code).ToArray();
@@ -114,19 +170,6 @@ namespace WebLib.DAL
             }
             return kq;
         }
-        public fwUser Insert(fwUser obj)
-        {
-            var ID = DataUtilities.Insert(@"insert into fwUser([AspnetUserID], [UserName], [Email], [Status], [Locked], [Avata]) values(@AspnetUserID, @UserName, @Name, @Email, @Status, @Locked, @Avata)",
-                CommandType.Text, "@AspnetUserID", obj.AspnetUserID, "@UserName", obj.UserName, "@Name", obj.Name, "@Email", obj.Email, "@Status", obj.Status, "@Locked", obj.Locked, "@Avata", obj.Avata);
-            obj.ID = ID;
-            return obj;
-        }
-
-        public fwUser Update(fwUser obj)
-        {
-            var ID = DataUtilities.ExcuteNonQuery(@"update fwUser set [UserName]=@UserName, [Email]=@Email, [Status]=@Status, [Locked]=@Locked, [Avata]=@Avata where ID=@ID",
-                CommandType.Text, "@UserName", obj.UserName, "@Name", obj.Name, "@Email", obj.Email, "@Status", obj.Status, "@Locked", obj.Locked, "@Avata", obj.Avata, "@ID", obj.ID);
-            return obj;
-        }
+        #endregion
     }
 }

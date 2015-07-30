@@ -8,6 +8,8 @@ namespace Standard
 {
     public class DB
     {
+        public static WebLib.Models.fwUser CurrentUser
+        { get { return WebLib.DAL.fwUserDAL.GetCurrentUser(); } }
         public static DB_9CF750_dbEntities Entities
         {
             get
