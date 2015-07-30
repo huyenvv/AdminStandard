@@ -9,24 +9,19 @@ using WebLib.DAL;
 
 namespace Standard.Controllers
 {
-    public class TicketController : Controller
+    [fuck]
+    public class TicketController : BaseController
     {
-        //
-        // GET: /Ticket/
         public ActionResult Index()
         {
-            return View();
+            return View(db.Ticket.ToList());
         }
 
-        //
-        // GET: /Ticket/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        //
-        // GET: /Ticket/Create
         public ActionResult Create()
         {
             return View();
@@ -35,17 +30,15 @@ namespace Standard.Controllers
         public JsonResult AddTicketDetail(TicketDetail detail)
         {
             var listTicketDetail = new List<TicketDetail>();
-            if (SessionUtilities.Exist(SESSION.TicketDetail))
+            if (SessionUtilities.Exist(Constant.SESSION_TicketDetails))
             {
-                listTicketDetail = (List<TicketDetail>)SessionUtilities.Get(SESSION.TicketDetail);
+                listTicketDetail = (List<TicketDetail>)SessionUtilities.Get(Constant.SESSION_TicketDetails);
             }
             listTicketDetail.Add(detail);
-            SessionUtilities.Set(SESSION.TicketDetail, listTicketDetail);
+            SessionUtilities.Set(Constant.SESSION_TicketDetails, listTicketDetail);
             return Json(new { }, JsonRequestBehavior.AllowGet);
         }
 
-        //
-        // POST: /Ticket/Create
         [HttpPost]
         public ActionResult Create(int type, int deptId)
         {
@@ -54,10 +47,10 @@ namespace Standard.Controllers
                 // TODO: Add insert logic here
                 if (type > 0 && deptId > 0)
                 {
-                    if (SessionUtilities.Exist(SESSION.TicketDetail))
+                    if (SessionUtilities.Exist(Constant.SESSION_TicketDetails))
                     {
                         var db = DB.Entites;
-                        var listTicketDetail = (List<TicketDetail>)SessionUtilities.Get(SESSION.TicketDetail);
+                        var listTicketDetail = (List<TicketDetail>)SessionUtilities.Get(Constant.SESSION_TicketDetails);
                         if (listTicketDetail.Count > 0)
                         {
                             var currentUser = new fwUserDAL().GetByUserName(DB.CurrentUser.Identity.Name);
@@ -69,7 +62,7 @@ namespace Standard.Controllers
                                     Current = currentUser.ID,
                                     Created = DateTime.Now,
                                     CreatedBy = currentUser.ID,
-                                    Status = (int)Status.ChoDuyet,
+                                    Status = TicketStatus.ChoDuyet,
                                     Track = currentUser.ID + "#;",
                                     DeptID = deptId
                                 };
@@ -94,7 +87,7 @@ namespace Standard.Controllers
                                 db.SaveChanges();
 
                                 // remove ticket detail session
-                                SessionUtilities.Set(SESSION.TicketDetail, null);
+                                SessionUtilities.Set(Constant.SESSION_TicketDetails, null);
                             }
 
                         }
@@ -108,15 +101,11 @@ namespace Standard.Controllers
             }
         }
 
-        //
-        // GET: /Ticket/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        //
-        // POST: /Ticket/Edit/5
         [HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
         {
@@ -132,36 +121,23 @@ namespace Standard.Controllers
             }
         }
 
-        //
+        public ActionResult Delete(int id)
+        {
+            return View();
+        }
+
         // GET: /Ticket/Delete/5
         public JsonResult DeleteTicketDetail(int id)
         {
             var listTicketDetail = new List<TicketDetail>();
-            if (SessionUtilities.Exist(SESSION.TicketDetail))
+            if (SessionUtilities.Exist(Constant.SESSION_TicketDetails))
             {
-                listTicketDetail = (List<TicketDetail>)SessionUtilities.Get(SESSION.TicketDetail);
+                listTicketDetail = (List<TicketDetail>)SessionUtilities.Get(Constant.SESSION_TicketDetails);
                 var k = listTicketDetail.FindIndex(m => m.Id == id);
                 listTicketDetail.RemoveAt(k);
-                SessionUtilities.Set(SESSION.TicketDetail, listTicketDetail);
+                SessionUtilities.Set(Constant.SESSION_TicketDetails, listTicketDetail);
             }
             return Json(new { }, JsonRequestBehavior.AllowGet);
-        }
-
-        //
-        // POST: /Ticket/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }
