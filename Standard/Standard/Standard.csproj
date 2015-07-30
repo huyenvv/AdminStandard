@@ -303,6 +303,7 @@
     <Content Include="Views\WebLib\AddUserToGroup.cshtml" />
     <Content Include="Views\WebLib\EditUser.cshtml" />
     <Content Include="Views\Dept\Index.cshtml" />
+    <Content Include="Views\Dept\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
