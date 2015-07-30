@@ -1,18 +1,12 @@
 ﻿@{
     var listTickKet = WebLib.SessionUtilities.Exist(SESSION.TicketDetail) ? (List<Standard.Models.TicketDetail>)WebLib.SessionUtilities.Get(SESSION.TicketDetail) : null;
+    ViewBag.Title = "ĐỀ NGHỊ DỤNG CỤ LÀM VIỆC/ REQUEST FOR WORKING FACILITIES";
 }
 <link href="~/Content/css/ticket.css" rel="stylesheet" />
 @section  scripts{
     <script src="~/Content/js/ticket.js"></script>
 }
-<div class="row">
-    <div class="col-lg-12">
-        <h1 class="page-header text-center">VAN LAACK ASIA CO., LTD</h1>
-        <h3 class="text-center">ĐỀ NGHỊ DỤNG CỤ LÀM VIỆC/ REQUEST FOR WORKING FACILITIES</h3>
-        <br />
-    </div>
-    <!-- /.col-lg-12 -->
-</div>
+
 <!-- /.row -->
 <div class="row">
     <div class="col-md-12">
@@ -88,6 +82,9 @@
                                 Ngày cần<br />
                                 <i>Date require</i>
                             </th>
+                            <th>
+
+                            </th>
 
                         </tr>
                     </thead>
@@ -112,11 +109,14 @@
                                     <td>
                                         @item.NgayCan
                                     </td>
+                                    <td>
+                                        <a href="#" class="color-red" onclick="return removeTicketDetail('@item.Id',this);"><i class="fa fa-times"></i></a>
+                                    </td>
                                 </tr>
                             }
                         }
                     </tbody>
-                </table>                
+                </table>
                 <div id="loaiticketDetail" class="col-md-offset-2 hide field-validation-error">Bạn phải thêm ticket detail trước.</div>
                 <br />
                 <div id="frmChiTietYeuCau">
@@ -162,7 +162,7 @@
 
                         <a href="#" class="btn btn-primary btn-xs" id="ThemChiTiet"> Thêm chi tiết</a>
                         <hr />
-                        <input type="submit" value="Gửi đề nghị" class="btn btn-primary"  onclick="return CheckTicket();"/>
+                        <input type="submit" value="Gửi đề nghị" class="btn btn-primary" onclick="return CheckTicket();" />
                         <a href="@Request.QueryString["returnUrl"]" class="btn btn-default">Hủy</a>
                     </div>
                 </div>

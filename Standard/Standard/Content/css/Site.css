@@ -378,3 +378,13 @@ table.dataTable thead .sorting_desc_disabled {
         .panel-yellow a:hover {
             color: #df8a13;
         }
+
+.page-title {
+    background-color: #f8f8f8;
+    border:1px solid #e7e7e7;
+    display: block;
+    float: left;
+    padding: 9px 40px 9px 9px;
+    border-radius: 5px;
+    color: #428bca;
+}

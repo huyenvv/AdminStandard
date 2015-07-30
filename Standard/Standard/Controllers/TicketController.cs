@@ -134,9 +134,17 @@ namespace Standard.Controllers
 
         //
         // GET: /Ticket/Delete/5
-        public ActionResult Delete(int id)
+        public JsonResult DeleteTicketDetail(int id)
         {
-            return View();
+            var listTicketDetail = new List<TicketDetail>();
+            if (SessionUtilities.Exist(SESSION.TicketDetail))
+            {
+                listTicketDetail = (List<TicketDetail>)SessionUtilities.Get(SESSION.TicketDetail);
+                var k = listTicketDetail.FindIndex(m => m.Id == id);
+                listTicketDetail.RemoveAt(k);
+                SessionUtilities.Set(SESSION.TicketDetail, listTicketDetail);
+            }
+            return Json(new { }, JsonRequestBehavior.AllowGet);
         }
 
         //
