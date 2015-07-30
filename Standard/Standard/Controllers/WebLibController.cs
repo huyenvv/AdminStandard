@@ -87,10 +87,27 @@ namespace Standard.Controllers
         }
         public ActionResult AddRoleToGroup(int id)
         {
-            //var g = new fwGroup();
-            //g.ID = groupID;
-            //g.RemoveUser(userID);
-            return RedirectToAction("AddUserToGroup");
+            var g = new fwGroupDAL().GetByID(id);
+            ViewBag.LstRole = g.fwRole.Select(m => m.ID).ToList();
+            ViewBag.groupID = id;
+            ViewBag.groupTitle = g.Title;
+            return View(new fwRoleDAL().ListAll());
+        }
+        [HttpPost]
+        public ActionResult AddRoleToGroup(int groupID, string listID)
+        {
+            var g = new fwGroup() { ID = groupID };
+            var lst = listID.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var item in g.fwRole.Select(m => m.ID).ToList())
+            {
+                if (!lst.Contains(item.ToString()))
+                    g.RemoveRole(item);
+            }
+            foreach (var item in lst)
+            {
+                g.AddRole(int.Parse(item));
+            }
+            return RedirectToAction("ListGroup");
         }
         #endregion
 
