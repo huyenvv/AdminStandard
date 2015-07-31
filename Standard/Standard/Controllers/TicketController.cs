@@ -32,7 +32,7 @@ namespace Standard.Controllers
 
         public ActionResult Details(int id)
         {
-            return View(_ticketRepository.GetById(id));
+            return View(db.Ticket.FirstOrDefault(m => m.ID == id));
         }
 
         public ActionResult Create(int id = 0)
@@ -160,7 +160,10 @@ namespace Standard.Controllers
             }
             return Json(new { }, JsonRequestBehavior.AllowGet);
         }
-
+        public ActionResult PhanHoi(string ykien)
+        {
+            return AccessDenied();
+        }
         public ActionResult ThongQua(int id, string returnUrl)
         {
             var obj = db.Ticket.FirstOrDefault(m => m.ID == id);

@@ -30,26 +30,6 @@ namespace Standard.Controllers
         public UserManager<ApplicationUser> UserManager { get; private set; }
 
         [AllowAnonymous]
-        public List<fwMenu> BuildMenu()
-        {
-            if (!string.IsNullOrEmpty(DB.CurrentUser.Identity.Name))
-            {
-                if (DB.CurrentUser.Identity.Name == "admin")
-                {
-                    return new fwMenuDAL().ListAll();
-                }
-                var user = new fwUserDAL().GetByUserName(DB.CurrentUser.Identity.Name);
-                if (user != null)
-                {
-                    return new fwMenuDAL().ListByUser(user.ID);
-                }
-            }
-            return new List<fwMenu>();
-        }
-
-        //
-        // GET: /Account/Login
-        [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
