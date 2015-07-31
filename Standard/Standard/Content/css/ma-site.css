@@ -13,13 +13,18 @@
 .card .card-body.card-padding {
     overflow: hidden;
 }
-.has-error ul li , .field-validation-error, .color-red{
+
+.has-error ul li, .field-validation-error, .color-red {
     color: #f44336;
 }
 
 .epc-item {
-    padding-bottom: 70px;
+    padding-bottom: 35px;
 }
+
 .easy-pie .pie-title {
-        bottom: -60px;
+    bottom: -32px;
+}
+.easy-pie .percent:after {
+    content: "";
 }
