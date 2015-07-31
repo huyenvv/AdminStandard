@@ -16,3 +16,10 @@
 .has-error ul li , .field-validation-error, .color-red{
     color: #f44336;
 }
+
+.epc-item {
+    padding-bottom: 70px;
+}
+.easy-pie .pie-title {
+        bottom: -60px;
+}
