@@ -10,7 +10,7 @@ using WebLib.DAL;
 
 namespace Standard.Controllers
 {
-    [CustomAuthorize(RoleList.ApproveTicket)]
+    [CustomAuthorize]
     public class TicketController : BaseController
     {
         private readonly TicketRepository _ticketRepository;
@@ -32,7 +32,7 @@ namespace Standard.Controllers
 
         public ActionResult Details(int id)
         {
-            return View();
+            return View(_ticketRepository.GetById(id));
         }
 
         public ActionResult Create(int id = 0)
@@ -149,23 +149,6 @@ namespace Standard.Controllers
             _ticketRepository.Delete(tick);
             return RedirectToAction("Index");
         }
-
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: /Ticket/Delete/5
         public JsonResult DeleteTicketDetail(int id)
         {
             if (SessionUtilities.Exist(Constant.SESSION_TicketDetails))
@@ -177,5 +160,59 @@ namespace Standard.Controllers
             }
             return Json(new { }, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult ThongQua(int id, string returnUrl)
+        {
+            var obj = db.Ticket.FirstOrDefault(m => m.ID == id);
+            if (!CanThongQua(obj)) return AccessDenied();
+            obj.Track += ";#" + DB.CurrentUser.ID;
+            obj.Status = TicketStatus.CanKiemDuyet;
+            var bp = _deptRepository.GetById(obj.DeptID);
+            var u = new fwGroupDAL().GetByID(bp.GroupID).fwUser.FirstOrDefault();
+            obj.Current = u.ID;
+            if (!obj.TicketUser.Any(m => m.UserID == u.ID))
+                obj.TicketUser.Add(new TicketUser() { TicketID = obj.ID, UserID = u.ID });
+
+            if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
+            return RedirectToAction("Index", "Home");
+        }
+        public ActionResult KiemDuyet(int id, string returnUrl)
+        {
+            var obj = db.Ticket.FirstOrDefault(m => m.ID == id);
+            if (!CanKiemDuyet(obj)) return AccessDenied();
+            obj.Track += ";#" + DB.CurrentUser.ID;
+            obj.Status = TicketStatus.ChoDuyet;
+            var u = new fwUserDAL().ListByRole(RoleList.ApproveTicket).FirstOrDefault();
+            obj.Current = u.ID;
+            if (!obj.TicketUser.Any(m => m.UserID == u.ID))
+                obj.TicketUser.Add(new TicketUser() { TicketID = obj.ID, UserID = u.ID });
+
+            if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
+            return RedirectToAction("Index", "Home");
+        }
+        public ActionResult Duyet(int id, string returnUrl)
+        {
+            var obj = db.Ticket.FirstOrDefault(m => m.ID == id);
+            if (!CanDuyet(obj)) return AccessDenied();
+            obj.Track += ";#" + DB.CurrentUser.ID;
+            obj.Status = TicketStatus.DaDuyet;
+
+            if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
+            return RedirectToAction("Index", "Home");
+        }
+        #region Check role
+        public static bool CanThongQua(Ticket obj)
+        {
+            return DB.CurrentUser.ID == obj.Current && obj.Status == TicketStatus.ChoThongQua;
+        }
+        public static bool CanKiemDuyet(Ticket obj)
+        {
+            return DB.CurrentUser.ID == obj.Current && obj.Status == TicketStatus.CanKiemDuyet;
+        }
+        public static bool CanDuyet(Ticket obj)
+        {
+            return DB.CurrentUser.ID == obj.Current && obj.Status == TicketStatus.ChoDuyet && new fwUserDAL().UserInRole(RoleList.ApproveTicket);
+        }
+        #endregion
     }
 }

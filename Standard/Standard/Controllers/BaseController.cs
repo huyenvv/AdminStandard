@@ -10,6 +10,7 @@ namespace Standard.Controllers
 {
     public class BaseController : Controller
     {
+        public DB_9CF750_dbEntities db = new DB_9CF750_dbEntities();
         public ActionResult AccessDenied()
         {
             return View("_AccessDenied");
