@@ -1,7 +1,32 @@
-﻿
+﻿@model List<Ticket>
+
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "List Ticket";
+    var userDAL = new WebLib.DAL.fwUserDAL();
 }
 
-<h2>Index</h2>
+<h3>Các phiếu yêu cầu</h3>
 
+<p>
+    <a href="@Url.Action("Create", new { returnUrl = Request.RawUrl })" class="btn btn-primary">Tạo phiếu yêu cầu</a>
+</p>
+<table class="table">
+    @foreach (var item in Model)
+    {
+        var u = userDAL.GetByID(item.CreatedBy);
+        string title = item.TicketDetails.FirstOrDefault().Title;
+        <tr>
+            <td>
+                <a href="@Url.Action("Details", new { id = item.ID })">@(u == null ? null : u.Name)</a>
+            </td>
+            <td>
+                <a href="@Url.Action("Details", new { id = item.ID })">@title</a>
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ID, returnUrl = Request.RawUrl }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID, returnUrl = Request.RawUrl }, new { @class = "confirmDelete" })
+            </td>
+        </tr>
+    }
+
+</table>

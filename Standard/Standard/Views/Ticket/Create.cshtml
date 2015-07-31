@@ -1,5 +1,5 @@
 ﻿@{
-    var listTickKet = WebLib.SessionUtilities.Exist(SESSION.TicketDetail) ? (List<Standard.Models.TicketDetail>)WebLib.SessionUtilities.Get(SESSION.TicketDetail) : null;
+    var listTickKet = WebLib.SessionUtilities.Exist(Constant.SESSION_TicketDetails) ? (List<Standard.Models.TicketDetail>)WebLib.SessionUtilities.Get(Constant.SESSION_TicketDetails) : null;
 }
 <link href="~/Content/css/ticket.css" rel="stylesheet" />
 @section  scripts{
