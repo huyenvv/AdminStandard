@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace Standard
 {
@@ -24,6 +25,11 @@ namespace Standard
             public BaseClass()
             {
                 _db = new DB_9CF750_dbEntities();
+            }
+
+            public List<T> Find(Expression<Func<T, bool>> predicate)
+            {
+                return _db.Set<T>().Where(predicate).ToList();
             }
 
             public T GetById(object id)
