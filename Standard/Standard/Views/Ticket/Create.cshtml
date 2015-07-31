@@ -1,5 +1,11 @@
-﻿@{
-    var listTickKet = WebLib.SessionUtilities.Exist(Constant.SESSION_TicketDetails) ? (List<Standard.Models.TicketDetail>)WebLib.SessionUtilities.Get(Constant.SESSION_TicketDetails) : null;
+﻿@model Ticket
+@using WebLib.DAL
+@{
+    var currentUser = fwUserDAL.GetCurrentUser();
+    var listTickKet = WebLib.SessionUtilities.Exist(Constant.SESSION_TicketDetails) ? (List<TicketDetails>)WebLib.SessionUtilities.Get(Constant.SESSION_TicketDetails) : null;
+    var listDept = (List<Dept>)ViewBag.listDept;
+    var listType = new[] { "", "", "", "" };
+    listType[Model.Type] = "checked='checked'";
     ViewBag.Title = "ĐỀ NGHỊ DỤNG CỤ LÀM VIỆC/ REQUEST FOR WORKING FACILITIES";
 }
 <link href="~/Content/css/ticket.css" rel="stylesheet" />
@@ -11,11 +17,13 @@
 @using (Html.BeginForm(null, null, new { returnUrl = Request.QueryString["returnUrl"] }, FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-
+    @Html.Hidden("isSend", true)
+    @Html.HiddenFor(m=>m.ID)
 
     @Html.ValidationSummary(true)
     <div class="col-sm-12">
-        <button type="submit" class="btn btn-primary" onclick="return CheckTicket();">Gửi đề nghị</button>
+        <button type="submit" class="btn btn-primary" onclick="return CheckTicket(false);">Lưu lại</button>
+        <button type="submit" class="btn btn-primary" onclick="return CheckTicket(true);">Gửi đề nghị</button>
         <a href="@Request.QueryString["returnUrl"]" class="btn btn-default">Hủy</a>
     </div>
     <br />
@@ -23,17 +31,17 @@
     <br />
     <div class="col-sm-12">
         <label class="checkbox checkbox-inline m-r-20">
-            <input type="checkbox" class="inlineCheckbox1" name="Type" value="1">
+            <input type="checkbox" class="inlineCheckbox1" name="Type" value="1" @(listType[1])>
             <i class="input-helper"></i>
             (1) Mua <br /><i>Purchase</i>
         </label>
         <label class="checkbox checkbox-inline m-r-20">
-            <input type="checkbox" class="inlineCheckbox1" name="Type" value="2">
+            <input type="checkbox" class="inlineCheckbox1" name="Type" value="2" @(listType[3])>
             <i class="input-helper"></i>
             (2) Thay thế<br /><i>Replacement</i>
         </label>
         <label class="checkbox checkbox-inline m-r-20">
-            <input type="checkbox" class="inlineCheckbox1" name="Type" value="3">
+            <input type="checkbox" class="inlineCheckbox1" name="Type" value="3" @(listType[3])>
             <i class="input-helper"></i>
             (3) Bảo trì, sửa chữa<br /><i>Maintenance/Repair</i>
         </label>
@@ -49,17 +57,17 @@
         <div class="form-group fg-float">
             <div class="fg-line">
                 <label>Ngày đề nghị</label>
-                <input type="text" name="NgayDenghi" value="@DateTime.Now.ToString("dd/MM/yyyy")" class=" form-control fg-input" readonly="readonly" />
+                <input type="text" name="NgayDenghi" value="@Model.Created.ToString("dd/MM/yyyy")" class=" form-control fg-input" readonly="readonly" />
             </div>
-           
+
         </div>
     </div><div class="col-sm-4">
         <div class="form-group fg-float">
             <div class="fg-line">
                 <label>Người đề nghị</label>
-                <input type="text" name="NguoiDeNghi" value="@(Standard.Controllers.DB.CurrentUser.Identity.Name)" class=" form-control fg-input" readonly="readonly" />
+                <input type="text" name="NguoiDeNghi" value="@(currentUser!=null?currentUser.UserName:"")" class=" form-control fg-input" readonly="readonly" />
             </div>
-            
+
         </div>
     </div><div class="col-sm-4">
         <div class="form-group fg-float">
@@ -67,7 +75,7 @@
                 <label>Bộ phận</label>
                 <div class="select">
                     <select class="form-control" name="DeptID">
-                        @foreach (var item in Standard.DB.Entities.Dept)
+                        @foreach (var item in listDept)
                         {
                             <option value="@item.ID">@item.Title</option>
                         }
@@ -109,26 +117,27 @@
             <tbody>
                 @if (listTickKet != null && listTickKet.Count > 0)
                 {
+                    var dem = 1;
                     foreach (var item in listTickKet)
                     {
                         <tr>
                             <td>
-                                @item.Id
+                                @(dem++)
                             </td>
                             <td>
-                                @item.DienGiai
+                                @item.Title
                             </td>
                             <td>
-                                @item.SoLuong
+                                @item.Quantity
                             </td>
                             <td>
-                                @item.LyDo
+                                @item.Reason
                             </td>
                             <td>
-                                @item.NgayCan
+                                @item.DateRequire
                             </td>
                             <td>
-                                <button class="color-red btn btn-icon" onclick="return removeTicketDetail('@item.Id',this);"><span class="md md-delete"></span></button>
+                                <button class="color-red btn btn-icon" onclick="return removeTicketDetail('@item.ID',this);"><span class="md md-delete"></span></button>
                             </td>
                         </tr>
                     }
@@ -183,7 +192,7 @@
             </label>
             <div class="input-group form-group">
                 <div class="dtp-container dropdown fg-line">
-                    <input type="text" class="form-control date-picker" data-toggle="dropdown" id="NgayCan" name="NgayCan" aria-expanded="false">
+                    <input type="text" class="form-control date-time-picker" data-toggle="dropdown" id="NgayCan" name="NgayCan" aria-expanded="false">
                 </div>
             </div>
         </div>

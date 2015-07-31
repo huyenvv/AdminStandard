@@ -3,17 +3,47 @@
 @{
     ViewBag.Title = "Các phiếu yêu cầu";
     var userDAL = new WebLib.DAL.fwUserDAL();
+    var listColor = new[] { "danger", "warning", "primary", "success" };
 }
 
 
-<p>
+<div class="col-sm-6">
     <a href="@Url.Action("Create", new { returnUrl = Request.RawUrl })" class="btn btn-primary">Tạo phiếu yêu cầu</a>
-</p>
+</div>
+<div class="col-sm-6">
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Trạng thái</label>
+        <div class="col-sm-9">
+            <div class="fg-line">
+                <div class="select">
+                    <select class="form-control">
+                        @for (int i = 0; i < TicketStatus.TicketStatusTitle.Length; i++)
+                        {
+                            <option value="@i">@TicketStatus.TicketStatusTitle[i]</option>
+                        }
+
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
 <table class="table">
+    <thead>
+        <tr>
+            <th>Người yêu cầu</th>
+            <th>Nội dung</th>
+            <th>Trạng thái</th>
+            <th></th>
+        </tr>
+    </thead>
     @foreach (var item in Model)
     {
         var u = userDAL.GetByID(item.CreatedBy);
-        string title = item.TicketDetails.FirstOrDefault().Title;
+        var first = item.TicketDetails.FirstOrDefault();
+        string title = first != null ? first.Title : "";
         <tr>
             <td>
                 <a href="@Url.Action("Details", new { id = item.ID })">@(u == null ? null : u.Name)</a>
@@ -22,8 +52,19 @@
                 <a href="@Url.Action("Details", new { id = item.ID })">@title</a>
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.ID, returnUrl = Request.RawUrl }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.ID, returnUrl = Request.RawUrl }, new { @class = "confirmDelete" })
+                <button class="btn btn-@listColor[item.Status] btn-xs" disabled="disabled">@TicketStatus.TicketStatusTitle[item.Status]</button>
+            </td>
+            <td>
+                @if (item.Status == TicketStatus.KhoiTao)
+                {
+                    @Html.ActionLink("Sửa", "Create", new { id = item.ID, returnUrl = Request.RawUrl })
+                }
+                else
+                {
+                    @Html.ActionLink("Chi tiết", "Details", new { id = item.ID, returnUrl = Request.RawUrl })
+                }
+                |
+                @Html.ActionLink("Xóa", "Delete", new { id = item.ID, returnUrl = Request.RawUrl }, new { @class = "confirmDelete" })
             </td>
         </tr>
     }
