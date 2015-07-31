@@ -90,7 +90,7 @@ namespace WebLib.DAL
 
         public fwUser Insert(fwUser obj)
         {
-            var ID = DataUtilities.Insert(@"insert into fwUser([AspnetUserID], [UserName], [Email], [Status], [Locked], [Avata], [NotiCount], [Pass]) values(@AspnetUserID, @UserName, @Name, @Email, @Status, @Locked, @Avata, @NotiCount, @Pass)",
+            var ID = DataUtilities.Insert(@"insert into fwUser([AspnetUserID], [UserName], [Name], [Email], [Status], [Locked], [Avata], [NotiCount], [Pass]) values(@AspnetUserID, @UserName, @Name, @Email, @Status, @Locked, @Avata, @NotiCount, @Pass)",
                 CommandType.Text, "@AspnetUserID", obj.AspnetUserID, "@UserName", obj.UserName, "@Name", obj.Name, "@Email", obj.Email, "@Status", obj.Status, "@Locked", obj.Locked, "@Avata", obj.Avata, "@NotiCount", obj.NotiCount, "@Pass", obj.Pass);
             obj.ID = ID;
             return obj;
