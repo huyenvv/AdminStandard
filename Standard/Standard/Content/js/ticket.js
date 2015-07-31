@@ -27,7 +27,10 @@
             };
             $.post("/Ticket/AddTicketDetail", data)
               .done(function (ok) {
-                  $("table tbody").append("<tr><td>" + no + "</td><td>" + dienGiai + "</td><td>" + soluong + "</td><td>" + mucDich + "</td><td>" + ngayCan + "</td><td><a href='#' class='color-red' onclick='return removeTicketDetail(" + no + ",this);'><i class='fa fa-times'></i></a></td></tr>");
+                  $("table").removeClass("hide");
+                  $("table tbody").append("<tr><td>" + no + "</td><td>" + dienGiai + "</td><td>" + soluong + "</td><td>" + mucDich + "</td><td>" + ngayCan + "</td><td>" +
+                      "<button class='color-red btn btn-icon' onclick='return removeTicketDetail(" + no + ",this);'><span class='md md-delete'></span></button>" +
+                      "</td></tr>");
               });
         } else {
             $("#messerror").removeClass("hide");
@@ -46,6 +49,9 @@ function removeTicketDetail(id, e) {
     if (confirm("Bạn chắc chắn?")) {
         $.getJSON("/Ticket/DeleteTicketDetail?id=" + id, function (data) {
             $(e).parents("tr").remove();
+            if ($("table tbody tr").length == 0) {
+                $("table").addClass("hide");
+            }
         });
     }
     return false;

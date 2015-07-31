@@ -1,10 +1,8 @@
 ﻿@model List<WebLib.Models.fwGroup>
 
 @{
-    ViewBag.Title = "ListGroup";
+    ViewBag.Title = "Các nhóm người dùng";
 }
-
-<h2>Các nhóm người dùng</h2>
 
 <p>
     <a href="@Url.Action("EditGroup", new { returnUrl = Request.RawUrl })" class="btn btn-primary">Tạo nhóm</a>

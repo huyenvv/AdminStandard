@@ -7,34 +7,19 @@
         <div class="profile-menu">
             <a href="">
                 <div class="profile-pic">
-                    <img src="/Content/lib/ma/1.jpg" alt="">
+
                 </div>
                 <div class="profile-info">
                     Malinda Hollaway
-                    <i class="md md-arrow-drop-down"></i>
                 </div>
             </a>
-            <ul class="main-menu">
-                <li>
-                    <a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/profile-about.html"><i class="md md-person"></i> View Profile</a>
-                </li>
-                <li>
-                    <a href=""><i class="md md-settings-input-antenna"></i> Privacy Settings</a>
-                </li>
-                <li>
-                    <a href=""><i class="md md-settings"></i> Settings</a>
-                </li>
-                <li>
-                    <a href=""><i class="md md-history"></i> Logout</a>
-                </li>
-            </ul>
         </div>
         <ul class="main-menu">
             @foreach (var item in listMenu.Where(m => m.ParentID == 0))
             {
                 var listChild = listMenu.Where(m => m.ParentID == item.ID).ToList();
-                <li class="@(listChild.Count > 0? "sub-menu":"")">  
-                    <a href="@item.Url">
+                <li class="@(listChild.Count > 0? "sub-menu":"")">
+                    <a href="@item.Url" data-href="/">
                         @*<i class="@item.Icon"></i>*@
                         <i class="md md-now-widgets"></i> @item.Title
                         @if (listChild.Count > 0)
@@ -48,7 +33,7 @@
                             @foreach (var itemChild in listChild)
                             {
                                 <li>
-                                    <a href="@itemChild.Url" data-href="@itemChild.SubAction"> <i class="md md-now-widgets"></i> @itemChild.Title</a>
+                                    <a href="@itemChild.Url" data-href="@(itemChild.SubAction+"/")"> <i class="md md-now-widgets"></i> @itemChild.Title</a>
                                 </li>
                             }
                         </ul>

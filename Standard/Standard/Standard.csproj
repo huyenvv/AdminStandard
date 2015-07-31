@@ -230,9 +230,11 @@
     <Content Include="Content\css\ticket.css" />
     <Content Include="Content\images\logo.jpg" />
     <Content Include="Content\js\common.js" />
+    <Content Include="Content\js\ma-layout.js" />
     <Content Include="Content\js\layout.js" />
     <Content Include="Content\js\ticket.js" />
     <Content Include="Content\lib\bootstrap\bootstrap.min.css" />
+    <Content Include="Content\lib\ma\css\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\lib\ma\fonts\Material-Design-Iconic-Font.svg" />
     <Content Include="Content\lib\ma\img\Icons\32.png" />
     <Content Include="Content\lib\ma\img\Icons\ellipsis.png" />
@@ -255,6 +257,7 @@
     <Content Include="Content\lib\ma\css\app.min.1.css" />
     <Content Include="Content\lib\ma\css\app.min.2.css" />
     <Content Include="Content\lib\ma\js\autosize.min.js" />
+    <Content Include="Content\lib\ma\js\bootstrap-datetimepicker.min.js" />
     <Content Include="Content\lib\ma\js\bootstrap-growl.min.js" />
     <Content Include="Content\lib\ma\js\bootstrap.min.js" />
     <Content Include="Content\lib\ma\js\demo.js" />
@@ -266,6 +269,7 @@
     <Content Include="Content\lib\ma\css\material-design-iconic-font.min1.css" />
     <Content Include="Content\lib\ma\css\socicon.min.css" />
     <Content Include="Content\lib\ma\css\sweetalert-override.min.css" />
+    <Content Include="Content\lib\ma\js\moment.min.js" />
     <Content Include="Content\lib\ma\js\sweetalert.min.js" />
     <Content Include="Content\lib\ma\js\waves.min.js" />
     <Content Include="Content\lib\metis\metisMenu.css" />
@@ -304,6 +308,9 @@
     <Content Include="Content\lib\ma\fonts\weather-icons.eot" />
     <Content Include="Content\lib\ma\fonts\weather-icons.ttf" />
     <Content Include="Content\lib\ma\fonts\weather-icons.woff" />
+    <Content Include="Content\lib\ma\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\lib\ma\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\lib\ma\fonts\glyphicons-halflings-regular.ttf" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

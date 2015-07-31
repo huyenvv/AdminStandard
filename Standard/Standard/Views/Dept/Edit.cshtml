@@ -34,27 +34,25 @@
         });
     </script>
 }
-<h3>Cập nhật bộ phận</h3>
 
 @using (Html.BeginForm("Edit", "Dept", new { returnUrl = Request.QueryString["returnUrl"] }, FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <hr />
+    <div class="col-md-8">
         @Html.ValidationSummary(true)
         @Html.HiddenFor(model => model.ID)
 
         <div class="form-group">
-            <label for="Title" class="control-label col-md-2">Tên bộ phận <span class="color-red">*</span></label>
-            <div class="col-md-10">
+            <label for="Title" >Tên bộ phận <span class="color-red">*</span></label>
+            <div class="fg-line">
                 @Html.TextBoxFor(model => model.Title, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Title)
             </div>
         </div>
         <div class="form-group">
-            <label for="GroupID" class="control-label col-md-2">Group <span class="color-red">*</span></label>
-            <div class="col-md-10">
+            <label for="GroupID" >Group <span class="color-red">*</span></label>
+            <div class="fg-line">
                 <select name="GroupID" id="GroupID" class="form-control">
                     @foreach (var item in lstG)
                     {
@@ -65,8 +63,8 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="LeaderUserID" class="control-label col-md-2">Trưởng bộ phận</label>
-            <div class="col-md-10" id="LeaderUserID">
+            <label for="LeaderUserID" >Trưởng bộ phận</label>
+            <div class="select fg-line" id="LeaderUserID">
                 <select name="LeaderUserID" class="form-control">
                     <option value=""> -:- </option>
                     @if (lst.Count > 0)
@@ -80,8 +78,8 @@
             </div>
         </div>
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="">
+                <button type="submit" class="btn btn-primary">Lưu</button>
                 <a href="@Request.QueryString["returnUrl"]" class="btn btn-default">Hủy</a>
             </div>
         </div>
