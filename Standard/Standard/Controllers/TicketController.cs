@@ -4,19 +4,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Standard.Repository;
 using WebLib;
 using WebLib.DAL;
 
 namespace Standard.Controllers
 {
-    [CustomAuthorize]
+    [CustomAuthorize(RoleList.ApproveTicket)]
     public class TicketController : BaseController
     {
-        
+        private readonly TicketRepository _ticketRepository;
+        private readonly TicketDetailRepository _ticketDetailRepository;
+        private readonly DeptRepository _deptRepository;
+        private readonly TicketUserRepository _ticketUserRepository;
+        public TicketController()
+        {
+            _ticketRepository = new TicketRepository();
+            _deptRepository = new DeptRepository();
+            _ticketDetailRepository = new TicketDetailRepository();
+            _ticketUserRepository = new TicketUserRepository();
+        }
         public ActionResult Index()
         {
-            
-            return View(db.Ticket.ToList());
+
+            return View(_ticketRepository.GetAll());
         }
 
         public ActionResult Details(int id)
@@ -24,17 +35,25 @@ namespace Standard.Controllers
             return View();
         }
 
-        public ActionResult Create()
+        public ActionResult Create(int id = 0)
         {
-            return View();
+            ViewBag.listDept = _deptRepository.GetAll();
+            var tick = _ticketRepository.GetById(id);
+            if (tick == null) return View(new Ticket { Created = DateTime.Now });
+
+            if (tick.CreatedBy != fwUserDAL.GetCurrentUser().ID || tick.Status != TicketStatus.KhoiTao)
+                return RedirectToAction("AccessDenied", "Home");
+
+            SessionUtilities.Set(Constant.SESSION_TicketDetails, tick.TicketDetails.ToList());
+            return View(tick);
         }
 
-        public JsonResult AddTicketDetail(TicketDetail detail)
+        public JsonResult AddTicketDetail(TicketDetails detail)
         {
-            var listTicketDetail = new List<TicketDetail>();
+            var listTicketDetail = new List<TicketDetails>();
             if (SessionUtilities.Exist(Constant.SESSION_TicketDetails))
             {
-                listTicketDetail = (List<TicketDetail>)SessionUtilities.Get(Constant.SESSION_TicketDetails);
+                listTicketDetail = (List<TicketDetails>)SessionUtilities.Get(Constant.SESSION_TicketDetails);
             }
             listTicketDetail.Add(detail);
             SessionUtilities.Set(Constant.SESSION_TicketDetails, listTicketDetail);
@@ -42,55 +61,72 @@ namespace Standard.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(int type, int deptId)
+        public ActionResult Create(Ticket tick, bool isSend = false)
         {
             try
             {
                 // TODO: Add insert logic here
-                if (type > 0 && deptId > 0)
+                if (tick.Type > 0 && tick.DeptID > 0)
                 {
                     if (SessionUtilities.Exist(Constant.SESSION_TicketDetails))
                     {
-                        var db = DB.Entites;
-                        var listTicketDetail = (List<TicketDetail>)SessionUtilities.Get(Constant.SESSION_TicketDetails);
+                        var listTicketDetail = (List<TicketDetails>)SessionUtilities.Get(Constant.SESSION_TicketDetails);
                         if (listTicketDetail.Count > 0)
                         {
-                            var currentUser = new fwUserDAL().GetByUserName(DB.CurrentUser.Identity.Name);
-                            if (currentUser != null)
+                            var currentUser = fwUserDAL.GetCurrentUser();
+                            var getTicket = _ticketRepository.GetById(tick.ID);
+                            if (getTicket != null)
                             {
-                                // Create ticket
-                                var ticket = new Ticket
-                                {
-                                    Current = currentUser.ID,
-                                    Created = DateTime.Now,
-                                    CreatedBy = currentUser.ID,
-                                    Status = TicketStatus.ChoDuyet,
-                                    Track = currentUser.ID + "#;",
-                                    DeptID = deptId
-                                };
-                                db.Set<Ticket>().Add(ticket);
-                                db.SaveChanges();
-
-                                // create ticket detail
-                                var listDetail = new List<TicketDetails>();
-                                foreach (var item in listTicketDetail)
-                                {
-                                    var ticketDetail = new TicketDetails
-                                    {
-                                        DateRequire = item.NgayCan,
-                                        Quantity = item.SoLuong,
-                                        Reason = item.LyDo,
-                                        Title = item.DienGiai,
-                                        TicketID = ticket.ID
-                                    };
-                                    listDetail.Add(ticketDetail);
-                                }
-                                db.Set<TicketDetails>().AddRange(listDetail);
-                                db.SaveChanges();
-
-                                // remove ticket detail session
-                                SessionUtilities.Set(Constant.SESSION_TicketDetails, null);
+                                // edit
+                                var lstTicketDetailModel = getTicket.TicketDetails;
+                                _ticketDetailRepository.Delete(lstTicketDetailModel);
                             }
+                            // Create ticket
+                            var ticket = new Ticket
+                            {
+                                Current = currentUser.ID,
+                                Created = DateTime.Now,
+                                CreatedBy = currentUser.ID,
+                                Status = TicketStatus.KhoiTao,
+                                Track = currentUser.ID + "#;",
+                                DeptID = tick.DeptID
+                            };
+                            _ticketRepository.Insert(ticket);
+
+                            // create ticket detail
+                            var listDetail = listTicketDetail.Select(item => new TicketDetails
+                            {
+                                DateRequire = item.DateRequire,
+                                Quantity = item.Quantity,
+                                Reason = item.Reason,
+                                Title = item.Title,
+                                TicketID = ticket.ID
+                            }).ToList();
+                            _ticketDetailRepository.Insert(listDetail);
+
+                            // remove ticket detail session
+                            SessionUtilities.Set(Constant.SESSION_TicketDetails, null);
+
+                            // isSend = true => send for lead dept
+                            if (isSend)
+                            {
+                                var dept = _deptRepository.GetById(tick.DeptID);
+                                if (dept != null && dept.LeaderUserID.HasValue)
+                                {
+                                    ticket.Track += dept.LeaderUserID + "#;";
+                                    ticket.Status = TicketStatus.ChoThongQua;
+                                    _ticketRepository.Update(ticket);
+
+                                    // add to table Ticket User 
+                                    _ticketUserRepository.Insert(new TicketUser
+                                    {
+                                        TicketID = ticket.ID,
+                                        UserID = dept.LeaderUserID.Value
+                                    });
+                                }
+
+                            }
+
 
                         }
                     }
@@ -99,13 +135,19 @@ namespace Standard.Controllers
             }
             catch
             {
-                return View();
+                return View(new Ticket { Created = DateTime.Now });
             }
         }
 
-        public ActionResult Edit(int id)
+        public ActionResult Delete(int id)
         {
-            return View();
+            var tick = _ticketRepository.GetById(id);
+            if (tick.CreatedBy != fwUserDAL.GetCurrentUser().ID || tick.Status != TicketStatus.ChoDuyet)
+                return RedirectToAction("AccessDenied", "Home");
+
+            // delete 
+            _ticketRepository.Delete(tick);
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
@@ -123,19 +165,13 @@ namespace Standard.Controllers
             }
         }
 
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
         // GET: /Ticket/Delete/5
         public JsonResult DeleteTicketDetail(int id)
         {
-            var listTicketDetail = new List<TicketDetail>();
             if (SessionUtilities.Exist(Constant.SESSION_TicketDetails))
             {
-                listTicketDetail = (List<TicketDetail>)SessionUtilities.Get(Constant.SESSION_TicketDetails);
-                var k = listTicketDetail.FindIndex(m => m.Id == id);
+                var listTicketDetail = (List<TicketDetails>)SessionUtilities.Get(Constant.SESSION_TicketDetails);
+                var k = listTicketDetail.FindIndex(m => m.ID == id);
                 listTicketDetail.RemoveAt(k);
                 SessionUtilities.Set(Constant.SESSION_TicketDetails, listTicketDetail);
             }

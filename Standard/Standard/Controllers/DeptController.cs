@@ -3,20 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Standard.Repository;
 
 namespace Standard.Controllers
 {
     public class DeptController : BaseController
     {
+        private readonly DeptRepository _deptRepository;
+        public DeptController()
+        {
+            _deptRepository = new DeptRepository();
+        }
         public ActionResult Index()
         {
-            return View(db.Dept.ToList());
+            return View(_deptRepository.GetAll());
         }
         public ActionResult Edit(int? id, string returnUrl)
         {
             Dept dept = new Dept();
             if (id != null)
-                dept = db.Dept.FirstOrDefault(m => m.ID == id.Value);
+                dept = _deptRepository.GetById(id.Value);
             return View(dept);
         }
         [HttpPost]
@@ -24,12 +30,10 @@ namespace Standard.Controllers
         {
             if (model.ID == 0)
             {
-                db.Dept.Add(model);
+                _deptRepository.Insert(model);
             }
             else
-                db.Entry(model).State = System.Data.Entity.EntityState.Modified;
-
-            db.SaveChanges();
+                _deptRepository.Update(model);
             return RedirectToAction("Index");
         }
         public string ListUser(int g)
@@ -44,10 +48,8 @@ namespace Standard.Controllers
         }
         public ActionResult Delete(int id, string returnUrl)
         {
-            var obj = db.Dept.FirstOrDefault(m => m.ID == id);
-            db.Dept.Remove(obj);
-
-            db.SaveChanges();
+            var obj = _deptRepository.GetById(id);
+            _deptRepository.Delete(obj);
             return RedirectToAction("Index");
         }
     }

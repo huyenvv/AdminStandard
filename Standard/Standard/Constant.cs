@@ -28,10 +28,11 @@ namespace Standard
     {
         public const int KhoiTao = 0;
         public const int ChoThongQua = 1;
-        public const int ChoDuyet = 2;
-        public const int DaDuyet = 3;
+        public const int CanKiemDuyet = 2;
+        public const int ChoDuyet = 3;
+        public const int DaDuyet = 4;
 
-        public static string[] TicketStatusTitle = new string[] { "Khởi tạo", "Chờ thông qua", "Chờ duyệt", "Đã duyệt" };
+        public static string[] TicketStatusTitle = new string[] { "Khởi tạo", "Chờ thông qua", "Chờ kiểm duyệt", "Chờ duyệt", "Đã duyệt" };
     }
     public class CheckoutStatus
     {

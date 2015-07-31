@@ -32,6 +32,11 @@ namespace Standard
                 return _db.Set<T>().Where(predicate).ToList();
             }
 
+            public List<T> GetAll()
+            {
+                return _db.Set<T>().ToList();
+            }
+
             public T GetById(object id)
             {
                 return _db.Set<T>().Find(id);
@@ -45,6 +50,12 @@ namespace Standard
             public void Insert(T obj)
             {
                 _db.Set<T>().Add(obj);
+                _db.SaveChanges();
+            }
+
+            public void Insert(List<T> lst)
+            {
+                _db.Set<T>().AddRange(lst);
                 _db.SaveChanges();
             }
 
@@ -65,6 +76,12 @@ namespace Standard
             public void Delete(T entity)
             {
                 _db.Set<T>().Remove(entity);
+                _db.SaveChanges();
+            }
+
+            public void Delete(List<T> lst)
+            {
+                _db.Set<T>().RemoveRange(lst);
                 _db.SaveChanges();
             }
         }

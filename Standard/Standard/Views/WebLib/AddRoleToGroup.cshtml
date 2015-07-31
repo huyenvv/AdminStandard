@@ -1,7 +1,7 @@
 ﻿@model List<WebLib.Models.fwRole>
 
 @{
-    ViewBag.Title = ViewBag.groupTitle;
+    ViewBag.Title = "Phân quyền cho nhóm:" + ViewBag.groupTitle;
     var lst = (List<int>)ViewBag.LstRole;
 }
 @section scripts{
@@ -10,10 +10,8 @@
         checkAllByClassName("ListCheckBox");
     </script>
 }
-<h3>Phân quyền cho nhóm: @ViewBag.groupTitle</h3>
 
 <div class="ListCheckBox">
-    <hr />
     @foreach (var item in Model)
     {
         string s = "";
@@ -22,15 +20,19 @@
             s = "checked ='checked'";
         }
         <div class="checkbox">
-            <input type="checkbox" name="checkall" @s value="@item.ID" class="checkItem" />
-            @item.Title
+            <label>
+                <input type="checkbox" name="checkall" @s value="@item.ID" class="checkItem" />
+                <i class="input-helper"></i>
+                @item.Title
+            </label>
         </div>
+        <br />
     }
     @using (Html.BeginForm("AddRoleToGroup", "WebLib"))
     {
         @Html.Hidden("listID")
-        @Html.Hidden("groupID", (int)ViewBag.groupID);
-        <input type="submit" name="submit" value="Save" class="btn btn-primary" onclick="return getListID('ListCheckBox','listID');" />
-        <input type="button" value="Hủy" class="btn btn-default" onclick="window.location.href='@Url.Action("ListGroup")'">
+        @Html.Hidden("groupID", (int)ViewBag.groupID)
+        <button type="submit" name="submit" class="btn btn-primary" onclick="return getListID('ListCheckBox','listID');">Save</button>
+        <a href="@Url.Action("ListGroup")" class="btn btn-default">Hủy</a>
     }
 </div>
