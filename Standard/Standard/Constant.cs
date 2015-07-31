@@ -9,6 +9,7 @@ namespace Standard
     {
         public const string SESSION_TicketDetails = "SESSION_TicketDetails";
         public const string SESSION_CheckoutDetails = "SESSION_CheckoutDetails";
+
     }
 
     public static class RoleList

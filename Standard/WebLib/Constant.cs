@@ -5,8 +5,11 @@ using System.Text;
 
 namespace WebLib
 {
-    public static class Constant
+    public class Constant
     {
+        public const string Session_CurrentUser = "Session_CurrentUser";
+
+        public const string AdminFix = "admin";
     }
 
     public static class fwConfigType
