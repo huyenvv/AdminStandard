@@ -178,6 +178,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\DeptController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\TicketController.cs" />
     <Compile Include="Controllers\WebLibController.cs" />
     <Compile Include="DB.cs" />
     <Compile Include="Dept.cs">
@@ -203,6 +204,7 @@
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\TicketDetail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Ticket.cs">
@@ -222,8 +224,10 @@
   <ItemGroup>
     <Content Include="Content\css\common.css" />
     <Content Include="Content\css\font-awesome.min.css" />
+    <Content Include="Content\css\ticket.css" />
     <Content Include="Content\js\common.js" />
     <Content Include="Content\js\layout.js" />
+    <Content Include="Content\js\ticket.js" />
     <Content Include="Content\lib\bootstrap\bootstrap.min.css" />
     <Content Include="Content\lib\metis\metisMenu.css" />
     <Content Include="favicon.ico" />
@@ -306,6 +310,8 @@
     <Content Include="Views\Dept\Index.cshtml" />
     <Content Include="Views\Dept\Edit.cshtml" />
     <Content Include="Views\WebLib\AddRoleToGroup.cshtml" />
+    <Content Include="Views\Ticket\Create.cshtml" />
+    <Content Include="Views\Ticket\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

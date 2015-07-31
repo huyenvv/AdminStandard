@@ -9,8 +9,8 @@ namespace Standard.Models
     {
         public int Id { get; set; }
         public string DienGiai { get; set; }
-        public string SoLuong { get; set; }
+        public int SoLuong { get; set; }
         public string LyDo { get; set; }
-        public string NgayCan { get; set; }
+        public DateTime NgayCan { get; set; }
     }
 }

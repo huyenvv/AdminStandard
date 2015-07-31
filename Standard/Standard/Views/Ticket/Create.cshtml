@@ -1,4 +1,6 @@
-﻿@model Ticket
+﻿@{
+    var listTickKet = WebLib.SessionUtilities.Exist(SESSION.TicketDetail) ? (List<Standard.Models.TicketDetail>)WebLib.SessionUtilities.Get(SESSION.TicketDetail) : null;
+}
 <link href="~/Content/css/ticket.css" rel="stylesheet" />
 @section  scripts{
     <script src="~/Content/js/ticket.js"></script>
@@ -20,22 +22,22 @@
 
             <div class="form-horizontal">
                 @Html.ValidationSummary(true)
-                @Html.HiddenFor(model => model.ID)
 
                 <div class="form-group">
 
                     <div class="col-md-10">
                         <label for="Type" class="control-label col-md-2">Loại ticket</label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" class="inlineCheckbox1" value="1"> (1) Mua <br />Purchase
+                            <input type="checkbox" class="inlineCheckbox1" name="Type" value="1"> (1) Mua <br />Purchase
                         </label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" class="inlineCheckbox1" value="2"> (2) Thay thế<br />Replacement
+                            <input type="checkbox" class="inlineCheckbox1" name="Type" value="2"> (2) Thay thế<br />Replacement
                         </label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" class="inlineCheckbox1" value="3"> (3) Bảo trì, sửa chữa<br />Maintenance/Repair
+                            <input type="checkbox" class="inlineCheckbox1" name="Type" value="3"> (3) Bảo trì, sửa chữa<br />Maintenance/Repair
                         </label>
-                        @Html.ValidationMessageFor(model => model.Type)
+                        <br />
+                        <div id="loaiticket" class="col-md-offset-2 hide field-validation-error">Bạn phải chọn một trong 3 loại trên!</div>
                     </div>
                 </div>
 
@@ -61,7 +63,6 @@
                                 <option value="@item.ID">@item.Title</option>
                             }
                         </select>
-                        @Html.ValidationMessageFor(model => model.DeptID)
                     </div>
                 </div>
                 <table class="table table-bordered">
@@ -90,8 +91,34 @@
 
                         </tr>
                     </thead>
-                    <tbody></tbody>
-                </table>
+                    <tbody>
+                        @if (listTickKet != null && listTickKet.Count > 0)
+                        {
+                            foreach (var item in listTickKet)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.Id
+                                    </td>
+                                    <td>
+                                        @item.DienGiai
+                                    </td>
+                                    <td>
+                                        @item.SoLuong
+                                    </td>
+                                    <td>
+                                        @item.LyDo
+                                    </td>
+                                    <td>
+                                        @item.NgayCan
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>                
+                <div id="loaiticketDetail" class="col-md-offset-2 hide field-validation-error">Bạn phải thêm ticket detail trước.</div>
+                <br />
                 <div id="frmChiTietYeuCau">
                     <div class="form-group">
                         <label for="DienGiai" class="control-label col-md-2">Diễn giải <br /><i>Description</i></label>
@@ -132,10 +159,10 @@
 
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
-                        
+
                         <a href="#" class="btn btn-primary btn-xs" id="ThemChiTiet"> Thêm chi tiết</a>
                         <hr />
-                        <input type="submit" value="Gửi đề nghị" class="btn btn-primary" />
+                        <input type="submit" value="Gửi đề nghị" class="btn btn-primary"  onclick="return CheckTicket();"/>
                         <a href="@Request.QueryString["returnUrl"]" class="btn btn-default">Hủy</a>
                     </div>
                 </div>
