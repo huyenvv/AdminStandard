@@ -236,6 +236,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\script.sql" />
+    <Content Include="Content\lib\ma\css\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\css\common.css" />
     <Content Include="Content\css\font-awesome.min.css" />
     <Content Include="Content\css\ma-site.css" />
@@ -267,6 +268,7 @@
     <Content Include="Content\lib\ma\css\app.min.1.css" />
     <Content Include="Content\lib\ma\css\app.min.2.css" />
     <Content Include="Content\lib\ma\js\autosize.min.js" />
+    <Content Include="Content\lib\ma\js\bootstrap-datetimepicker.min.js" />
     <Content Include="Content\lib\ma\js\bootstrap-growl.min.js" />
     <Content Include="Content\lib\ma\js\bootstrap.min.js" />
     <Content Include="Content\lib\ma\js\demo.js" />
@@ -278,6 +280,7 @@
     <Content Include="Content\lib\ma\css\material-design-iconic-font.min1.css" />
     <Content Include="Content\lib\ma\css\socicon.min.css" />
     <Content Include="Content\lib\ma\css\sweetalert-override.min.css" />
+    <Content Include="Content\lib\ma\js\moment.min.js" />
     <Content Include="Content\lib\ma\js\sweetalert.min.js" />
     <Content Include="Content\lib\ma\js\waves.min.js" />
     <Content Include="Content\lib\metis\metisMenu.css" />
