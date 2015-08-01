@@ -1,30 +1,26 @@
 ﻿@model WebLib.Models.fwGroup
 
 @{
-    ViewBag.Title = "Edit Group";
+    ViewBag.Title = "Chỉnh sửa Group";
 }
-
-<h3>Chỉnh sửa Group</h3>
 
 @using (Html.BeginForm("EditGroup", "WebLib", new { returnUrl = Request.QueryString["returnUrl"] }, FormMethod.Post))
 {
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal">
-        <hr />
+    <div class="col-sm-6">
+        @Html.AntiForgeryToken()
         @Html.ValidationSummary(true)
         @Html.HiddenFor(model => model.ID)
 
         <div class="form-group">
-            <label for="Title" class="control-label col-md-2">Tên nhóm <span class="color-red">*</span></label>
-            <div class="col-md-10">
+            <label>Tên nhóm <span class="color-red">*</span></label>
+            <div class="fg-line">
                 @Html.TextBoxFor(model => model.Title, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Title)
             </div>
         </div>
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div>
+                <button type="submit" class="btn btn-primary">Save</button>
                 <a href="@Request.QueryString["returnUrl"]" class="btn btn-default">Hủy</a>
             </div>
         </div>

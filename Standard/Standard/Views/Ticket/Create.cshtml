@@ -7,166 +7,194 @@
     <script src="~/Content/js/ticket.js"></script>
 }
 
-<!-- /.row -->
-<div class="row">
-    <div class="col-md-12">
-        @using (Html.BeginForm(null, null, new { returnUrl = Request.QueryString["returnUrl"] }, FormMethod.Post))
-        {
-            @Html.AntiForgeryToken()
 
-            <div class="form-horizontal">
-                @Html.ValidationSummary(true)
+@using (Html.BeginForm(null, null, new { returnUrl = Request.QueryString["returnUrl"] }, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
 
-                <div class="form-group">
 
-                    <div class="col-md-10">
-                        <label for="Type" class="control-label col-md-2">Loại ticket</label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" class="inlineCheckbox1" name="Type" value="1"> (1) Mua <br />Purchase
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" class="inlineCheckbox1" name="Type" value="2"> (2) Thay thế<br />Replacement
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" class="inlineCheckbox1" name="Type" value="3"> (3) Bảo trì, sửa chữa<br />Maintenance/Repair
-                        </label>
-                        <br />
-                        <div id="loaiticket" class="col-md-offset-2 hide field-validation-error">Bạn phải chọn một trong 3 loại trên!</div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="NgayDenghi" class="control-label col-md-2">Ngày đề nghị</label>
-                    <div class="col-md-10">
-                        <input type="text" name="NgayDenghi" value="@DateTime.Now.ToString("dd/MM/yyyy")" class="form-control" readonly="readonly" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="NguoiDeNghi" class="control-label col-md-2">Người đề nghị <span class="color-red">*</span></label>
-                    <div class="col-md-10">
-                        <input type="text" name="NguoiDeNghi" value="@(Standard.Controllers.DB.CurrentUser.Identity.Name)" class=" form-control" readonly="readonly" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="Url" class="control-label col-md-2">Bộ phận</label>
-                    <div class="col-md-10">
-                        <select class="form-control" name="DeptID">
-                            @foreach (var item in Standard.DB.Entities.Dept)
-                            {
-                                <option value="@item.ID">@item.Title</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>
-                                TT<br />
-                                <i>No</i>
-                            </th>
-                            <th>
-                                Diễn giải <br />
-                                <i>Description</i>
-                            </th>
-                            <th>
-                                SL<br />
-                                <i>Q'tty</i>
-                            </th>
-                            <th>
-                                Mục đích, lý do<br />
-                                <i>Perpose, Reason</i>
-                            </th>
-                            <th>
-                                Ngày cần<br />
-                                <i>Date require</i>
-                            </th>
-                            <th>
-
-                            </th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (listTickKet != null && listTickKet.Count > 0)
+    @Html.ValidationSummary(true)
+    <div class="col-sm-12">
+        <button type="submit" class="btn btn-primary" onclick="return CheckTicket();">Gửi đề nghị</button>
+        <a href="@Request.QueryString["returnUrl"]" class="btn btn-default">Hủy</a>
+    </div>
+    <br />
+    <br />
+    <br />
+    <div class="col-sm-12">
+        <label class="checkbox checkbox-inline m-r-20">
+            <input type="checkbox" class="inlineCheckbox1" name="Type" value="1">
+            <i class="input-helper"></i>
+            (1) Mua <br /><i>Purchase</i>
+        </label>
+        <label class="checkbox checkbox-inline m-r-20">
+            <input type="checkbox" class="inlineCheckbox1" name="Type" value="2">
+            <i class="input-helper"></i>
+            (2) Thay thế<br /><i>Replacement</i>
+        </label>
+        <label class="checkbox checkbox-inline m-r-20">
+            <input type="checkbox" class="inlineCheckbox1" name="Type" value="3">
+            <i class="input-helper"></i>
+            (3) Bảo trì, sửa chữa<br /><i>Maintenance/Repair</i>
+        </label>
+        <div id="loaiticket" class="hide has-error">
+            <small id="loaiticket" class="help-block">Bạn phải chọn một trong 3 loại trên!</small>
+        </div>
+    </div>
+    <br /><br />
+    <br /><br />
+    <br />
+    <br />
+    <div class="col-sm-4">
+        <div class="form-group fg-float">
+            <div class="fg-line">
+                <label>Ngày đề nghị</label>
+                <input type="text" name="NgayDenghi" value="@DateTime.Now.ToString("dd/MM/yyyy")" class=" form-control fg-input" readonly="readonly" />
+            </div>
+           
+        </div>
+    </div><div class="col-sm-4">
+        <div class="form-group fg-float">
+            <div class="fg-line">
+                <label>Người đề nghị</label>
+                <input type="text" name="NguoiDeNghi" value="@(Standard.Controllers.DB.CurrentUser.Identity.Name)" class=" form-control fg-input" readonly="readonly" />
+            </div>
+            
+        </div>
+    </div><div class="col-sm-4">
+        <div class="form-group fg-float">
+            <div class="fg-line">
+                <label>Bộ phận</label>
+                <div class="select">
+                    <select class="form-control" name="DeptID">
+                        @foreach (var item in Standard.DB.Entities.Dept)
                         {
-                            foreach (var item in listTickKet)
-                            {
-                                <tr>
-                                    <td>
-                                        @item.Id
-                                    </td>
-                                    <td>
-                                        @item.DienGiai
-                                    </td>
-                                    <td>
-                                        @item.SoLuong
-                                    </td>
-                                    <td>
-                                        @item.LyDo
-                                    </td>
-                                    <td>
-                                        @item.NgayCan
-                                    </td>
-                                    <td>
-                                        <a href="#" class="color-red" onclick="return removeTicketDetail('@item.Id',this);"><i class="fa fa-times"></i></a>
-                                    </td>
-                                </tr>
-                            }
+                            <option value="@item.ID">@item.Title</option>
                         }
-                    </tbody>
-                </table>
-                <div id="loaiticketDetail" class="col-md-offset-2 hide field-validation-error">Bạn phải thêm ticket detail trước.</div>
-                <br />
-                <div id="frmChiTietYeuCau">
-                    <div class="form-group">
-                        <label for="DienGiai" class="control-label col-md-2">Diễn giải <br /><i>Description</i></label>
-                        <div class="col-md-10">
-                            <input type="text" id="DienGiai" name="DienGiai" value="" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="Quantity" class="control-label col-md-2">
-                            Số lượng<br />
-                            <i>Quantity</i>
-                        </label>
-                        <div class="col-md-10">
-                            <input type="number" id="Quantity" name="Quantity" value="0" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="MucDich" class="control-label col-md-2">
-                            Mục đích, lý do<br />
-                            <i>Perpose, Reason</i>
-                        </label>
-                        <div class="col-md-10">
-                            <textarea class="form-control" id="MucDich" rows="3" name="MucDich"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="NgayCan" class="control-label col-md-2">
-                            Ngày cần<br />
-                            <i>Date require</i>
-                        </label>
-                        <div class="col-md-10">
-                            <input type="date" id="NgayCan" name="NgayCan" value="" class="form-control" />
-                            <br />
-                            <div id="messerror" class="hide field-validation-error">Bạn cần nhập đẩy đủ thông tin trên!</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-
-                        <a href="#" class="btn btn-primary btn-xs" id="ThemChiTiet"> Thêm chi tiết</a>
-                        <hr />
-                        <input type="submit" value="Gửi đề nghị" class="btn btn-primary" onclick="return CheckTicket();" />
-                        <a href="@Request.QueryString["returnUrl"]" class="btn btn-default">Hủy</a>
-                    </div>
+                    </select>
                 </div>
             </div>
-        }
+        </div>
     </div>
-</div>
+    <div class="col-sm-12">
+        <table class="table table-striped table-vmiddle @(listTickKet!=null && listTickKet.Count > 0 ? "" : "hide")">
+            <thead>
+                <tr>
+                    <th>
+                        TT<br />
+                        <i>No</i>
+                    </th>
+                    <th>
+                        Diễn giải <br />
+                        <i>Description</i>
+                    </th>
+                    <th>
+                        SL<br />
+                        <i>Q'tty</i>
+                    </th>
+                    <th>
+                        Mục đích, lý do<br />
+                        <i>Perpose, Reason</i>
+                    </th>
+                    <th>
+                        Ngày cần<br />
+                        <i>Date require</i>
+                    </th>
+                    <th>
+
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @if (listTickKet != null && listTickKet.Count > 0)
+                {
+                    foreach (var item in listTickKet)
+                    {
+                        <tr>
+                            <td>
+                                @item.Id
+                            </td>
+                            <td>
+                                @item.DienGiai
+                            </td>
+                            <td>
+                                @item.SoLuong
+                            </td>
+                            <td>
+                                @item.LyDo
+                            </td>
+                            <td>
+                                @item.NgayCan
+                            </td>
+                            <td>
+                                <button class="color-red btn btn-icon" onclick="return removeTicketDetail('@item.Id',this);"><span class="md md-delete"></span></button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <br />
+        <div id="loaiticketDetail" class="hide has-error">
+            <small id="loaiticket" class="help-block">Bạn phải thêm ticket detail trước.</small>
+        </div>
+    </div>
+
+    <br />
+    <div id="frmChiTietYeuCau">
+        <div class="col-sm-12">
+            <div class="form-group fg-float">
+                <div class="fg-line">
+                    <label>Diễn giải <i>Description</i></label>
+                    <input type="text" id="DienGiai" name="DienGiai" value="" class="form-control fg-input" />
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="form-group fg-float">
+                <div class="fg-line">
+                    <label>
+                        Mục đích, lý do
+                        <i>Perpose, Reason</i>
+                    </label>
+                    <textarea class="form-control fg-input" id="MucDich" rows="3" name="MucDich"></textarea>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <div class="fg-line">
+                    <label>
+                        Số lượng
+                        <i>Quantity</i>
+                    </label>
+                    <input type="number" id="Quantity" name="Quantity" value="" class="form-control fg-input" />
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <label>
+                Ngày cần <i>Date require</i>
+            </label>
+            <div class="input-group form-group">
+                <div class="dtp-container dropdown fg-line">
+                    <input type="text" class="form-control date-picker" data-toggle="dropdown" id="NgayCan" name="NgayCan" aria-expanded="false">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div id="messerror" class="hide field-validation-error">Bạn cần nhập đẩy đủ thông tin trên!</div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-sm-6">
+            <a href="#" class="btn btn-primary btn-xs" id="ThemChiTiet"> Thêm chi tiết</a>
+        </div>
+
+    </div>
+
+}

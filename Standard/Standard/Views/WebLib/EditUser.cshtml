@@ -1,10 +1,8 @@
 ﻿@model WebLib.Models.fwUser
 
 @{
-    ViewBag.Title = "User";
+    ViewBag.Title = "Cập nhật người dùng";
 }
-
-<h3>Cập nhật người dùng</h3>
 
 @using (Html.BeginForm("EditUser", "WebLib", new { returnUrl = Request.QueryString["returnUrl"] }, FormMethod.Post))
 {
@@ -27,7 +25,7 @@
 
         <div class="form-group fg-float">
             <div class="fg-line">
-                @Html.TextBoxFor(model => model.UserName, new { @class = "input-sm form-control fg-input" })
+                @Html.TextBoxFor(model => model.UserName, new { @class = " form-control fg-input" })
             </div>
             <label class="fg-label">Username</label>
         </div>
@@ -36,7 +34,7 @@
     {
         <div class="form-group fg-float">
             <div class="fg-line">
-                @Html.TextBoxFor(model => model.UserName, new { @class = "input-sm form-control fg-input", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.UserName, new { @class = " form-control fg-input", @readonly = "readonly" })
             </div>
             <label class="fg-label">Username</label>
         </div>
@@ -46,7 +44,7 @@
 
     <div class="form-group fg-float">
         <div class="fg-line">
-            @Html.TextBoxFor(model => model.Email, new { @class = "input-sm form-control fg-input" })
+            @Html.TextBoxFor(model => model.Email, new { @class = " form-control fg-input" })
         </div>
         <label class="fg-label">Email</label>
     </div>
@@ -55,7 +53,7 @@
 
     <div class="form-group fg-float">
         <div class="fg-line">
-            @Html.TextBoxFor(model => model.Name, new { @class = "input-sm form-control fg-input" })
+            @Html.TextBoxFor(model => model.Name, new { @class = " form-control fg-input" })
         </div>
         <label class="fg-label">Name</label>
     </div>

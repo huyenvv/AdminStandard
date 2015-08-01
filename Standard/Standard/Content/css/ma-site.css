@@ -1,0 +1,18 @@
+﻿#sidebar .main-menu > li > a {
+    font-weight: 600;
+}
+
+.table > thead > tr > th {
+    font-weight: 600;
+}
+
+    .table > thead > tr > th i {
+        font-weight: normal;
+    }
+
+.card .card-body.card-padding {
+    overflow: hidden;
+}
+.has-error ul li , .field-validation-error, .color-red{
+    color: #f44336;
+}

@@ -1,11 +1,10 @@
 ﻿@model List<Ticket>
 
 @{
-    ViewBag.Title = "List Ticket";
+    ViewBag.Title = "Các phiếu yêu cầu";
     var userDAL = new WebLib.DAL.fwUserDAL();
 }
 
-<h3>Các phiếu yêu cầu</h3>
 
 <p>
     <a href="@Url.Action("Create", new { returnUrl = Request.RawUrl })" class="btn btn-primary">Tạo phiếu yêu cầu</a>
