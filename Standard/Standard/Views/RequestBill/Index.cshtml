@@ -4,24 +4,25 @@
     ViewBag.Title = "Các phiếu thanh toán";
     var userDAL = new WebLib.DAL.fwUserDAL();
     var listColor = new[] { "danger", "warning", "primary", "success" };
+    var status = Request.QueryString["status"];
 }
 
-
-<div class="col-sm-6">
-    <a href="@Url.Action("Create", new { returnUrl = Request.RawUrl })" class="btn btn-primary">Tạo phiếu thanh toán</a>
-</div>
+@section  scripts{
+    <script src="~/Content/js/checkout.js"></script>
+}
 <div class="col-sm-6">
     <div class="form-group">
-        <label class="col-sm-3 control-label">Trạng thái</label>
+        
         <div class="col-sm-9">
             <div class="fg-line">
                 <div class="select">
-                    <select class="form-control">
+                    <select class="form-control" id="TicketStatusChange">
+                        <option value=""> Chờ tôi xử lý </option>
                         @for (int i = 0; i < CheckoutStatus.CheckoutStatusTitle.Length; i++)
                         {
-                            <option value="@i">@CheckoutStatus.CheckoutStatusTitle[i]</option>
+                            <option value="@i" @(i.ToString() == status ? "selected" : "")>@CheckoutStatus.CheckoutStatusTitle[i]</option>
                         }
-
+                        <option value="-1" @("-1" == status ? "selected" : "")> Tất cả </option>
                     </select>
                 </div>
             </div>
@@ -44,25 +45,35 @@
         string title = first != null ? first.Title : "";
         <tr>
             <td>
+                @if(DB.CurrentUser.ID==item.Current)
+                {
+                    <b><a href="@Url.Action("Details", new { id = item.ID })">@(u == null ? null : u.Name)</a></b>
+                }
+                else
+                { 
                 <a href="@Url.Action("Details", new { id = item.ID })">@(u == null ? null : u.Name)</a>
+                }
             </td>
             <td>
-                <a href="@Url.Action("Details", new { id = item.ID })">@title</a>
+                @if (DB.CurrentUser.ID == item.Current)
+                {
+                    <b><a href="@Url.Action("Details", new { id = item.ID })">@title</a></b>
+                }
+                else
+                {
+                    <a href="@Url.Action("Details", new { id = item.ID })">@title</a>
+                }
             </td>
             <td>
                 <button class="btn btn-@listColor[item.Status] btn-xs" disabled="disabled">@CheckoutStatus.CheckoutStatusTitle[item.Status]</button>
             </td>
             <td>
-                @if (item.Status == CheckoutStatus.KhoiTao)
+                @if ((DB.CurrentUser.ID==item.Current || DB.CurrentUser.UserName==WebLib.Constant.AdminFix )&& item.Status == CheckoutStatus.KhoiTao)
                 {
-                    @Html.ActionLink("Sửa", "Create", new { id = item.ID, returnUrl = Request.RawUrl })
+                   <a href="@Url.Action("Delete", new { id = item.ID, returnUrl = Request.RawUrl })" class="btn btn-danger btn-icon waves-effect waves-circle waves-float confirmDelete"><i class="md md-close"></i></a>
                 }
-                else
-                {
-                    @Html.ActionLink("Chi tiết", "Details", new { id = item.ID, returnUrl = Request.RawUrl })
-                }
-                |
-                @Html.ActionLink("Xóa", "Delete", new { id = item.ID, returnUrl = Request.RawUrl }, new { @class = "confirmDelete" })
+                
+                
             </td>
         </tr>
     }

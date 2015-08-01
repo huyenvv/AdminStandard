@@ -11,6 +11,16 @@
     }
     var listDept = (List<Dept>)ViewBag.listDept;
     var listDetail = Model.CheckoutDetails;
+    var ticketID = int.Parse(Request.QueryString["ticketID"]);
+    var db = DB.Entities;
+    var tick = db.Ticket.FirstOrDefault(m => m.ID == ticketID);
+    var ticketTitle = tick.Created.ToString("dd/MM/yyyy") + " - " + tick.TicketDetails.FirstOrDefault().Title + " ...";
+
+    var lstChkDetails = new List<CheckoutDetails>();
+    foreach (var item in tick.TicketDetails)
+    {
+        lstChkDetails.Add(new CheckoutDetails() { Title = item.Title, ID=item.ID });
+    }
 }
 @section  scripts{
     <script src="~/Content/lib/ma/js/input-mask.min.js"></script>
@@ -83,6 +93,7 @@
 {
     @Html.AntiForgeryToken()
     @Html.Hidden("isSend", true)
+    @Html.Hidden("ticketID", ticketID)
     @Html.HiddenFor(m => m.ID)
 
     @Html.ValidationSummary(true)
@@ -97,13 +108,18 @@
 
     <div class="validationWrapper">
         <div class="row">
+            <div class="col-sm-12">
+                <span>Từ phiếu yêu cầu: </span><span style="font-size:1.1em; font-weight:bold; color:blue">@ticketTitle</span>
+            </div>
+        </div>
+        <br />
+        <div class="row">
             <div class="col-sm-3">
                 <div class="form-group fg-float">
                     <div class="fg-line">
                         <label>Ngày <i>(Dated)</i></label>
-                        <input type="text" name="NgayDenghi" value="@Model.Created.ToString("dd/MM/yyyy")" class=" form-control date-picker" data-toggle="dropdown" aria-expanded="false" />
+                        <input type="text" name="PaymentDate" value="@Model.Created.ToString("dd/MM/yyyy")" class=" form-control date-picker" data-toggle="dropdown" aria-expanded="false" />
                     </div>
-
                 </div>
             </div>
             <div class="col-sm-3">
@@ -112,7 +128,6 @@
                         <label>Số ghi sổ <i>(No)</i></label>
                         <input type="text" name="No" value="@Model.No" class=" form-control fg-input" />
                     </div>
-
                 </div>
             </div>
         </div>
@@ -123,7 +138,6 @@
                         <label>Người hưởng <i>(Ben)</i></label>
                         <input type="text" name="Ben" value="@Model.Ben" class=" form-control fg-input" />
                     </div>
-
                 </div>
             </div>
             <div class="col-sm-6">
@@ -146,17 +160,17 @@
             <label class="col-md-4">Hình thức thanh toán <i>(Payment method)</i> : </label>
             <div class="col-md-8">
                 <label class="checkbox checkbox-inline m-r-20">
-                    <input type="checkbox" class="onCheckbox" name="Type" value="0" @listType[0] />
+                    <input type="checkbox" class="onCheckbox" name="PaymentMethod" value="0" @listType[0] />
                     <i class="input-helper"></i>
                     Tiền mặt <br /><i>(Cash)</i>
                 </label>
                 <label class="checkbox checkbox-inline m-r-20">
-                    <input type="checkbox" class="onCheckbox" name="Type" value="1" @listType[1] />
+                    <input type="checkbox" class="onCheckbox" name="PaymentMethod" value="1" @listType[1] />
                     <i class="input-helper"></i>
                     Chuyển khoản <br /><i>(Bank transfer)</i>
                 </label>
                 <label class="checkbox checkbox-inline m-r-20">
-                    <input type="checkbox" class="onCheckbox" name="Type" value="2" @listType[2] />
+                    <input type="checkbox" class="onCheckbox" name="PaymentMethod" value="2" @listType[2] />
                     <i class="input-helper"></i>
                     Quyết toán tạm ứng <br /><i>(Advance clearing)</i>
                 </label>
@@ -203,22 +217,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 0; i < listDetail.Count; i++)
+                    @for (int i = 0; i < lstChkDetails.Count; i++)
                     {
                         <tr>
                             <td>
                                 <div class="fg-line">
-                                    <textarea rows="3" class=" form-control">@listDetail.ElementAt(i).Title</textarea>
+                                    <textarea rows="3" class=" form-control">@lstChkDetails.ElementAt(i).Title</textarea>
                                 </div>
                             </td>
                             <td>
                                 <div class="fg-line">
-                                    <input type="text" class=" form-control input-mask" ng-model="vnd[@i]" data-mask="000.000.000.000.000,00" />
+                                    <input type="text" class=" form-control input-mask" name="details_@(lstChkDetails.ElementAt(i).ID)" ng-model="vnd[@i]" data-mask="000.000.000.000.000,00" />
                                 </div>
                             </td>
                             <td>
                                 <div class="fg-line">
-                                    <input type="text" class=" form-control input-mask" ng-model="usd[@i]" data-mask="000.000.000.000.000,00" />
+                                    <input type="text" class=" form-control input-mask" name="details_@(lstChkDetails.ElementAt(i).ID)" ng-model="usd[@i]" data-mask="000.000.000.000.000,00" />
                                 </div>
                             </td>
                         </tr>
@@ -280,7 +294,9 @@
                     <tr>
                         <td colspan="3">
                             <strong> Bằng chữ </strong><i>(in words): </i>
-                            <span id="CheckOutBangChu"></span>
+                            <div class="fg-line">
+                                <input type="text" class=" form-control" name="InWords"/>
+                            </div>
                         </td>
                     </tr>
                 </tfoot>

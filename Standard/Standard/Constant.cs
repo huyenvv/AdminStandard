@@ -22,6 +22,7 @@ namespace Standard
         public const string SystemManager = "SystemManager";
         public const string ApproveTicket = "ApproveTicket";
         public const string Normal = "Normal";
+        public const string Accounting = "Accounting";
     }
 
     public class TicketStatus
