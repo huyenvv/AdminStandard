@@ -15,18 +15,6 @@ using System.Security.Principal;
 
 namespace Standard.Controllers
 {
-    public class DB
-    {
-        public static IPrincipal CurrentUser
-        {
-            get
-            {
-                HttpContextWrapper context =
-                    new HttpContextWrapper(System.Web.HttpContext.Current);
-                return context.User;
-            }
-        }
-    }
     public class AccountController : Controller
     {
         public AccountController()

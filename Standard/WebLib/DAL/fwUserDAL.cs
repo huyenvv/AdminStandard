@@ -87,7 +87,23 @@ namespace WebLib.DAL
 
             return lst;
         }
+        public List<fwUser> ListByRole(string roleCode)
+        {
+            string query = @"select u.* from fwUser u 
+inner join fwUserGroup ug on ug.UserID=u.ID
+inner join fwRoleGroup rg on rg.GroupID=ug.GroupID
+inner join fwRole r on r.ID=rg.RoleID
+where r.Code=" + roleCode;
+            var lst = new List<fwUser>();
+            DataTable dt = DataUtilities.GetTable(query, CommandType.Text);
+            foreach (DataRow row in dt.Rows)
+            {
+                var obj = CreateObj(row);
+                lst.Add(obj);
+            }
 
+            return lst;
+        }
         public fwUser Insert(fwUser obj)
         {
             var ID = DataUtilities.Insert(@"insert into fwUser([AspnetUserID], [UserName], [Name], [Email], [Status], [Locked], [Avata], [NotiCount], [Pass]) values(@AspnetUserID, @UserName, @Name, @Email, @Status, @Locked, @Avata, @NotiCount, @Pass)",
