@@ -187,6 +187,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\DeptController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\RequestBillController.cs" />
     <Compile Include="Controllers\TicketController.cs" />
     <Compile Include="Controllers\WebLibController.cs" />
     <Compile Include="CustomAuthorize.cs" />
@@ -377,6 +378,9 @@
     <Content Include="Views\Shared\_Layout1.cshtml" />
     <Content Include="Views\Shared\_ma-leftmenu.cshtml" />
     <Content Include="Views\Ticket\Details.cshtml" />
+    <Content Include="Views\RequestBill\Create.cshtml" />
+    <Content Include="Views\RequestBill\Index.cshtml" />
+    <Content Include="Views\RequestBill\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Uploads\Checkout\" />
@@ -414,7 +418,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>58816</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
