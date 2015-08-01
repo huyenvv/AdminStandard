@@ -48,4 +48,20 @@ namespace Standard.Repository
         {
         }
     }
+
+    public class CheckoutRepository : DB.BaseClass<Checkout>
+    {
+        public CheckoutRepository(DB_9CF750_dbEntities db)
+            : base(db)
+        {
+        }
+    }
+
+    public class CheckoutDetailsRepository : DB.BaseClass<CheckoutDetails>
+    {
+        public CheckoutDetailsRepository(DB_9CF750_dbEntities db)
+            : base(db)
+        {
+        }
+    }
 }

@@ -19,7 +19,7 @@
             {
                 var listChild = listMenu.Where(m => m.ParentID == item.ID).ToList();
                 <li class="@(listChild.Count > 0? "sub-menu":"")">
-                    <a href="@item.Url" data-href="/">
+                    <a href="@item.Url" data-href="@(item.SubAction+"/")">
                         @*<i class="@item.Icon"></i>*@
                         <i class="md md-now-widgets"></i> @item.Title
                         @if (listChild.Count > 0)

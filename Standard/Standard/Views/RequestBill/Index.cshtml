@@ -1,7 +1,70 @@
-﻿
+﻿@model List<Checkout>
+
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Các phiếu thanh toán";
+    var userDAL = new WebLib.DAL.fwUserDAL();
+    var listColor = new[] { "danger", "warning", "primary", "success" };
 }
 
-<h2>Index</h2>
 
+<div class="col-sm-6">
+    <a href="@Url.Action("Create", new { returnUrl = Request.RawUrl })" class="btn btn-primary">Tạo phiếu thanh toán</a>
+</div>
+<div class="col-sm-6">
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Trạng thái</label>
+        <div class="col-sm-9">
+            <div class="fg-line">
+                <div class="select">
+                    <select class="form-control">
+                        @for (int i = 0; i < CheckoutStatus.CheckoutStatusTitle.Length; i++)
+                        {
+                            <option value="@i">@CheckoutStatus.CheckoutStatusTitle[i]</option>
+                        }
+
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Người yêu cầu</th>
+            <th>Nội dung</th>
+            <th>Trạng thái</th>
+            <th></th>
+        </tr>
+    </thead>
+    @foreach (var item in Model)
+    {
+        var u = userDAL.GetByID(item.CreatedBy);
+        var first = item.CheckoutDetails.FirstOrDefault();
+        string title = first != null ? first.Title : "";
+        <tr>
+            <td>
+                <a href="@Url.Action("Details", new { id = item.ID })">@(u == null ? null : u.Name)</a>
+            </td>
+            <td>
+                <a href="@Url.Action("Details", new { id = item.ID })">@title</a>
+            </td>
+            <td>
+                <button class="btn btn-@listColor[item.Status] btn-xs" disabled="disabled">@CheckoutStatus.CheckoutStatusTitle[item.Status]</button>
+            </td>
+            <td>
+                @if (item.Status == CheckoutStatus.KhoiTao)
+                {
+                    @Html.ActionLink("Sửa", "Create", new { id = item.ID, returnUrl = Request.RawUrl })
+                }
+                else
+                {
+                    @Html.ActionLink("Chi tiết", "Details", new { id = item.ID, returnUrl = Request.RawUrl })
+                }
+                |
+                @Html.ActionLink("Xóa", "Delete", new { id = item.ID, returnUrl = Request.RawUrl }, new { @class = "confirmDelete" })
+            </td>
+        </tr>
+    }
+
+</table>

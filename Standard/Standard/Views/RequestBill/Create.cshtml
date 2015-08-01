@@ -2,12 +2,13 @@
 @using WebLib.DAL
 @{
     var currentUser = fwUserDAL.GetCurrentUser();
-    var listCheckout = WebLib.SessionUtilities.Exist(Constant.SESSION_CheckoutDetails) ? (List<TicketDetails>)WebLib.SessionUtilities.Get(Constant.SESSION_CheckoutDetails) : null;
+    var listCheckout = WebLib.SessionUtilities.Exist(Constant.SESSION_CheckoutDetails) ? (List<CheckoutDetails>)WebLib.SessionUtilities.Get(Constant.SESSION_CheckoutDetails) : null;
     ViewBag.Title = "ĐỀ NGHỊ THANH TOÁN/ REQUEST PAYMENT";
+
+    var listDept = (List<Dept>)ViewBag.listDept;
 }
-<link href="~/Content/css/ticket.css" rel="stylesheet" />
 @section  scripts{
-    <script src="~/Content/js/ticket.js"></script>
+    <script src="~/Content/js/checkout.js"></script>
 }
 
 
@@ -19,35 +20,11 @@
 
     @Html.ValidationSummary(true)
     <div class="col-sm-12">
-        <button type="submit" class="btn btn-primary" onclick="return CheckTicket(false);">Lưu lại</button>
-        <button type="submit" class="btn btn-primary" onclick="return CheckTicket(true);">Gửi đề nghị</button>
+        <button type="submit" class="btn btn-primary" onclick="return CheckCheckout(false);">Lưu lại</button>
+        <button type="submit" class="btn btn-primary" onclick="return CheckCheckout(true);">Gửi đề nghị</button>
         <a href="@Request.QueryString["returnUrl"]" class="btn btn-default">Hủy</a>
     </div>
     <br />
-    <br />
-    <br />
-    <div class="col-sm-12">
-        <label class="checkbox checkbox-inline m-r-20">
-            <input type="checkbox" class="inlineCheckbox1" name="Type" value="1" @(listType[1])>
-            <i class="input-helper"></i>
-            (1) Mua <br /><i>Purchase</i>
-        </label>
-        <label class="checkbox checkbox-inline m-r-20">
-            <input type="checkbox" class="inlineCheckbox1" name="Type" value="2" @(listType[3])>
-            <i class="input-helper"></i>
-            (2) Thay thế<br /><i>Replacement</i>
-        </label>
-        <label class="checkbox checkbox-inline m-r-20">
-            <input type="checkbox" class="inlineCheckbox1" name="Type" value="3" @(listType[3])>
-            <i class="input-helper"></i>
-            (3) Bảo trì, sửa chữa<br /><i>Maintenance/Repair</i>
-        </label>
-        <div id="loaiticket" class="hide has-error">
-            <small id="loaiticket" class="help-block">Bạn phải chọn một trong 3 loại trên!</small>
-        </div>
-    </div>
-    <br /><br />
-    <br /><br />
     <br />
     <br />
     <div class="col-sm-4">
@@ -90,20 +67,17 @@
                         <i>No</i>
                     </th>
                     <th>
-                        Diễn giải <br />
-                        <i>Description</i>
+                        Tiêu đề <br />
+                        <i>Title</i>
                     </th>
                     <th>
-                        SL<br />
-                        <i>Q'tty</i>
+                        VND
                     </th>
                     <th>
-                        Mục đích, lý do<br />
-                        <i>Perpose, Reason</i>
+                        USD
                     </th>
                     <th>
-                        Ngày cần<br />
-                        <i>Date require</i>
+                        EUR
                     </th>
                     <th>
 
@@ -125,16 +99,16 @@
                                 @item.Title
                             </td>
                             <td>
-                                @item.Quantity
+                                @item.VND
                             </td>
                             <td>
-                                @item.Reason
+                                @item.USD
                             </td>
                             <td>
-                                @item.DateRequire
+                                @item.EUR
                             </td>
                             <td>
-                                <button class="color-red btn btn-icon" onclick="return removeTicketDetail('@item.ID',this);"><span class="md md-delete"></span></button>
+                                <button class="color-red btn btn-icon" onclick="return removeCheckoutDetail('@item.ID',this);"><span class="md md-delete"></span></button>
                             </td>
                         </tr>
                     }
@@ -142,8 +116,8 @@
             </tbody>
         </table>
         <br />
-        <div id="loaiticketDetail" class="hide has-error">
-            <small id="loaiticket" class="help-block">Bạn phải thêm ticket detail trước.</small>
+        <div id="loaiCheckoutDetail" class="hide has-error">
+            <small id="loaiCheckout" class="help-block">Bạn phải thêm Checkout detail trước.</small>
         </div>
     </div>
 

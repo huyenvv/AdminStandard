@@ -1,18 +1,33 @@
-﻿using System;
+﻿using Standard.Repository;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using WebLib;
+using WebLib.DAL;
 
 namespace Standard.Controllers
 {
-    public class RequestBillController : Controller
+    public class RequestBillController : BaseController
     {
+        private readonly CheckoutRepository _checkoutRepository;
+        private readonly CheckoutDetailsRepository _checkoutDetailRepository;
+        private readonly DeptRepository _deptRepository;
+        private DB_9CF750_dbEntities db;
+
+        public RequestBillController()
+        {
+            db = DB.Entities;
+            _checkoutRepository = new CheckoutRepository(db);
+            _deptRepository = new DeptRepository(db);
+            _checkoutDetailRepository = new CheckoutDetailsRepository(db);
+        }
         //
         // GET: /RequestBill/
         public ActionResult Index()
         {
-            return View();
+            return View(_checkoutRepository.GetAll());
         }
 
         //
@@ -24,9 +39,17 @@ namespace Standard.Controllers
 
         //
         // GET: /RequestBill/Create
-        public ActionResult Create()
+        public ActionResult Create(int CheckoutId = 0)
         {
-            return View();
+            ViewBag.listDept = _deptRepository.GetAll();
+            var checkout = _checkoutRepository.GetById(CheckoutId);
+            if (checkout == null) return View(new Checkout { Created = DateTime.Now });
+
+            if (checkout.CreatedBy != fwUserDAL.GetCurrentUser().ID || checkout.Status != CheckoutStatus.KhoiTao)
+                return AccessDenied();
+
+            SessionUtilities.Set(Constant.SESSION_CheckoutDetails, checkout.CheckoutDetails.ToList());
+            return View(checkout);
         }
 
         //
