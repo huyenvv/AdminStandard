@@ -26,10 +26,21 @@ namespace Standard.Controllers
             _ticketDetailRepository = new TicketDetailRepository(db);
             _ticketUserRepository = new TicketUserRepository(db);
         }
-        public ActionResult Index()
+        public ActionResult Index(int? status)
         {
-
-            return View(_ticketRepository.GetAll());
+            var list = db.TicketUser.Where(m => m.UserID == DB.CurrentUser.ID);
+            if (status.HasValue)
+            {
+                if (status.Value != -1)
+                {
+                    list = list.Where(m => m.Ticket.Status == status.Value);
+                }
+            }
+            else
+            {
+                list = list.Where(m => m.Ticket.Current == DB.CurrentUser.ID && m.Ticket.Status != TicketStatus.DaDuyet);
+            }
+            return View(list.Select(m => m.Ticket).ToList());
         }
 
         public ActionResult Details(int id)
@@ -177,6 +188,7 @@ namespace Standard.Controllers
             obj.Status = TicketStatus.KhoiTao;
             obj.Track += ";#" + DB.CurrentUser.ID;
             obj.FeedbackID = feedback.ID;
+            obj.Current = obj.CreatedBy;
             db.SaveChanges();
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
             return RedirectToAction("Index", "Ticket");

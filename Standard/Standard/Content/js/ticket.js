@@ -45,6 +45,11 @@
         location.href = "/Ticket/PhanHoi?ykien=" + ykien
     });
 
+    $('#TicketStatusChange').change(function () {
+        var id = $(this).val();
+        location.href = "/Ticket/Index?status=" + id;
+    });
+
 });
 function removeTicketDetail(id, e) {
     if (confirm("Bạn chắc chắn?")) {

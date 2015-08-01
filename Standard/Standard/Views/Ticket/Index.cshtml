@@ -4,24 +4,27 @@
     ViewBag.Title = "Các phiếu yêu cầu";
     var userDAL = new WebLib.DAL.fwUserDAL();
     var listColor = new[] { "danger", "warning", "primary", "info", "success" };
+    var status = Request.QueryString["status"];
 }
-
+@section  scripts{
+    <script src="~/Content/js/ticket.js"></script>
+}
 
 <div class="col-sm-6">
     <a href="@Url.Action("Create", new { returnUrl = Request.RawUrl })" class="btn btn-primary">Tạo phiếu yêu cầu</a>
 </div>
-<div class="col-sm-6">    
-    <div class="form-group">        
-        <label class="col-sm-3 control-label">Trạng thái</label>
-        <div class="col-sm-9">            
+<div class="col-sm-6">
+    <div class="form-group">
+        <div class="col-sm-9">
             <div class="fg-line">
                 <div class="select">
-                    <select class="form-control">
+                    <select class="form-control" id="TicketStatusChange">
+                        <option value=""> Chờ tôi xử lý </option>
                         @for (int i = 0; i < TicketStatus.TicketStatusTitle.Length; i++)
                         {
-                            <option value="@i">@TicketStatus.TicketStatusTitle[i]</option>
+                            <option value="@i" @(i.ToString() == status ? "selected" : "")>@TicketStatus.TicketStatusTitle[i]</option>
                         }
-
+                        <option value="-1" @("-1" == status ? "selected" : "")> Tất cả </option>
                     </select>
                 </div>
             </div>
