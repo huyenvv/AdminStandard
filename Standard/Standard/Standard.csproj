@@ -237,6 +237,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\script.sql" />
+    <Content Include="Content\lib\ma\js\input-mask.min.js" />
     <Content Include="Content\js\ma-layout.js" />
     <Content Include="Content\js\checkout.js" />
     <Content Include="Content\lib\ma\css\bootstrap-datetimepicker.min.css" />
@@ -323,6 +324,9 @@
     <Content Include="Content\lib\ma\fonts\weather-icons.eot" />
     <Content Include="Content\lib\ma\fonts\weather-icons.ttf" />
     <Content Include="Content\lib\ma\fonts\weather-icons.woff" />
+    <Content Include="C:\Users\HuyenVV\Downloads\glyphicons-halflings-regular.woff2">
+      <Link>Content\lib\ma\fonts\glyphicons-halflings-regular.woff2</Link>
+    </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
