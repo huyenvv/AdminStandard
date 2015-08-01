@@ -18,6 +18,7 @@ namespace Standard
         {
             this.TicketDetails = new HashSet<TicketDetails>();
             this.TicketUser = new HashSet<TicketUser>();
+            this.Feedback = new HashSet<Feedback>();
         }
     
         public int ID { get; set; }
@@ -34,5 +35,6 @@ namespace Standard
     
         public virtual ICollection<TicketDetails> TicketDetails { get; set; }
         public virtual ICollection<TicketUser> TicketUser { get; set; }
+        public virtual ICollection<Feedback> Feedback { get; set; }
     }
 }

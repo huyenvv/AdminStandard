@@ -1,8 +1,9 @@
 ﻿@model List<WebLib.Models.fwMenu>
 
 @{
-    ViewBag.Title = "List menu";
+    ViewBag.Title = "ListMenu";
 }
+<h2>Menu</h2>
 
 <p>
     <a href="@Url.Action("EditMenu", new { returnUrl = Request.RawUrl})" class="btn btn-primary">Thêm mới</a>

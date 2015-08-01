@@ -1,8 +1,10 @@
 ﻿@model WebLib.Models.fwUser
 
 @{
-    ViewBag.Title = "Cập nhật người dùng";
+    ViewBag.Title = "User";
 }
+
+<h3>Cập nhật người dùng</h3>
 
 @using (Html.BeginForm("EditUser", "WebLib", new { returnUrl = Request.QueryString["returnUrl"] }, FormMethod.Post))
 {

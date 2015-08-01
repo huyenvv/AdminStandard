@@ -17,6 +17,10 @@ namespace Standard.Controllers
 {
     public class DB
     {
+        public static DB_9CF750_dbEntities Entites
+        {
+            get { return new DB_9CF750_dbEntities(); }
+        }
         public static IPrincipal CurrentUser
         {
             get
@@ -349,10 +353,7 @@ namespace Standard.Controllers
             AuthenticationManager.SignOut();
             return RedirectToAction("Index", "Home");
         }
-        /// <summary>
-        /// ////My custom logout function
-        /// </summary>
-        /// <returns></returns>
+        [HttpGet]
         public ActionResult Logout()
         {
             WebLib.DAL.fwUserDAL.Logout();

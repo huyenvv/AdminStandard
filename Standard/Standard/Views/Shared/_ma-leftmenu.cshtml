@@ -1,4 +1,8 @@
-﻿<aside id="sidebar">
+﻿@using WebLib.DAL
+@{
+    var listMenu = DB.CurrentUser == null ? new List<WebLib.Models.fwMenu>() : new fwMenuDAL().ListByUser(DB.CurrentUser.ID);
+}
+<aside id="sidebar">
     <div class="sidebar-inner c-overflow" tabindex="3" style="overflow: hidden; outline: none;">
         <div class="profile-menu">
             <a href="">
@@ -7,7 +11,6 @@
                 </div>
                 <div class="profile-info">
                     Malinda Hollaway
-
                     <i class="md md-arrow-drop-down"></i>
                 </div>
             </a>
@@ -27,66 +30,34 @@
             </ul>
         </div>
         <ul class="main-menu">
-            <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/index.html"><i class="md md-home"></i> Home</a></li>
-            <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/typography.html"><i class="md md-format-underline"></i> Typography</a></li>
-            <li class="sub-menu">
-                <a href=""><i class="md md-now-widgets"></i> Widgets</a>
-                <ul>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/widget-templates.html">Templates</a></li>
-                    <li><a class="active" href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/widgets.html">Widgets</a></li>
-                </ul>
-            </li>
-            <li class="sub-menu">
-                <a href=""><i class="md md-view-list"></i> Tables</a>
-                <ul>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/tables.html">Normal Tables</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/data-tables.html">Data Tables</a></li>
-                </ul>
-            </li>
-            <li class="sub-menu active toggled">
-                <a href=""><i class="md md-my-library-books"></i> Forms</a>
-                <ul>
-                    <li><a class="active" href="/Content/lib/ma/Material Admin.html">Basic Form Elements</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/form-components.html">Form Components</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/form-examples.html">Form Examples</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/form-validations.html">Form Validation</a></li>
-                </ul>
-            </li>
-            <li class="sub-menu">
-                <a href=""><i class="md md-swap-calls"></i>User Interface</a>
-                <ul>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/colors.html">Colors</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/animations.html">Animations</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/box-shadow.html">Box Shadow</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/buttons.html">Buttons</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/icons.html">Icons</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/alerts.html">Alerts</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/notification-dialog.html">Notifications &amp; Dialogs</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/media.html">Media</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/components.html">Components</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/other-components.html">Others</a></li>
-                </ul>
-            </li>
-            <li class="sub-menu">
-                <a href=""><i class="md md-trending-up"></i>Charts</a>
-                <ul>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/flot-charts.html">Flot Charts</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/other-charts.html">Other Charts</a></li>
-                </ul>
-            </li>
-            <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/calendar.html"><i class="md md-today"></i> Calendar</a></li>
-            <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/generic-classes.html"><i class="md md-layers"></i> Generic Classes</a></li>
-            <li class="sub-menu">
-                <a href=""><i class="md md-content-copy"></i> Sample Pages</a>
-                <ul>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/profile-about.html">Profile</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/list-view.html">List View</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/messages.html">Messages</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/login.html">Login and Sign Up</a></li>
-                    <li><a href="http://192.185.228.226/projects/ma/v1-4-1/jQuery/404.html">Error 404</a></li>
-                </ul>
-            </li>
+            @foreach (var item in listMenu.Where(m => m.ParentID == 0))
+            {
+                var listChild = listMenu.Where(m => m.ParentID == item.ID).ToList();
+                <li class="@(listChild.Count > 0? "sub-menu":"")">  
+                    <a href="@item.Url">
+                        @*<i class="@item.Icon"></i>*@
+                        <i class="md md-now-widgets"></i> @item.Title
+                        @if (listChild.Count > 0)
+                        {
+                            <span class="fa arrow"></span>
+                        }
+                    </a>
+                    @if (listChild.Count > 0)
+                    {
+                        <ul>
+                            @foreach (var itemChild in listChild)
+                            {
+                                <li>
+                                    <a href="@itemChild.Url" data-href="@itemChild.SubAction"> <i class="md md-now-widgets"></i> @itemChild.Title</a>
+                                </li>
+                            }
+                        </ul>
+                    }
+
+                </li>
+            }
         </ul>
     </div>
-    <div id="ascrail2004" class="nicescroll-rails nicescroll-rails-vr" style="width: 5px; z-index: 5; cursor: default; position: absolute; top: 0px; left: 263px; height: 534px; display: block; opacity: 0.175275975834908;"><div class="nicescroll-cursors" style="position: relative; top: 0px; float: right; width: 5px; height: 373px; border: 0px; border-radius: 0px; background-color: rgba(0, 0, 0, 0.498039); background-clip: padding-box;"></div></div><div id="ascrail2004-hr" class="nicescroll-rails nicescroll-rails-hr" style="height: 5px; z-index: 5; top: 529px; left: 0px; position: absolute; cursor: default; display: none; width: 263px; opacity: 0.175275975834908;"><div class="nicescroll-cursors" style="position: absolute; top: 0px; height: 5px; width: 268px; border: 0px; border-radius: 0px; background-color: rgba(0, 0, 0, 0.498039); background-clip: padding-box;"></div></div>
+    <div id="ascrail2004" class="nicescroll-rails nicescroll-rails-vr" style="width: 5px; z-index: 5; cursor: default; position: absolute; top: 0px; left: 263px; height: 534px; display: block; opacity: 0.175275975834908;"><div class="nicescroll-cursors" style="position: relative; top: 0px; float: right; width: 5px; height: 373px; border: 0px; border-radius: 0px; background-color: rgba(0, 0, 0, 0.498039); background-clip: padding-box;"></div></div>
+    <div id="ascrail2004-hr" class="nicescroll-rails nicescroll-rails-hr" style="height: 5px; z-index: 5; top: 529px; left: 0px; position: absolute; cursor: default; display: none; width: 263px; opacity: 0.175275975834908;"><div class="nicescroll-cursors" style="position: absolute; top: 0px; height: 5px; width: 268px; border: 0px; border-radius: 0px; background-color: rgba(0, 0, 0, 0.498039); background-clip: padding-box;"></div></div>
 </aside>

@@ -10,6 +10,13 @@ namespace Standard
     {
         public static WebLib.Models.fwUser CurrentUser
         { get { return WebLib.DAL.fwUserDAL.GetCurrentUser(); } }
+        public static DB_9CF750_dbEntities Entities
+        {
+            get
+            {
+                return new DB_9CF750_dbEntities();
+            }
+        }
         public class BaseClass<T> where T : class
         {
             public DB_9CF750_dbEntities _db;
@@ -17,11 +24,6 @@ namespace Standard
             public BaseClass()
             {
                 _db = new DB_9CF750_dbEntities();
-            }
-
-            public List<T> GetAll()
-            {
-                return _db.Set<T>().ToList();
             }
 
             public T GetById(object id)
@@ -37,12 +39,6 @@ namespace Standard
             public void Insert(T obj)
             {
                 _db.Set<T>().Add(obj);
-                _db.SaveChanges();
-            }
-
-            public void Insert(List<T> lst)
-            {
-                _db.Set<T>().AddRange(lst);
                 _db.SaveChanges();
             }
 
@@ -63,12 +59,6 @@ namespace Standard
             public void Delete(T entity)
             {
                 _db.Set<T>().Remove(entity);
-                _db.SaveChanges();
-            }
-
-            public void Delete(List<T> lst)
-            {
-                _db.Set<T>().RemoveRange(lst);
                 _db.SaveChanges();
             }
         }

@@ -15,23 +15,19 @@
         if (check) {
             $("#messerror").addClass("hide");
             var no = $("table tbody tr").length + 1;
-            var id = 10000 + no;
             var dienGiai = $("#DienGiai").val();
             var mucDich = $("#MucDich").val();
             var ngayCan = $("#NgayCan").val();
             var data = {
-                ID: id,
-                Title: dienGiai,
-                Quantity: soluong,
-                Reason: mucDich,
-                DateRequire: ngayCan
+                Id: no,
+                DienGiai: dienGiai,
+                SoLuong: soluong,
+                LyDo: mucDich,
+                NgayCan: ngayCan
             };
             $.post("/Ticket/AddTicketDetail", data)
               .done(function (ok) {
-                  $("table").removeClass("hide");
-                  $("table tbody").append("<tr><td>" + no + "</td><td>" + dienGiai + "</td><td>" + soluong + "</td><td>" + mucDich + "</td><td>" + ngayCan + "</td><td>" +
-                      "<button class='color-red btn btn-icon' onclick='return removeTicketDetail(" + id + ",this);'><span class='md md-delete'></span></button>" +
-                      "</td></tr>");
+                  $("table tbody").append("<tr><td>" + no + "</td><td>" + dienGiai + "</td><td>" + soluong + "</td><td>" + mucDich + "</td><td>" + ngayCan + "</td><td><a href='#' class='color-red' onclick='return removeTicketDetail(" + no + ",this);'><i class='fa fa-times'></i></a></td></tr>");
               });
         } else {
             $("#messerror").removeClass("hide");
@@ -50,20 +46,16 @@ function removeTicketDetail(id, e) {
     if (confirm("Bạn chắc chắn?")) {
         $.getJSON("/Ticket/DeleteTicketDetail?id=" + id, function (data) {
             $(e).parents("tr").remove();
-            if ($("table tbody tr").length == 0) {
-                $("table").addClass("hide");
-            }
         });
     }
     return false;
 }
 
-function CheckTicket(flag) {
+function CheckTicket() {
     if ($('input.inlineCheckbox1:checked').length > 0) {
         $("#loaiticket").addClass("hide");
         if ($("table tbody tr").length > 0) {
             $("#loaiticketDetail").addClass("hide");
-            $("#isSave").val(flag);
             return true;
         }
         $("#loaiticketDetail").removeClass("hide");
