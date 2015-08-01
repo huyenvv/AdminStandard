@@ -1,7 +1,7 @@
 ﻿@model List<Checkout>
 
 @{
-    ViewBag.Title = "Các phiếu thanh toán";
+    ViewBag.Title = "Các phiếu yêu cầu thanh toán/ PAYMENT VOUCHER";
     var userDAL = new WebLib.DAL.fwUserDAL();
     var listColor = new[] { "danger", "warning", "primary", "success" };
     var status = Request.QueryString["status"];

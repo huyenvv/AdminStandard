@@ -86,7 +86,7 @@ namespace Standard.Controllers
                 {
                     var checkoutdetails = new CheckoutDetails();
                     checkoutdetails.Title = item.Title;
-                    checkoutdetails.VND = decimal.Parse("0" + frm["details_" + item.ID]);
+                    checkoutdetails.VND = decimal.Parse("0" + frm["details_" + item.ID].Replace(",0", null));
                     checkoutdetails.CheckoutID = model.ID;
                     model.SumTotal += checkoutdetails.VND;
                     model.CheckoutDetails.Add(checkoutdetails);
@@ -96,7 +96,7 @@ namespace Standard.Controllers
                 obj.CheckoutID = model.ID;
 
                 db.SaveChanges();
-                db.Database.ExecuteSqlCommand(string.Format("insert into CheckouttUser values({0},{1})", model.ID, model.Current));
+                db.Database.ExecuteSqlCommand(string.Format("insert into CheckoutUser values({0},{1})", model.ID, model.Current));
                 return RedirectToAction("Index");
             }
             catch
@@ -117,7 +117,7 @@ namespace Standard.Controllers
             var obj = db.Checkout.FirstOrDefault(m => m.ID == id);
             if (!CanKiemDuyet(obj)) return AccessDenied();
             obj.Track += ";#" + DB.CurrentUser.ID;
-            obj.Status = TicketStatus.ChoDuyet;
+            obj.Status = CheckoutStatus.ChoDuyet;
             obj.ChkFeedbackID = null;
             //lấy người có quyền phê duyệt
             var u = new fwUserDAL().ListByRole(RoleList.ApproveTicket).FirstOrDefault();
@@ -133,7 +133,7 @@ namespace Standard.Controllers
             var obj = db.Checkout.FirstOrDefault(m => m.ID == id);
             if (!CanDuyet(obj)) return AccessDenied();
             obj.Track += ";#" + DB.CurrentUser.ID;
-            obj.Status = TicketStatus.DaDuyet;
+            obj.Status = CheckoutStatus.DaDuyet;
             obj.ChkFeedbackID = null;
             //lấy người có quyền kế toán
             var u = new fwUserDAL().ListByRole(RoleList.Accounting).FirstOrDefault();
