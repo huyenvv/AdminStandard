@@ -11,7 +11,12 @@ namespace Standard
         public const string SESSION_CheckoutDetails = "SESSION_CheckoutDetails";
 
     }
-
+    public static class UploadFolder
+    {
+        public const string Common = "Common";
+        public const string Ticket = "Ticket";
+        public const string Checkout = "Checkout";
+    }
     public static class RoleList
     {
         public const string SystemManager = "SystemManager";

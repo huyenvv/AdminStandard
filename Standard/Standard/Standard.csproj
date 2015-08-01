@@ -375,6 +375,9 @@
     <Content Include="Views\Shared\_ma-leftmenu.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Uploads\Checkout\" />
+    <Folder Include="Uploads\Common\" />
+    <Folder Include="Uploads\Ticket\" />
     <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
