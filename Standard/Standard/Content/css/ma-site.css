@@ -34,3 +34,6 @@
 .m-r-10 {
     margin-right: 0px !important;
 }
+.modal-backdrop {
+    z-index: 9;
+}

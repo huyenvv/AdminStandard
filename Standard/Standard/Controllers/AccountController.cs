@@ -78,6 +78,31 @@ namespace Standard.Controllers
             ModelState.AddModelError("", "Sai mật khẩu hoặc tên đăng nhập.");
             return View(model);
         }
+
+        [Authorize]
+        public ActionResult ChangePassword()
+        {
+            return PartialView("_ChangePasswordPartial");
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult ChangePassword(ManageUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var db = DB.Entities;
+                if (DB.CurrentUser.Pass == model.OldPassword)
+                {
+                    return PartialView("_ChangePasswordSuccess");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Mật khẩu cũ không đúng");
+                }
+            }
+            return PartialView("_ChangePasswordPartial", model);
+        }
         //
         // GET: /Account/Register
         [AllowAnonymous]

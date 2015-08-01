@@ -7,7 +7,14 @@
 
     $(".Changpassword").click(function () {
         var id = $(this).attr("href");
-        $(id).modal('show');
+        $.ajax({
+            type: "GET",
+            url: "/Account/ChangePassword",
+            success: function (kq) {
+                $(id).html(kq).modal('show');
+            }
+        });
+        
     });
     
 });
