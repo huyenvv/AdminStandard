@@ -73,7 +73,7 @@
                 <label>Bộ phận</label>
                 <div class="select">
                     <select class="form-control" name="DeptID">
-                        @foreach (var item in new Standard.DeptRepository().GetKiemSoat())
+                        @foreach (var item in new Standard.Repository.DeptRepository().GetKiemSoat())
                         {
                             <option value="@item.ID">@item.Title</option>
                         }

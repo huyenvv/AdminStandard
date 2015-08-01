@@ -12,12 +12,15 @@ namespace Standard
     using System;
     using System.Collections.Generic;
     
-    public partial class Dept
+    public partial class CheckoutDetails
     {
         public int ID { get; set; }
+        public int CheckoutID { get; set; }
         public string Title { get; set; }
-        public int GroupID { get; set; }
-        public Nullable<int> LeaderUserID { get; set; }
-        public Nullable<int> Type { get; set; }
+        public decimal VND { get; set; }
+        public Nullable<decimal> USD { get; set; }
+        public Nullable<decimal> EUR { get; set; }
+    
+        public virtual Checkout Checkout { get; set; }
     }
 }

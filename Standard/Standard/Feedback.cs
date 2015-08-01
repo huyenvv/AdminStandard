@@ -12,12 +12,14 @@ namespace Standard
     using System;
     using System.Collections.Generic;
     
-    public partial class Dept
+    public partial class Feedback
     {
         public int ID { get; set; }
+        public int TicketID { get; set; }
         public string Title { get; set; }
-        public int GroupID { get; set; }
-        public Nullable<int> LeaderUserID { get; set; }
-        public Nullable<int> Type { get; set; }
+        public int UserID { get; set; }
+        public System.DateTime Created { get; set; }
+    
+        public virtual Ticket Ticket { get; set; }
     }
 }

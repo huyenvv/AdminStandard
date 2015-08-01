@@ -18,15 +18,15 @@ namespace Standard.Repository
     {
         public List<Dept> GetPhongBan()
         {
-            return _db.Dept.Where(m => m.Type == null).ToList();
+            return Find(m => m.Type == null).ToList();
         }
         public List<Dept> GetKiemSoat()
         {
-            return _db.Dept.Where(m => m.Type == 1).ToList();
+            return Find(m => m.Type == 1).ToList();
         }
         public List<Dept> GetKiemSoatNB()
         {
-            return _db.Dept.Where(m => m.Type == 2).ToList();
+            return Find(m => m.Type == 2).ToList();
         }
     }
     public class TicketUserRepository : DB.BaseClass<TicketUser>

@@ -9,7 +9,7 @@ using WebLib.DAL;
 
 namespace Standard.Controllers
 {
-    [CustomAuthorize(RoleList.ApproveTicket)]
+    [CustomAuthorize]
     public class TicketController : BaseController
     {
         
