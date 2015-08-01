@@ -40,12 +40,6 @@
     });
 
 
-
-    $('input.inlineCheckbox1').on('change', function () {
-        $('input.inlineCheckbox1').not(this).prop('checked', false);
-    });
-
-
     $('#PhanHoi').click(function () {
         var ykien = $("#txtPhanHoi").val();
         location.href = "/Ticket/PhanHoi?ykien=" + ykien
@@ -65,7 +59,7 @@ function removeTicketDetail(id, e) {
 }
 
 function CheckTicket(flag) {
-    if ($('input.inlineCheckbox1:checked').length > 0) {
+    if ($('input.onCheckbox:checked').length > 0) {
         $("#loaiticket").addClass("hide");
         if ($("table tbody tr").length > 0) {
             $("#loaiticketDetail").addClass("hide");

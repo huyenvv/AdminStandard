@@ -2,6 +2,9 @@
     $(".confirmDelete").click(function () {
         return confirm("Bạn chắc chắn?");
     });
+    $('input.onCheckbox').on('change', function () {
+        $('input.onCheckbox').not(this).prop('checked', false);
+    });
 });
 // lay danh sách list ID
 function getListID(classWrapper, hiddenID) {

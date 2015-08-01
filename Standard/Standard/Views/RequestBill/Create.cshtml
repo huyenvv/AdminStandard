@@ -3,12 +3,79 @@
 @{
     var currentUser = fwUserDAL.GetCurrentUser();
     var listCheckout = WebLib.SessionUtilities.Exist(Constant.SESSION_CheckoutDetails) ? (List<CheckoutDetails>)WebLib.SessionUtilities.Get(Constant.SESSION_CheckoutDetails) : null;
-    ViewBag.Title = "ĐỀ NGHỊ THANH TOÁN/ REQUEST PAYMENT";
-
+    ViewBag.Title = "ĐỀ NGHỊ THANH TOÁN/ PAYMENT VOUCHER";
+    var listType = new[] { "", "", "" };
+    if (Model.PaymentMethod.HasValue)
+    {
+        listType[Model.PaymentMethod.Value] = "checked='checked'";
+    }
     var listDept = (List<Dept>)ViewBag.listDept;
+    var listDetail = Model.CheckoutDetails;
 }
 @section  scripts{
+    <script src="~/Content/lib/ma/js/input-mask.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
     <script src="~/Content/js/checkout.js"></script>
+    <script>
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function ($scope) {
+
+            $scope.vnd = [
+                @for (int i = 0; i < listDetail.Count; i++)
+                {
+                    @(listDetail.ElementAt(i).VND + ",")
+                }
+            0];
+            $scope.usd = [
+                @for (int i = 0; i < listDetail.Count; i++)
+                {
+                    @(listDetail.ElementAt(i).USD + ",")
+                }
+            0];
+            $scope.getTotalVND = function () {
+                if ($scope.vnd.length > 0) {
+                    var value = eval($scope.vnd.join('+').replace(/\./g, ''));
+                    return format(value, '');
+                }
+            };
+            $scope.getTotalUSD = function () {
+                if ($scope.usd.length > 0) {
+                    var value = eval($scope.usd.join('+').replace(/\./g, ''));
+                    return format(value, '');
+                }
+            };
+            format = function (n, currency) {
+                return currency + " " + n.toFixed(0).replace(/./g, function (c, i, a) {
+                    return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "." + c : c;
+                });
+            }
+
+
+            // Tạm ứng phí ngân hàng
+            $scope.tamungVND = 0;
+            $scope.tamungUSD = 0;
+            $scope.PhiNganHangVND = 0;
+            $scope.PhiNganHangUSD = 0;
+
+            $scope.getAllTotalVND = function () {
+                if ($scope.vnd.length > 1) {
+                    var subtotal = eval($scope.vnd.join('+').replace(/\./g, ''));
+                    var value = subtotal + "-" + $scope.tamungVND + "+" + $scope.PhiNganHangVND;
+                    var allTotal = value.replace(/\./g, '');
+                    return format(allTotal, '');
+                }
+            };
+            $scope.getAllTotalUSD = function () {
+                if ($scope.usd.length > 1) {
+                    var subtotal = eval($scope.usd.join('+').replace(/\./g, ''));
+                    var value = subtotal + "-" + $scope.tamungUSD + "+" + $scope.PhiNganHangUSD;
+                    var allTotal = value.replace(/\./g, '');
+                    return format(allTotal, '');
+                }
+            };
+        });
+    </script>
+
 }
 
 
@@ -19,162 +86,210 @@
     @Html.HiddenFor(m => m.ID)
 
     @Html.ValidationSummary(true)
-    <div class="col-sm-12">
-        <button type="submit" class="btn btn-primary" onclick="return CheckCheckout(false);">Lưu lại</button>
-        <button type="submit" class="btn btn-primary" onclick="return CheckCheckout(true);">Gửi đề nghị</button>
-        <a href="@Request.QueryString["returnUrl"]" class="btn btn-default">Hủy</a>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-primary" onclick="return CheckCheckout(false);">Lưu lại</button>
+            <button type="submit" class="btn btn-primary" onclick="return CheckCheckout(true);">Gửi đề nghị</button>
+            <a href="@Request.QueryString["returnUrl"]" class="btn btn-default">Hủy</a>
+        </div>
     </div>
     <br />
-    <br />
-    <br />
-    <div class="col-sm-4">
-        <div class="form-group fg-float">
-            <div class="fg-line">
-                <label>Ngày đề nghị</label>
-                <input type="text" name="NgayDenghi" value="@Model.Created.ToString("dd/MM/yyyy")" class=" form-control fg-input" readonly="readonly" />
-            </div>
 
-        </div>
-    </div><div class="col-sm-4">
-        <div class="form-group fg-float">
-            <div class="fg-line">
-                <label>Người đề nghị</label>
-                <input type="text" name="NguoiDeNghi" value="@(currentUser!=null?currentUser.UserName:"")" class=" form-control fg-input" readonly="readonly" />
-            </div>
+    <div class="validationWrapper">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="form-group fg-float">
+                    <div class="fg-line">
+                        <label>Ngày <i>(Dated)</i></label>
+                        <input type="text" name="NgayDenghi" value="@Model.Created.ToString("dd/MM/yyyy")" class=" form-control date-picker" data-toggle="dropdown" aria-expanded="false" />
+                    </div>
 
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group fg-float">
+                    <div class="fg-line">
+                        <label>Số ghi sổ <i>(No)</i></label>
+                        <input type="text" name="No" value="@Model.No" class=" form-control fg-input" />
+                    </div>
+
+                </div>
+            </div>
         </div>
-    </div><div class="col-sm-4">
-        <div class="form-group fg-float">
-            <div class="fg-line">
-                <label>Bộ phận</label>
-                <div class="select">
-                    <select class="form-control" name="DeptID">
-                        @foreach (var item in listDept)
-                        {
-                            <option value="@item.ID">@item.Title</option>
-                        }
-                    </select>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group fg-float">
+                    <div class="fg-line">
+                        <label>Người hưởng <i>(Ben)</i></label>
+                        <input type="text" name="Ben" value="@Model.Ben" class=" form-control fg-input" />
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group fg-float">
+                    <div class="fg-line">
+                        <label>Phòng <i>(Dept)</i></label>
+                        <div class="select">
+                            <select class="form-control" name="DeptID">
+                                @foreach (var item in listDept)
+                                {
+                                    <option value="@item.ID" @(item.ID == Model.DeptID ? "selected='selected'" : "")>@item.Title</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-md-4">Hình thức thanh toán <i>(Payment method)</i> : </label>
+            <div class="col-md-8">
+                <label class="checkbox checkbox-inline m-r-20">
+                    <input type="checkbox" class="onCheckbox" name="Type" value="0" @listType[0] />
+                    <i class="input-helper"></i>
+                    Tiền mặt <br /><i>(Cash)</i>
+                </label>
+                <label class="checkbox checkbox-inline m-r-20">
+                    <input type="checkbox" class="onCheckbox" name="Type" value="1" @listType[1] />
+                    <i class="input-helper"></i>
+                    Chuyển khoản <br /><i>(Bank transfer)</i>
+                </label>
+                <label class="checkbox checkbox-inline m-r-20">
+                    <input type="checkbox" class="onCheckbox" name="Type" value="2" @listType[2] />
+                    <i class="input-helper"></i>
+                    Quyết toán tạm ứng <br /><i>(Advance clearing)</i>
+                </label>
+                <div id="loaiticket" class="hide has-error">
+                    <small id="loaiticket" class="help-block">Bạn phải chọn một trong 3 loại trên!</small>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-sm-12">
-        <table class="table table-striped table-vmiddle @(listCheckout!=null && listCheckout.Count > 0 ? "" : "hide")">
-            <thead>
-                <tr>
-                    <th>
-                        TT<br />
-                        <i>No</i>
-                    </th>
-                    <th>
-                        Tiêu đề <br />
-                        <i>Title</i>
-                    </th>
-                    <th>
-                        VND
-                    </th>
-                    <th>
-                        USD
-                    </th>
-                    <th>
-                        EUR
-                    </th>
-                    <th>
-
-                    </th>
-
-                </tr>
-            </thead>
-            <tbody>
-                @if (listCheckout != null && listCheckout.Count > 0)
-                {
-                    var dem = 1;
-                    foreach (var item in listCheckout)
+    <br />
+    <div class="row" ng-app="myApp" ng-controller="myCtrl">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        @*<th rowspan="2" class="text-center">
+                                Mã
+                                <i>Dept</i>
+                            </th>
+                            <th colspan="2" class="text-center">
+                                Chứng từ
+                                <i>(Documents)</i>
+                            </th>*@
+                        <th rowspan="2" class="text-center">
+                            Nội dung <i>(Description)</i>
+                        </th>
+                        <th colspan="2" class="text-center">
+                            Số tiền
+                        </th>
+                    </tr>
+                    <tr>
+                        @*<th class="text-center">
+                                Số <i>(No.)</i>
+                            </th>
+                            <th class="text-center">
+                                Ngày <i>(Date)</i>
+                            </th>*@
+                        <th class="text-center" width="150">
+                            VNĐ
+                        </th>
+                        <th class="text-center" width="150">
+                            USD/EUR
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < listDetail.Count; i++)
                     {
                         <tr>
                             <td>
-                                @(dem++)
+                                <div class="fg-line">
+                                    <textarea rows="3" class=" form-control">@listDetail.ElementAt(i).Title</textarea>
+                                </div>
                             </td>
                             <td>
-                                @item.Title
+                                <div class="fg-line">
+                                    <input type="text" class=" form-control input-mask" ng-model="vnd[@i]" data-mask="000.000.000.000.000,00" />
+                                </div>
                             </td>
                             <td>
-                                @item.VND
-                            </td>
-                            <td>
-                                @item.USD
-                            </td>
-                            <td>
-                                @item.EUR
-                            </td>
-                            <td>
-                                <button class="color-red btn btn-icon" onclick="return removeCheckoutDetail('@item.ID',this);"><span class="md md-delete"></span></button>
+                                <div class="fg-line">
+                                    <input type="text" class=" form-control input-mask" ng-model="usd[@i]" data-mask="000.000.000.000.000,00" />
+                                </div>
                             </td>
                         </tr>
                     }
-                }
-            </tbody>
-        </table>
-        <br />
-        <div id="loaiCheckoutDetail" class="hide has-error">
-            <small id="loaiCheckout" class="help-block">Bạn phải thêm Checkout detail trước.</small>
-        </div>
-    </div>
-
-    <br />
-    <div id="frmChiTietYeuCau">
-        <div class="col-sm-12">
-            <div class="form-group fg-float">
-                <div class="fg-line">
-                    <label>Diễn giải <i>Description</i></label>
-                    <input type="text" id="DienGiai" name="DienGiai" value="" class="form-control fg-input" />
-                </div>
-
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>
+                            <strong>Cộng</strong> <i>(Sub-total)</i>
+                        </td>
+                        <td class="text-right">
+                            {{getTotalVND()}}
+                        </td>
+                        <td class="text-right">
+                            {{getTotalUSD()}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Tạm ứng</strong> <i>(Advance payment)</i>
+                        </td>
+                        <td>
+                            <div class="fg-line">
+                                <input type="text" class=" form-control input-mask" ng-model="tamungVND" data-mask="000.000.000.000.000,00" />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="fg-line">
+                                <input type="text" class=" form-control input-mask" ng-model="tamungUSD" data-mask="000.000.000.000.000,00" />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Phí ngân hàng</strong> <i>(Bank charge)</i>
+                        </td>
+                        <td>
+                            <div class="fg-line">
+                                <input type="text" class=" form-control input-mask" ng-model="PhiNganHangVND" data-mask="000.000.000.000.000,00" />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="fg-line">
+                                <input type="text" class=" form-control input-mask" ng-model="PhiNganHangUSD" data-mask="000.000.000.000.000,00" />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Tổng cộng</strong> <i>(Total)</i>
+                        </td>
+                        <td>
+                            {{getAllTotalVND()}}
+                        </td>
+                        <td>
+                            {{getAllTotalUSD()}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <strong> Bằng chữ </strong><i>(in words): </i>
+                            <span id="CheckOutBangChu"></span>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+            <br />
+            <div id="loaiCheckoutDetail" class="hide has-error">
+                <small id="loaiCheckout" class="help-block">Bạn phải thêm Checkout detail trước.</small>
             </div>
         </div>
-
-        <div class="col-sm-12">
-            <div class="form-group fg-float">
-                <div class="fg-line">
-                    <label>
-                        Mục đích, lý do
-                        <i>Perpose, Reason</i>
-                    </label>
-                    <textarea class="form-control fg-input" id="MucDich" rows="3" name="MucDich"></textarea>
-                </div>
-
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="form-group">
-                <div class="fg-line">
-                    <label>
-                        Số lượng
-                        <i>Quantity</i>
-                    </label>
-                    <input type="number" id="Quantity" name="Quantity" value="" class="form-control fg-input" />
-                </div>
-
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <label>
-                Ngày cần <i>Date require</i>
-            </label>
-            <div class="input-group form-group">
-                <div class="dtp-container dropdown fg-line">
-                    <input type="text" class="form-control date-time-picker" data-toggle="dropdown" id="NgayCan" name="NgayCan" aria-expanded="false">
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-12">
-            <div id="messerror" class="hide field-validation-error">Bạn cần nhập đẩy đủ thông tin trên!</div>
-        </div>
-        <div class="clearfix"></div>
-        <div class="col-sm-6">
-            <a href="#" class="btn btn-primary btn-xs" id="ThemChiTiet"> Thêm chi tiết</a>
-        </div>
-
     </div>
 
 }

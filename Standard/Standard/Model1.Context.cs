@@ -26,12 +26,12 @@ namespace Standard
         }
     
         public virtual DbSet<Dept> Dept { get; set; }
-        public virtual DbSet<Ticket> Ticket { get; set; }
         public virtual DbSet<TicketDetails> TicketDetails { get; set; }
         public virtual DbSet<TicketUser> TicketUser { get; set; }
         public virtual DbSet<Checkout> Checkout { get; set; }
         public virtual DbSet<CheckoutDetails> CheckoutDetails { get; set; }
         public virtual DbSet<ChkFeedback> ChkFeedback { get; set; }
         public virtual DbSet<Feedback> Feedback { get; set; }
+        public virtual DbSet<Ticket> Ticket { get; set; }
     }
 }

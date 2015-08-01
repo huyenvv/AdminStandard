@@ -28,3 +28,6 @@
 .easy-pie .percent:after {
     content: "";
 }
+.table-bordered {
+    border: 1px solid #f0f0f0;
+}

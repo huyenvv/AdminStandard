@@ -41,7 +41,7 @@ namespace Standard.Controllers
         // GET: /RequestBill/Create
         public ActionResult Create(int CheckoutId = 0)
         {
-            ViewBag.listDept = _deptRepository.GetAll();
+            ViewBag.listDept = _deptRepository.GetKiemSoatNB();
             var checkout = _checkoutRepository.GetById(CheckoutId);
             if (checkout == null) return View(new Checkout { Created = DateTime.Now });
 

@@ -43,4 +43,11 @@ namespace Standard
 
         public static string[] CheckoutStatusTitle = new string[] { "Khởi tạo", "Chờ kiểm soát NB", "Chờ duyệt", "Đã duyệt" };
     }
+
+    public class PaymentMethod
+    {
+        public const int TienMat = 0;
+        public const int ChuyenKhoan = 1;
+        public const int QuyetToanTamUng = 2;
+    }
 }

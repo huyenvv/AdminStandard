@@ -16,9 +16,9 @@ namespace Standard
     {
         public Ticket()
         {
+            this.Feedback = new HashSet<Feedback>();
             this.TicketDetails = new HashSet<TicketDetails>();
             this.TicketUser = new HashSet<TicketUser>();
-            this.Feedback = new HashSet<Feedback>();
         }
     
         public int ID { get; set; }
@@ -32,9 +32,10 @@ namespace Standard
         public string FilePath { get; set; }
         public Nullable<int> PassedBy { get; set; }
         public Nullable<int> ApprovedBy { get; set; }
+        public Nullable<int> CheckoutID { get; set; }
     
+        public virtual ICollection<Feedback> Feedback { get; set; }
         public virtual ICollection<TicketDetails> TicketDetails { get; set; }
         public virtual ICollection<TicketUser> TicketUser { get; set; }
-        public virtual ICollection<Feedback> Feedback { get; set; }
     }
 }
