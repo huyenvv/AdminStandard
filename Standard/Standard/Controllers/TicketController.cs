@@ -28,19 +28,19 @@ namespace Standard.Controllers
         }
         public ActionResult Index(int? status)
         {
-            var list = db.TicketUser.Where(m => m.UserID == DB.CurrentUser.ID);
+            var list = DB.CurrentUser.UserName == WebLib.Constant.AdminFix ? db.Ticket : db.TicketUser.Where(m => m.UserID == DB.CurrentUser.ID).Select(m => m.Ticket);
             if (status.HasValue)
             {
                 if (status.Value != -1)
                 {
-                    list = list.Where(m => m.Ticket.Status == status.Value);
+                    list = list.Where(m => m.Status == status.Value);
                 }
             }
             else
             {
-                list = list.Where(m => m.Ticket.Current == DB.CurrentUser.ID && m.Ticket.Status != TicketStatus.DaDuyet);
+                list = list.Where(m => m.Current == DB.CurrentUser.ID && m.CheckoutID == null);
             }
-            return View(list.Select(m => m.Ticket).ToList());
+            return View(list.ToList());
         }
 
         public ActionResult Details(int id)
@@ -73,88 +73,83 @@ namespace Standard.Controllers
         [HttpPost]
         public ActionResult Create(Ticket tick, bool isSend = false)
         {
-            try
+            // TODO: Add insert logic here
+            if (tick.Type > 0 && tick.DeptID > 0)
             {
-                // TODO: Add insert logic here
-                if (tick.Type > 0 && tick.DeptID > 0)
+                if (SessionUtilities.Exist(Constant.SESSION_TicketDetails))
                 {
-                    if (SessionUtilities.Exist(Constant.SESSION_TicketDetails))
+                    var listTicketDetail = (List<TicketDetails>)SessionUtilities.Get(Constant.SESSION_TicketDetails);
+                    if (listTicketDetail.Count > 0)
                     {
-                        var listTicketDetail = (List<TicketDetails>)SessionUtilities.Get(Constant.SESSION_TicketDetails);
-                        if (listTicketDetail.Count > 0)
+                        var currentUser = fwUserDAL.GetCurrentUser();
+                        var getTicket = _ticketRepository.GetById(tick.ID);
+                        if (getTicket != null && getTicket.TicketDetails.Count > 0)
                         {
-                            var currentUser = fwUserDAL.GetCurrentUser();
-                            var getTicket = _ticketRepository.GetById(tick.ID);
-                            if (getTicket != null && getTicket.TicketDetails.Count > 0)
+                            // edit
+                            getTicket.Type = tick.Type;
+                            getTicket.DeptID = tick.DeptID;
+                            _ticketRepository.Update(getTicket);
+
+                            var lstTicketDetailModel = getTicket.TicketDetails.Select(m => m.ID).ToList();
+                            _ticketDetailRepository.Delete(lstTicketDetailModel);
+                        }
+                        else
+                        {
+                            // Create ticket
+                            getTicket = new Ticket
                             {
-                                // edit
-                                getTicket.Type = tick.Type;
-                                getTicket.DeptID = tick.DeptID;
+                                Current = currentUser.ID,
+                                Created = DateTime.Now,
+                                CreatedBy = currentUser.ID,
+                                Status = TicketStatus.KhoiTao,
+                                Track = currentUser.ID + "#;",
+                                DeptID = tick.DeptID
+                            };
+                            _ticketRepository.Insert(getTicket);
+                            db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", getTicket.ID, DB.CurrentUser.ID));
+                        }
+
+
+                        // create ticket detail
+                        var listDetail = listTicketDetail.Select(item => new TicketDetails
+                        {
+                            DateRequire = item.DateRequire,
+                            Quantity = item.Quantity,
+                            Reason = item.Reason,
+                            Title = item.Title,
+                            TicketID = getTicket.ID
+                        }).ToList();
+                        _ticketDetailRepository.Insert(listDetail);
+
+                        // remove ticket detail session
+                        SessionUtilities.Set(Constant.SESSION_TicketDetails, null);
+
+                        // isSend = true => send for lead dept
+                        if (isSend)
+                        {
+                            //Lấy trưởng phòng của người tạo
+                            var userDAL = new fwUserDAL();
+                            var lstNhom = userDAL.GetByID(getTicket.CreatedBy).fwGroup.Select(m => m.ID).ToList();
+                            var dept = db.Dept.Where(m => lstNhom.Contains(m.GroupID)).FirstOrDefault();
+
+                            if (dept != null && dept.LeaderUserID.HasValue)
+                            {
+                                getTicket.Track += dept.LeaderUserID + "#;";
+                                getTicket.Status = TicketStatus.ChoThongQua;
+                                getTicket.Current = dept.LeaderUserID.Value;
                                 _ticketRepository.Update(getTicket);
 
-                                var lstTicketDetailModel = getTicket.TicketDetails.Select(m => m.ID).ToList();
-                                _ticketDetailRepository.Delete(lstTicketDetailModel);
+                                // add to table Ticket User 
+                                db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", getTicket.ID, dept.LeaderUserID.HasValue));
                             }
-                            else
-                            {
-                                // Create ticket
-                                getTicket = new Ticket
-                                {
-                                    Current = currentUser.ID,
-                                    Created = DateTime.Now,
-                                    CreatedBy = currentUser.ID,
-                                    Status = TicketStatus.KhoiTao,
-                                    Track = currentUser.ID + "#;",
-                                    DeptID = tick.DeptID
-                                };
-                                _ticketRepository.Insert(getTicket);
-                            }
-
-
-                            // create ticket detail
-                            var listDetail = listTicketDetail.Select(item => new TicketDetails
-                            {
-                                DateRequire = item.DateRequire,
-                                Quantity = item.Quantity,
-                                Reason = item.Reason,
-                                Title = item.Title,
-                                TicketID = getTicket.ID
-                            }).ToList();
-                            _ticketDetailRepository.Insert(listDetail);
-
-                            // remove ticket detail session
-                            SessionUtilities.Set(Constant.SESSION_TicketDetails, null);
-
-                            // isSend = true => send for lead dept
-                            if (isSend)
-                            {
-                                var dept = _deptRepository.GetById(tick.DeptID);
-                                if (dept != null && dept.LeaderUserID.HasValue)
-                                {
-                                    getTicket.Track += dept.LeaderUserID + "#;";
-                                    getTicket.Status = TicketStatus.ChoThongQua;
-                                    _ticketRepository.Update(getTicket);
-
-                                    // add to table Ticket User 
-                                    _ticketUserRepository.Insert(new TicketUser
-                                    {
-                                        TicketID = getTicket.ID,
-                                        UserID = dept.LeaderUserID.Value
-                                    });
-                                }
-
-                            }
-
 
                         }
+
+
                     }
                 }
-                return RedirectToAction("Index");
             }
-            catch
-            {
-                return View(new Ticket { Created = DateTime.Now });
-            }
+            return RedirectToAction("Index");
         }
 
         public ActionResult Delete(int id)
@@ -179,6 +174,8 @@ namespace Standard.Controllers
             return Json(new { }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+
+        #region Process line
         public ActionResult PhanHoi(int id, string ykien, string returnUrl)
         {
             var obj = db.Ticket.FirstOrDefault(m => m.ID == id);
@@ -262,6 +259,15 @@ namespace Standard.Controllers
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
             return RedirectToAction("Index", "Home");
         }
+
+        public ActionResult TaoCheckout(int ticketID)
+        {
+            var obj = db.Ticket.FirstOrDefault(m => m.ID == ticketID);
+            if (!CanTaoCheckout(obj)) return AccessDenied();
+            return RedirectToAction("Create", "RequestBill", new { ticketID = ticketID });
+        }
+        #endregion
+
         #region Check role
         public static bool CanGuiYeuCau(Ticket obj)
         {
@@ -278,6 +284,10 @@ namespace Standard.Controllers
         public static bool CanDuyet(Ticket obj)
         {
             return DB.CurrentUser.ID == obj.Current && obj.Status == TicketStatus.ChoDuyet && new fwUserDAL().UserInRole(DB.CurrentUser.ID, RoleList.ApproveTicket);
+        }
+        public static bool CanTaoCheckout(Ticket obj)
+        {
+            return DB.CurrentUser.ID == obj.Current && obj.Status == TicketStatus.DaDuyet && obj.CheckoutID == null;
         }
         #endregion
     }
