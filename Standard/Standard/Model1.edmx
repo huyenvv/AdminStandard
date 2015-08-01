@@ -41,6 +41,16 @@
           <Property Name="USD" Type="money" />
           <Property Name="EUR" Type="money" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DB_9CF750_db.dbo.CheckoutUser' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="CheckoutUser">
+          <Key>
+            <PropertyRef Name="CheckoutID" />
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="CheckoutID" Type="int" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="ChkFeedback">
           <Key>
             <PropertyRef Name="ID" />
@@ -87,6 +97,7 @@
           <Property Name="PassedBy" Type="int" />
           <Property Name="ApprovedBy" Type="int" />
           <Property Name="CheckoutID" Type="int" />
+          <Property Name="FeedbackID" Type="int" />
         </EntityType>
         <EntityType Name="TicketDetails">
           <Key>
@@ -103,11 +114,11 @@
 warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TicketUser">
           <Key>
-            <PropertyRef Name="UserID" />
             <PropertyRef Name="TicketID" />
+            <PropertyRef Name="UserID" />
           </Key>
-          <Property Name="UserID" Type="int" Nullable="false" />
           <Property Name="TicketID" Type="int" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_CheckoutDetails_Checkout">
           <End Role="Checkout" Type="Self.Checkout" Multiplicity="1">
@@ -119,6 +130,20 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="CheckoutDetails">
+              <PropertyRef Name="CheckoutID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CheckoutUser_Ticket">
+          <End Role="Checkout" Type="Self.Checkout" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CheckoutUser" Type="Self.CheckoutUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Checkout">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CheckoutUser">
               <PropertyRef Name="CheckoutID" />
             </Dependent>
           </ReferentialConstraint>
@@ -187,15 +212,25 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <EntitySet Name="Feedback" EntityType="Self.Feedback" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Ticket" EntityType="Self.Ticket" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TicketDetails" EntityType="Self.TicketDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CheckoutUser" EntityType="Self.CheckoutUser" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [CheckoutUser].[CheckoutID] AS [CheckoutID], 
+    [CheckoutUser].[UserID] AS [UserID]
+    FROM [dbo].[CheckoutUser] AS [CheckoutUser]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="TicketUser" EntityType="Self.TicketUser" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TicketUser].[UserID] AS [UserID], 
-    [TicketUser].[TicketID] AS [TicketID]
+    [TicketUser].[TicketID] AS [TicketID], 
+    [TicketUser].[UserID] AS [UserID]
     FROM [dbo].[TicketUser] AS [TicketUser]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_CheckoutDetails_Checkout" Association="Self.FK_CheckoutDetails_Checkout">
             <End Role="Checkout" EntitySet="Checkout" />
             <End Role="CheckoutDetails" EntitySet="CheckoutDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CheckoutUser_Ticket" Association="Self.FK_CheckoutUser_Ticket">
+            <End Role="Checkout" EntitySet="Checkout" />
+            <End Role="CheckoutUser" EntitySet="CheckoutUser" />
           </AssociationSet>
           <AssociationSet Name="FK_ChkFeedback_Checkout" Association="Self.FK_ChkFeedback_Checkout">
             <End Role="Checkout" EntitySet="Checkout" />
@@ -218,33 +253,28 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DB_9CF750_dbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="Dept">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="GroupID" Type="Int32" Nullable="false" />
-          <Property Name="LeaderUserID" Type="Int32" />
-          <Property Name="Type" Type="Int32" />
-        </EntityType>
         <EntityContainer Name="DB_9CF750_dbEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Dept" EntityType="Self.Dept" />
-          <EntitySet Name="TicketDetails" EntityType="DB_9CF750_dbModel.TicketDetails" />
-          <EntitySet Name="TicketUser" EntityType="DB_9CF750_dbModel.TicketUser" />
           <EntitySet Name="Checkout" EntityType="DB_9CF750_dbModel.Checkout" />
           <EntitySet Name="CheckoutDetails" EntityType="DB_9CF750_dbModel.CheckoutDetails" />
           <EntitySet Name="ChkFeedback" EntityType="DB_9CF750_dbModel.ChkFeedback" />
+          <EntitySet Name="Dept" EntityType="DB_9CF750_dbModel.Dept" />
           <EntitySet Name="Feedback" EntityType="DB_9CF750_dbModel.Feedback" />
+          <EntitySet Name="Ticket" EntityType="DB_9CF750_dbModel.Ticket" />
+          <EntitySet Name="TicketDetails" EntityType="DB_9CF750_dbModel.TicketDetails" />
+          <EntitySet Name="CheckoutUser" EntityType="DB_9CF750_dbModel.CheckoutUser" />
+          <EntitySet Name="TicketUser" EntityType="DB_9CF750_dbModel.TicketUser" />
           <AssociationSet Name="FK_CheckoutDetails_Checkout" Association="DB_9CF750_dbModel.FK_CheckoutDetails_Checkout">
             <End Role="Checkout" EntitySet="Checkout" />
             <End Role="CheckoutDetails" EntitySet="CheckoutDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CheckoutUser_Ticket" Association="DB_9CF750_dbModel.FK_CheckoutUser_Ticket">
+            <End Role="Checkout" EntitySet="Checkout" />
+            <End Role="CheckoutUser" EntitySet="CheckoutUser" />
           </AssociationSet>
           <AssociationSet Name="FK_ChkFeedback_Checkout" Association="DB_9CF750_dbModel.FK_ChkFeedback_Checkout">
             <End Role="Checkout" EntitySet="Checkout" />
             <End Role="ChkFeedback" EntitySet="ChkFeedback" />
           </AssociationSet>
-          <EntitySet Name="Ticket" EntityType="DB_9CF750_dbModel.Ticket" />
           <AssociationSet Name="FK_Feedback_Ticket" Association="DB_9CF750_dbModel.FK_Feedback_Ticket">
             <End Role="Ticket" EntitySet="Ticket" />
             <End Role="Feedback" EntitySet="Feedback" />
@@ -258,27 +288,6 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
             <End Role="TicketUser" EntitySet="TicketUser" />
           </AssociationSet>
         </EntityContainer>
-        <EntityType Name="TicketDetails">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TicketID" Type="Int32" Nullable="false" />
-          <Property Name="Title" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="Quantity" Type="Int32" Nullable="false" />
-          <Property Name="Reason" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="DateRequire" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="Ticket" Relationship="DB_9CF750_dbModel.FK_TicketDetails_Ticket" FromRole="TicketDetails" ToRole="Ticket" />
-        </EntityType>
-        <EntityType Name="TicketUser">
-          <Key>
-            <PropertyRef Name="UserID" />
-            <PropertyRef Name="TicketID" />
-          </Key>
-          <Property Name="UserID" Type="Int32" Nullable="false" />
-          <Property Name="TicketID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Ticket" Relationship="DB_9CF750_dbModel.FK_TicketUser_Ticket" FromRole="TicketUser" ToRole="Ticket" />
-        </EntityType>
         <EntityType Name="Checkout">
           <Key>
             <PropertyRef Name="ID" />
@@ -304,6 +313,7 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <Property Name="ChkFeedbackID" Type="Int32" />
           <Property Name="Status" Type="Int32" Nullable="false" />
           <NavigationProperty Name="CheckoutDetails" Relationship="DB_9CF750_dbModel.FK_CheckoutDetails_Checkout" FromRole="Checkout" ToRole="CheckoutDetails" />
+          <NavigationProperty Name="CheckoutUser" Relationship="DB_9CF750_dbModel.FK_CheckoutUser_Ticket" FromRole="Checkout" ToRole="CheckoutUser" />
           <NavigationProperty Name="ChkFeedback" Relationship="DB_9CF750_dbModel.FK_ChkFeedback_Checkout" FromRole="Checkout" ToRole="ChkFeedback" />
         </EntityType>
         <EntityType Name="CheckoutDetails">
@@ -329,6 +339,16 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <Property Name="Created" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Checkout" Relationship="DB_9CF750_dbModel.FK_ChkFeedback_Checkout" FromRole="ChkFeedback" ToRole="Checkout" />
         </EntityType>
+        <EntityType Name="Dept">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="GroupID" Type="Int32" Nullable="false" />
+          <Property Name="LeaderUserID" Type="Int32" />
+          <Property Name="Type" Type="Int32" />
+        </EntityType>
         <EntityType Name="Feedback">
           <Key>
             <PropertyRef Name="ID" />
@@ -340,6 +360,57 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <Property Name="Created" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Ticket" Relationship="DB_9CF750_dbModel.FK_Feedback_Ticket" FromRole="Feedback" ToRole="Ticket" />
         </EntityType>
+        <EntityType Name="Ticket">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="Created" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="DeptID" Type="Int32" Nullable="false" />
+          <Property Name="Track" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Current" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="FilePath" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="PassedBy" Type="Int32" />
+          <Property Name="ApprovedBy" Type="Int32" />
+          <Property Name="CheckoutID" Type="Int32" />
+          <Property Name="FeedbackID" Type="Int32" />
+          <NavigationProperty Name="Feedback" Relationship="DB_9CF750_dbModel.FK_Feedback_Ticket" FromRole="Ticket" ToRole="Feedback" />
+          <NavigationProperty Name="TicketDetails" Relationship="DB_9CF750_dbModel.FK_TicketDetails_Ticket" FromRole="Ticket" ToRole="TicketDetails" />
+          <NavigationProperty Name="TicketUser" Relationship="DB_9CF750_dbModel.FK_TicketUser_Ticket" FromRole="Ticket" ToRole="TicketUser" />
+        </EntityType>
+        <EntityType Name="TicketDetails">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TicketID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="Reason" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DateRequire" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Ticket" Relationship="DB_9CF750_dbModel.FK_TicketDetails_Ticket" FromRole="TicketDetails" ToRole="Ticket" />
+        </EntityType>
+        <EntityType Name="CheckoutUser">
+          <Key>
+            <PropertyRef Name="CheckoutID" />
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="CheckoutID" Type="Int32" Nullable="false" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Checkout" Relationship="DB_9CF750_dbModel.FK_CheckoutUser_Ticket" FromRole="CheckoutUser" ToRole="Checkout" />
+        </EntityType>
+        <EntityType Name="TicketUser">
+          <Key>
+            <PropertyRef Name="TicketID" />
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="TicketID" Type="Int32" Nullable="false" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Ticket" Relationship="DB_9CF750_dbModel.FK_TicketUser_Ticket" FromRole="TicketUser" ToRole="Ticket" />
+        </EntityType>
         <Association Name="FK_CheckoutDetails_Checkout">
           <End Type="DB_9CF750_dbModel.Checkout" Role="Checkout" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -350,6 +421,20 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="CheckoutDetails">
+              <PropertyRef Name="CheckoutID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CheckoutUser_Ticket">
+          <End Type="DB_9CF750_dbModel.Checkout" Role="Checkout" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="DB_9CF750_dbModel.CheckoutUser" Role="CheckoutUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Checkout">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CheckoutUser">
               <PropertyRef Name="CheckoutID" />
             </Dependent>
           </ReferentialConstraint>
@@ -368,26 +453,6 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="Ticket">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Type" Type="Int32" Nullable="false" />
-          <Property Name="Created" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="DeptID" Type="Int32" Nullable="false" />
-          <Property Name="Track" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Current" Type="Int32" Nullable="false" />
-          <Property Name="Status" Type="Int32" Nullable="false" />
-          <Property Name="FilePath" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="PassedBy" Type="Int32" />
-          <Property Name="ApprovedBy" Type="Int32" />
-          <Property Name="CheckoutID" Type="Int32" />
-          <NavigationProperty Name="Feedback" Relationship="DB_9CF750_dbModel.FK_Feedback_Ticket" FromRole="Ticket" ToRole="Feedback" />
-          <NavigationProperty Name="TicketDetails" Relationship="DB_9CF750_dbModel.FK_TicketDetails_Ticket" FromRole="Ticket" ToRole="TicketDetails" />
-          <NavigationProperty Name="TicketUser" Relationship="DB_9CF750_dbModel.FK_TicketUser_Ticket" FromRole="Ticket" ToRole="TicketUser" />
-        </EntityType>
         <Association Name="FK_Feedback_Ticket">
           <End Type="DB_9CF750_dbModel.Ticket" Role="Ticket" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -430,43 +495,12 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="DB_9CF750_dbModelStoreContainer" CdmEntityContainer="DB_9CF750_dbEntities">
-          <EntitySetMapping Name="Dept">
-            <EntityTypeMapping TypeName="DB_9CF750_dbModel.Dept">
-              <MappingFragment StoreEntitySet="Dept">
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="LeaderUserID" ColumnName="LeaderUserID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TicketDetails">
-            <EntityTypeMapping TypeName="DB_9CF750_dbModel.TicketDetails">
-              <MappingFragment StoreEntitySet="TicketDetails">
-                <ScalarProperty Name="DateRequire" ColumnName="DateRequire" />
-                <ScalarProperty Name="Reason" ColumnName="Reason" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TicketUser">
-            <EntityTypeMapping TypeName="DB_9CF750_dbModel.TicketUser">
-              <MappingFragment StoreEntitySet="TicketUser">
-                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Checkout">
             <EntityTypeMapping TypeName="DB_9CF750_dbModel.Checkout">
               <MappingFragment StoreEntitySet="Checkout">
@@ -516,6 +550,17 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Dept">
+            <EntityTypeMapping TypeName="DB_9CF750_dbModel.Dept">
+              <MappingFragment StoreEntitySet="Dept">
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="LeaderUserID" ColumnName="LeaderUserID" />
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Feedback">
             <EntityTypeMapping TypeName="DB_9CF750_dbModel.Feedback">
               <MappingFragment StoreEntitySet="Feedback">
@@ -530,6 +575,7 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <EntitySetMapping Name="Ticket">
             <EntityTypeMapping TypeName="DB_9CF750_dbModel.Ticket">
               <MappingFragment StoreEntitySet="Ticket">
+                <ScalarProperty Name="FeedbackID" ColumnName="FeedbackID" />
                 <ScalarProperty Name="CheckoutID" ColumnName="CheckoutID" />
                 <ScalarProperty Name="ApprovedBy" ColumnName="ApprovedBy" />
                 <ScalarProperty Name="PassedBy" ColumnName="PassedBy" />
@@ -542,6 +588,34 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
                 <ScalarProperty Name="Created" ColumnName="Created" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TicketDetails">
+            <EntityTypeMapping TypeName="DB_9CF750_dbModel.TicketDetails">
+              <MappingFragment StoreEntitySet="TicketDetails">
+                <ScalarProperty Name="DateRequire" ColumnName="DateRequire" />
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CheckoutUser">
+            <EntityTypeMapping TypeName="DB_9CF750_dbModel.CheckoutUser">
+              <MappingFragment StoreEntitySet="CheckoutUser">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="CheckoutID" ColumnName="CheckoutID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TicketUser">
+            <EntityTypeMapping TypeName="DB_9CF750_dbModel.TicketUser">
+              <MappingFragment StoreEntitySet="TicketUser">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

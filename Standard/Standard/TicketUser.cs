@@ -14,8 +14,8 @@ namespace Standard
     
     public partial class TicketUser
     {
-        public int UserID { get; set; }
         public int TicketID { get; set; }
+        public int UserID { get; set; }
     
         public virtual Ticket Ticket { get; set; }
     }
