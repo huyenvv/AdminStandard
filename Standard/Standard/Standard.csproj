@@ -390,6 +390,7 @@
     <Content Include="Views\RequestBill\Create.cshtml" />
     <Content Include="Views\RequestBill\Index.cshtml" />
     <Content Include="Views\RequestBill\Details.cshtml" />
+    <Content Include="Views\Shared\_ma-Notification.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Uploads\Checkout\" />
