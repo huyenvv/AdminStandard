@@ -23,7 +23,7 @@
     @Html.HiddenFor(m => m.ID)
 
     @Html.ValidationSummary(true)
-    <div class="col-sm-12">
+    <div class="col-sm-12" >
         <button type="submit" class="btn btn-primary" onclick="return CheckTicket(false);">Lưu lại</button>
         <button type="submit" class="btn btn-primary" onclick="return CheckTicket(true);">Gửi đề nghị</button>
         <a href="@returnUrl" class="btn btn-default">Hủy</a>

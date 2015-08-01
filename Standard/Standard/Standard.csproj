@@ -179,6 +179,9 @@
     <Compile Include="CheckoutDetails.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="CheckoutUser.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="ChkFeedback.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -260,7 +263,6 @@
     <Content Include="Content\lib\ma\img\Icons\search.png" />
     <Content Include="Content\lib\ma\img\Icons\task.png" />
     <Content Include="Content\lib\ma\img\notifications.png" />
-    <Content Include="Content\lib\ma\img\profile-menu.png" />
     <Content Include="Content\lib\ma\img\1.jpg" />
     <Content Include="Content\lib\ma\img\2.jpg" />
     <Content Include="Content\lib\ma\img\3.jpg" />
@@ -271,6 +273,7 @@
     <Content Include="Content\lib\ma\css\animate.min.css" />
     <Content Include="Content\lib\ma\css\app.min.1.css" />
     <Content Include="Content\lib\ma\css\app.min.2.css" />
+    <Content Include="Content\lib\ma\img\profile-menu.jpg" />
     <Content Include="Content\lib\ma\img\select.png" />
     <Content Include="Content\lib\ma\js\autosize.min.js" />
     <Content Include="Content\lib\ma\js\bootstrap-datetimepicker.min.js" />

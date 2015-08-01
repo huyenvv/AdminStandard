@@ -93,7 +93,7 @@ namespace WebLib.DAL
 inner join fwUserGroup ug on ug.UserID=u.ID
 inner join fwRoleGroup rg on rg.GroupID=ug.GroupID
 inner join fwRole r on r.ID=rg.RoleID
-where r.Code=" + roleCode;
+where r.Code='" + roleCode+"'";
             var lst = new List<fwUser>();
             DataTable dt = DataUtilities.GetTable(query, CommandType.Text);
             foreach (DataRow row in dt.Rows)
@@ -157,7 +157,7 @@ where r.Code=" + roleCode;
         }
         public bool UserInRole(params string[] roles)
         {
-            var user = (fwUser)SessionUtilities.Get(Constant.Session_CurrentUser);
+            var user = GetCurrentUser();
             if (user == null) return false;
             return UserInRole(user.ID, roles);
         }
@@ -180,22 +180,22 @@ where r.Code=" + roleCode;
             }
             return kq;
         }
-        public bool UserInRole(string userIdentity, params string[] roles)
-        {
-            var u = GetByAspNetUserID(userIdentity);
-            if (u == null) return false;
-            var currentRoles = new fwRoleDAL().ListByUser(u.ID).Select(m => m.Code).ToArray();
-            bool kq = false;
-            foreach (var role in currentRoles)
-            {
-                if (roles.Contains(role))
-                {
-                    kq = true;
-                    break;
-                }
-            }
-            return kq;
-        }
+        //public bool UserInRole(string userIdentity, params string[] roles)
+        //{
+        //    var u = GetByAspNetUserID(userIdentity);
+        //    if (u == null) return false;
+        //    var currentRoles = new fwRoleDAL().ListByUser(u.ID).Select(m => m.Code).ToArray();
+        //    bool kq = false;
+        //    foreach (var role in currentRoles)
+        //    {
+        //        if (roles.Contains(role))
+        //        {
+        //            kq = true;
+        //            break;
+        //        }
+        //    }
+        //    return kq;
+        //}
         #endregion
     }
 }

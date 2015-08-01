@@ -1,10 +1,11 @@
 ﻿@model Ticket
 @using WebLib.DAL
+@using Standard.Controllers
 @{
     var currentUser = fwUserDAL.GetCurrentUser();
     var createby = new fwUserDAL().GetByID(Model.CreatedBy);
     var listTickKet = Model.TicketDetails;
-    var dept = DB.Entities.Dept.FirstOrDefault(m=>m.ID==Model.DeptID);
+    var dept = DB.Entities.Dept.FirstOrDefault(m => m.ID == Model.DeptID);
     var listType = new[] { "", "", "", "" };
     listType[Model.Type] = "checked='checked'";
     var currentRequest = Request.QueryString["returnUrl"];
@@ -15,7 +16,9 @@
 @section  scripts{
     <script src="~/Content/js/ticket.js"></script>
 }
+<style>
 
+</style>
 
 @using (Html.BeginForm(null, null, new { returnUrl = returnUrl }, FormMethod.Post))
 {
@@ -24,9 +27,45 @@
     @Html.HiddenFor(m => m.ID)
 
     @Html.ValidationSummary(true)
+    <div class="col-sm-12 process-circle">
+        @for (int i = 0; i < TicketStatus.TicketStatusTitle.Length; i++)
+        {
+            if (Model.Status == i)
+            {
+                <button class="btn bgm-amber waves-effect" onclick="return false;">@TicketStatus.TicketStatusTitle[i]</button>
+            }
+            else
+            {
+                <button class="btn bgm-gray waves-effect" disabled="disabled">@TicketStatus.TicketStatusTitle[i]</button>
+            }
+            if (i != TicketStatus.TicketStatusTitle.Length - 1)
+            {
+                <button class="btn btn-default btn-xs btn-icon waves-effect waves-circle waves-float" disabled="disabled"><i class="md md-arrow-forward"></i></button>
+            }
+        }
+    </div>
+    <div class="process-circle">
+        <br /><hr />
+        <br />
+    </div>
     <div class="col-sm-12">
-        <button type="submit" class="btn btn-primary" onclick="return CheckTicket(true);">Gửi đề nghị</button>
-        <a href="@returnUrl" class="btn btn-default">Hủy</a>
+        @if (TicketController.CanGuiYeuCau(Model))
+        {
+            <button type="button" onclick="location.href='@Url.Action("GuiYeuCau", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Gửi yêu cầu</button>
+        }
+        @if (TicketController.CanThongQua(Model))
+        {
+            <button type="button" onclick="location.href='@Url.Action("ThongQua", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Thông qua</button>
+        }
+        @if (TicketController.CanKiemDuyet(Model))
+        {
+            <button type="button" onclick="location.href='@Url.Action("KiemDuyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Đồng ý kiểm duyệt</button>
+        }
+        @if (TicketController.CanDuyet(Model))
+        {
+            <button type="button" onclick="location.href='@Url.Action("Duyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Phê duyệt</button>
+        }
+        <button type="button" onclick="window.history.back();" class="btn btn-default waves-effect">Quay lại</button>
     </div>
     <br />
     <br />
@@ -51,32 +90,15 @@
     <br /><br />
     <br />
     <div class="col-sm-4">
-        <div class="form-group fg-float">
-            <div class="fg-line">
-                <label>Ngày đề nghị</label>
-                <input type="text" name="NgayDenghi" value="@Model.Created.ToString("dd/MM/yyyy")" class=" form-control fg-input" readonly="readonly" />
-            </div>
-
-        </div>
+        <span>Ngày đề nghị: </span><h4 class="color-blue">@Model.Created.ToString("dd/MM/yyyy")</h4>
     </div>
     <div class="col-sm-4">
-        <div class="form-group fg-float">
-            <div class="fg-line">
-                <label>Người đề nghị</label>
-                <input type="text" name="NguoiDeNghi" value="@createby.Name" class=" form-control fg-input" readonly="readonly" />
-            </div>
-
-        </div>
+        <span>Người đề nghị: </span><h4 class="color-blue">@createby.Name</h4>
     </div>
     <div class="col-sm-4">
-        <div class="form-group fg-float">
-            <div class="fg-line">
-                <label>Bộ phận</label>
-                <input type="text" value="@dept.Title" class=" form-control fg-input" readonly="readonly" />
-            </div>
-
-        </div>
-    </div>
+        <span>Bộ phận: </span><h4 class="color-blue">@dept.Title</h4>
+    </div> <br />
+    <br />
     <div class="col-sm-12">
         <table class="table table-striped table-vmiddle @(listTickKet!=null && listTickKet.Count > 0 ? "" : "hide")">
             <thead>
@@ -127,7 +149,7 @@
                                 @item.Reason
                             </td>
                             <td>
-                                @item.DateRequire
+                                @item.DateRequire.ToString("dd/MM/yyyy")
                             </td>
                         </tr>
                     }
@@ -136,16 +158,20 @@
         </table>
         <br />
     </div>
-
     <br />
-    <div id="frmChiTietYeuCau">
+}
+@if (Model.Status != TicketStatus.KhoiTao && Model.Status != TicketStatus.DaDuyet && Model.Current == DB.CurrentUser.ID)
+{
+    using (Html.BeginForm("PhanHoi", "Ticket", FormMethod.Post))
+    {
+        @Html.Hidden("id", Model.ID)
         <div class="col-sm-12">
             <div class="form-group fg-float">
                 <div class="fg-line">
                     <label>
-                        Ý kiến phản hôi
+                        Ý kiến phản hồi
                     </label>
-                    <textarea class="form-control fg-input" id="txtPhanHoi" rows="3" name="MucDich"></textarea>
+                    <textarea class="form-control fg-input input-lg" id="txtPhanHoi" rows="3" name="ykien"></textarea>
                 </div>
 
             </div>
@@ -155,9 +181,8 @@
         </div>
         <div class="clearfix"></div>
         <div class="col-sm-6">
-            <button class="btn btn-default btn-icon-text waves-effect" id="PhanHoi"><i class="md md-arrow-back"></i>  Phản hồi</button>
+            <button type="submit" class="btn btn-primary btn-icon-text waves-effect"><i class="md md-arrow-back"></i>  Phản hồi</button>
         </div>
-
-    </div>
-
+    }
 }
+
