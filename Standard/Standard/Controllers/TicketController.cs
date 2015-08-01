@@ -164,7 +164,21 @@ namespace Standard.Controllers
         }
 
         #region check action
-        public static 
+        public static bool CanThongQua(Ticket obj)
+        {
+            var user = fwUserDAL.GetCurrentUser();
+            return obj.Current == obj.ID && obj.Status == TicketStatus.ChoThongQua;
+        }
+        public static bool CanKiemDuyet(Ticket obj)
+        {
+            var user = fwUserDAL.GetCurrentUser();
+            return obj.Current == obj.ID && obj.Status == TicketStatus.CanKiemDuyet;
+        }
+        public static bool CanDuyet(Ticket obj)
+        {
+            var user = fwUserDAL.GetCurrentUser();
+            return obj.Current == obj.ID && new fwUserDAL().UserInRole(RoleList.ApproveTicket) && obj.Status == TicketStatus.ChoDuyet;
+        }
         #endregion
     }
 }
