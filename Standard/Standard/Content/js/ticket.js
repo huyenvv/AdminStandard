@@ -45,6 +45,12 @@
         $('input.inlineCheckbox1').not(this).prop('checked', false);
     });
 
+
+    $('#PhanHoi').click(function () {
+        var ykien = $("#txtPhanHoi").val();
+        location.href = "/Ticket/PhanHoi?ykien=" + ykien
+    });
+
 });
 function removeTicketDetail(id, e) {
     if (confirm("Bạn chắc chắn?")) {
