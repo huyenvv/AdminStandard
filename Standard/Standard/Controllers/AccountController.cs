@@ -349,7 +349,10 @@ namespace Standard.Controllers
             AuthenticationManager.SignOut();
             return RedirectToAction("Index", "Home");
         }
-        [HttpGet]
+        /// <summary>
+        /// ////My custom logout function
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Logout()
         {
             WebLib.DAL.fwUserDAL.Logout();

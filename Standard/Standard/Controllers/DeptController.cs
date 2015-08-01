@@ -7,6 +7,7 @@ using Standard.Repository;
 
 namespace Standard.Controllers
 {
+    [CustomAuthorize(RoleList.SystemManager)]
     public class DeptController : BaseController
     {
         private readonly DeptRepository _deptRepository;

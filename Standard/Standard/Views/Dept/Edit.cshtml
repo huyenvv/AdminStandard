@@ -11,7 +11,7 @@
     }
     else
     {
-        if(lstG.Count > 0)
+        if (lstG.Count > 0)
         {
             var g = new WebLib.Models.fwGroup() { ID = lstG.First().ID };
             lst = g.fwUser;
@@ -44,14 +44,14 @@
         @Html.HiddenFor(model => model.ID)
 
         <div class="form-group">
-            <label for="Title" >Tên bộ phận <span class="color-red">*</span></label>
+            <label for="Title">Tên bộ phận <span class="color-red">*</span></label>
             <div class="fg-line">
                 @Html.TextBoxFor(model => model.Title, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Title)
             </div>
         </div>
         <div class="form-group">
-            <label for="GroupID" >Group <span class="color-red">*</span></label>
+            <label for="GroupID">Group <span class="color-red">*</span></label>
             <div class="fg-line">
                 <select name="GroupID" id="GroupID" class="form-control">
                     @foreach (var item in lstG)
@@ -63,7 +63,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="LeaderUserID" >Trưởng bộ phận</label>
+            <label for="LeaderUserID">Trưởng bộ phận</label>
             <div class="select fg-line" id="LeaderUserID">
                 <select name="LeaderUserID" class="form-control">
                     <option value=""> -:- </option>
@@ -74,6 +74,16 @@
                             <option value="@item.ID" @(Model.LeaderUserID == item.ID ? "selected" : null)>@item.Name</option>
                         }
                     }
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Type">Loại phòng ban </label>
+            <div class="fg-line">
+                <select name="Type" class="form-control">
+                    <option > --:-- </option>
+                    <option value="1" @(Model.Type == 1 ? "selected" : null)>Kiểm tra</option>
+                    <option value="2" @(Model.Type == 2 ? "selected" : null)>Kiểm soát nội bộ</option>
                 </select>
             </div>
         </div>

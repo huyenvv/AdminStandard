@@ -13,6 +13,7 @@
           <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="GroupID" Type="int" Nullable="false" />
           <Property Name="LeaderUserID" Type="int" />
+          <Property Name="Type" Type="int" />
         </EntityType>
         <EntityType Name="Ticket">
           <Key>
@@ -27,6 +28,8 @@
           <Property Name="Current" Type="int" Nullable="false" />
           <Property Name="Status" Type="int" Nullable="false" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="1000" />
+          <Property Name="PassedBy" Type="int" />
+          <Property Name="ApprovedBy" Type="int" />
         </EntityType>
         <EntityType Name="TicketDetails">
           <Key>
@@ -108,6 +111,7 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="GroupID" Type="Int32" Nullable="false" />
           <Property Name="LeaderUserID" Type="Int32" />
+          <Property Name="Type" Type="Int32" />
         </EntityType>
         <EntityContainer Name="DB_9CF750_dbEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Dept" EntityType="Self.Dept" />
@@ -138,6 +142,8 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <NavigationProperty Name="TicketDetails" Relationship="DB_9CF750_dbModel.FK_TicketDetails_Ticket" FromRole="Ticket" ToRole="TicketDetails" />
           <NavigationProperty Name="TicketUser" Relationship="DB_9CF750_dbModel.FK_TicketUser_Ticket" FromRole="Ticket" ToRole="TicketUser" />
           <Property Name="FilePath" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="PassedBy" Type="Int32" />
+          <Property Name="ApprovedBy" Type="Int32" />
         </EntityType>
         <EntityType Name="TicketDetails">
           <Key>
@@ -197,6 +203,7 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <EntitySetMapping Name="Dept">
             <EntityTypeMapping TypeName="DB_9CF750_dbModel.Dept">
               <MappingFragment StoreEntitySet="Dept">
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="LeaderUserID" ColumnName="LeaderUserID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
@@ -207,6 +214,8 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <EntitySetMapping Name="Ticket">
             <EntityTypeMapping TypeName="DB_9CF750_dbModel.Ticket">
               <MappingFragment StoreEntitySet="Ticket">
+                <ScalarProperty Name="ApprovedBy" ColumnName="ApprovedBy" />
+                <ScalarProperty Name="PassedBy" ColumnName="PassedBy" />
                 <ScalarProperty Name="FilePath" ColumnName="FilePath" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Current" ColumnName="Current" />

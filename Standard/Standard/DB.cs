@@ -12,7 +12,7 @@ namespace Standard
         { get { return WebLib.DAL.fwUserDAL.GetCurrentUser(); } }
         public class BaseClass<T> where T : class
         {
-            DB_9CF750_dbEntities _db;
+            public DB_9CF750_dbEntities _db;
 
             public BaseClass()
             {

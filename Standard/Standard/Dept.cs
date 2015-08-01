@@ -18,5 +18,6 @@ namespace Standard
         public string Title { get; set; }
         public int GroupID { get; set; }
         public Nullable<int> LeaderUserID { get; set; }
+        public Nullable<int> Type { get; set; }
     }
 }

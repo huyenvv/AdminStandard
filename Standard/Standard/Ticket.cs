@@ -29,6 +29,8 @@ namespace Standard
         public int Current { get; set; }
         public int Status { get; set; }
         public string FilePath { get; set; }
+        public Nullable<int> PassedBy { get; set; }
+        public Nullable<int> ApprovedBy { get; set; }
     
         public virtual ICollection<TicketDetails> TicketDetails { get; set; }
         public virtual ICollection<TicketUser> TicketUser { get; set; }

@@ -10,7 +10,7 @@ using WebLib.DAL;
 
 namespace Standard.Controllers
 {
-    [CustomAuthorize(RoleList.ApproveTicket)]
+    [CustomAuthorize]
     public class TicketController : BaseController
     {
         private readonly TicketRepository _ticketRepository;
@@ -32,12 +32,13 @@ namespace Standard.Controllers
 
         public ActionResult Details(int id)
         {
-            return View();
+            var tick = _ticketRepository.GetById(id);
+            return View(tick);
         }
 
         public ActionResult Create(int id = 0)
         {
-            ViewBag.listDept = _deptRepository.GetAll();
+            ViewBag.listDept = _deptRepository.GetKiemSoat();
             var tick = _ticketRepository.GetById(id);
             if (tick == null) return View(new Ticket { Created = DateTime.Now });
 
@@ -150,22 +151,6 @@ namespace Standard.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: /Ticket/Delete/5
         public JsonResult DeleteTicketDetail(int id)
         {
             if (SessionUtilities.Exist(Constant.SESSION_TicketDetails))

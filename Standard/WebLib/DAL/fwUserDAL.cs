@@ -107,25 +107,35 @@ namespace WebLib.DAL
         #region bussiness
         public static fwUser GetCurrentUser()
         {
-            if (!SessionUtilities.Exist(Constant.Session_CurrentUser)) return null;
+            if (!SessionUtilities.Exist(Constant.Session_CurrentUser))
+                if (StringHelper.HttpContext.Request.Cookies.Get(Constant.Session_CurrentUser) != null)
+                {
+                    var id = int.Parse(StringHelper.HttpContext.Request.Cookies.Get(Constant.Session_CurrentUser).Value);
+                    var u = new fwUserDAL().GetByID(id);
+                    SessionUtilities.Set(Constant.Session_CurrentUser, u);
+                    return u;
+                }
+                else return null;
             return (fwUser)SessionUtilities.Get(Constant.Session_CurrentUser);
         }
         public bool Login(string username, string pass)
         {
             var user = GetByUserName(username);
             if (user == null || user.Pass != pass) return false;
+            StringHelper.HttpContext.Response.Cookies.Add(new System.Web.HttpCookie(Constant.Session_CurrentUser, user.ID.ToString()));
             SessionUtilities.Add(Constant.Session_CurrentUser, user);
             return true;
         }
         public static void Logout()
         {
+            StringHelper.HttpContext.Response.Cookies.Remove(Constant.Session_CurrentUser);
             SessionUtilities.Remove(Constant.Session_CurrentUser);
         }
         public int Authorize(params string[] roles)
         {
-            if (!SessionUtilities.Exist(Constant.Session_CurrentUser)) return 1;
+            var user = GetCurrentUser();
+            if (user == null) return 1;
             if (roles == null || roles.Length == 0) return 0;
-            var user = (fwUser)SessionUtilities.Get(Constant.Session_CurrentUser);
             if (!UserInRole(user.ID, roles)) return 2;
             return 0;
         }

@@ -10,9 +10,16 @@
     <a href="@Url.Action("Edit", new { returnUrl = Request.RawUrl })" class="btn btn-primary">Thêm bộ phận</a>
 </p>
 <table class="table">
+    <thead>
+        <tr>
+            <td>Tên phòng</td>
+            <td>Liên kết nhóm</td>
+            <td>Trưởng phòng</td>
+        </tr>
+    </thead>
     @foreach (var item in Model)
     {
-        var g = gdal.GetByID(item.ID);
+        var g = gdal.GetByID(item.GroupID);
         var u = item.LeaderUserID == null ? null : udal.GetByID(item.LeaderUserID.Value);
         <tr>
             <td>
@@ -21,7 +28,7 @@
             <td>
                 @if (g != null)
                 {
-                    <a href="@Url.Action("EditGroup", "WebLib", new { id = g.ID, returnUrl = Request.RawUrl })">@g.Title</a>
+                    <a href="@Url.Action("AddUserToGroup", "WebLib", new { groupID = g.ID, returnUrl = Request.RawUrl })">@g.Title</a>
                 }
             </td>
             <td>
