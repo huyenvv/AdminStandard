@@ -37,3 +37,6 @@
 .modal-backdrop {
     z-index: 9;
 }
+div#modalDefault {
+    text-align: left;
+}

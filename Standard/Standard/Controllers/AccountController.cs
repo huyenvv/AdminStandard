@@ -91,10 +91,12 @@ namespace Standard.Controllers
         {
             if (ModelState.IsValid)
             {
-                var db = DB.Entities;
+                var user = DB.CurrentUser;
                 if (DB.CurrentUser.Pass == model.OldPassword)
                 {
-                    return PartialView("_ChangePasswordSuccess");
+                    user.Pass = model.NewPassword;
+                    new fwUserDAL().Update(user);
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
