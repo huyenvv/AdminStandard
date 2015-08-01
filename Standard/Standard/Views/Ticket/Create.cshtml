@@ -6,6 +6,8 @@
     var listDept = (List<Dept>)ViewBag.listDept;
     var listType = new[] { "", "", "", "" };
     listType[Model.Type] = "checked='checked'";
+    var currentRequest = Request.QueryString["returnUrl"];
+    var returnUrl = !string.IsNullOrEmpty(currentRequest) ? currentRequest : Url.Action("Index");
     ViewBag.Title = "ĐỀ NGHỊ DỤNG CỤ LÀM VIỆC/ REQUEST FOR WORKING FACILITIES";
 }
 <link href="~/Content/css/ticket.css" rel="stylesheet" />
@@ -14,7 +16,7 @@
 }
 
 
-@using (Html.BeginForm(null, null, new { returnUrl = Request.QueryString["returnUrl"] }, FormMethod.Post))
+@using (Html.BeginForm(null, null, new { returnUrl = returnUrl }, FormMethod.Post))
 {
     @Html.AntiForgeryToken()
     @Html.Hidden("isSend", true)
@@ -24,7 +26,7 @@
     <div class="col-sm-12">
         <button type="submit" class="btn btn-primary" onclick="return CheckTicket(false);">Lưu lại</button>
         <button type="submit" class="btn btn-primary" onclick="return CheckTicket(true);">Gửi đề nghị</button>
-        <a href="@Request.QueryString["returnUrl"]" class="btn btn-default">Hủy</a>
+        <a href="@returnUrl" class="btn btn-default">Hủy</a>
     </div>
     <br />
     <br />
