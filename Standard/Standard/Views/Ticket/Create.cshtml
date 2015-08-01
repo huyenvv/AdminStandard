@@ -36,7 +36,7 @@
             (1) Mua <br /><i>Purchase</i>
         </label>
         <label class="checkbox checkbox-inline m-r-20">
-            <input type="checkbox" class="inlineCheckbox1" name="Type" value="2" @(listType[3])>
+            <input type="checkbox" class="inlineCheckbox1" name="Type" value="2" @(listType[2])>
             <i class="input-helper"></i>
             (2) Thay thế<br /><i>Replacement</i>
         </label>
@@ -77,7 +77,7 @@
                     <select class="form-control" name="DeptID">
                         @foreach (var item in listDept)
                         {
-                            <option value="@item.ID">@item.Title</option>
+                            <option value="@item.ID" @(item.ID == Model.DeptID ? "selected='selected'" : "")>@item.Title</option>
                         }
                     </select>
                 </div>

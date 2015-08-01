@@ -269,6 +269,7 @@
     <Content Include="Content\lib\ma\css\animate.min.css" />
     <Content Include="Content\lib\ma\css\app.min.1.css" />
     <Content Include="Content\lib\ma\css\app.min.2.css" />
+    <Content Include="Content\lib\ma\img\select.png" />
     <Content Include="Content\lib\ma\js\autosize.min.js" />
     <Content Include="Content\lib\ma\js\bootstrap-datetimepicker.min.js" />
     <Content Include="Content\lib\ma\js\bootstrap-growl.min.js" />

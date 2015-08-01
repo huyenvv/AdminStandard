@@ -22,9 +22,9 @@ namespace Standard
         {
             DB_9CF750_dbEntities _db;
 
-            public BaseClass()
+            public BaseClass(DB_9CF750_dbEntities entity)
             {
-                _db = new DB_9CF750_dbEntities();
+                _db = entity;
             }
 
             public List<T> Find(Expression<Func<T, bool>> predicate)
@@ -75,13 +75,30 @@ namespace Standard
 
             public void Delete(T entity)
             {
+                _db.Set<T>().Attach(entity);
                 _db.Set<T>().Remove(entity);
                 _db.SaveChanges();
             }
 
             public void Delete(List<T> lst)
             {
-                _db.Set<T>().RemoveRange(lst);
+                
+                foreach (var obj in lst)
+                {
+                    _db.Set<T>().Attach(obj);
+                    _db.Set<T>().Remove(obj);
+                }                
+                _db.SaveChanges();
+            }
+
+            public void Delete(List<int> lstId)
+            {
+                var removes = _db.Set<T>();
+                foreach (var id in lstId)
+                {
+                    T obj = _db.Set<T>().Find(id);
+                    removes.Remove(obj);
+                }                
                 _db.SaveChanges();
             }
         }

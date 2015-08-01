@@ -10,12 +10,24 @@ namespace Standard.Repository
 {
     public class TicketRepository : DB.BaseClass<Ticket>
     {
+        public TicketRepository(DB_9CF750_dbEntities db)
+            : base(db)
+        {
+        }
     }
     public class TicketDetailRepository : DB.BaseClass<TicketDetails>
     {
+        public TicketDetailRepository(DB_9CF750_dbEntities db)
+            : base(db)
+        {
+        }
     }
     public class DeptRepository : DB.BaseClass<Dept>
     {
+        public DeptRepository(DB_9CF750_dbEntities db)
+            : base(db)
+        {
+        }
         public List<Dept> GetPhongBan()
         {
             return Find(m => m.Type == null).ToList();
@@ -31,5 +43,9 @@ namespace Standard.Repository
     }
     public class TicketUserRepository : DB.BaseClass<TicketUser>
     {
+        public TicketUserRepository(DB_9CF750_dbEntities db)
+            : base(db)
+        {
+        }
     }
 }

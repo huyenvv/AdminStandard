@@ -17,12 +17,14 @@ namespace Standard.Controllers
         private readonly TicketDetailRepository _ticketDetailRepository;
         private readonly DeptRepository _deptRepository;
         private readonly TicketUserRepository _ticketUserRepository;
+        private DB_9CF750_dbEntities db;
         public TicketController()
         {
-            _ticketRepository = new TicketRepository();
-            _deptRepository = new DeptRepository();
-            _ticketDetailRepository = new TicketDetailRepository();
-            _ticketUserRepository = new TicketUserRepository();
+            db = DB.Entities;
+            _ticketRepository = new TicketRepository(db);
+            _deptRepository = new DeptRepository(db);
+            _ticketDetailRepository = new TicketDetailRepository(db);
+            _ticketUserRepository = new TicketUserRepository(db);
         }
         public ActionResult Index()
         {
@@ -75,23 +77,31 @@ namespace Standard.Controllers
                         {
                             var currentUser = fwUserDAL.GetCurrentUser();
                             var getTicket = _ticketRepository.GetById(tick.ID);
-                            if (getTicket != null)
+                            if (getTicket != null && getTicket.TicketDetails.Count > 0)
                             {
                                 // edit
-                                var lstTicketDetailModel = getTicket.TicketDetails;
+                                getTicket.Type = tick.Type;
+                                getTicket.DeptID = tick.DeptID;
+                                _ticketRepository.Update(getTicket);
+
+                                var lstTicketDetailModel = getTicket.TicketDetails.Select(m => m.ID).ToList();
                                 _ticketDetailRepository.Delete(lstTicketDetailModel);
                             }
-                            // Create ticket
-                            var ticket = new Ticket
+                            else
                             {
-                                Current = currentUser.ID,
-                                Created = DateTime.Now,
-                                CreatedBy = currentUser.ID,
-                                Status = TicketStatus.KhoiTao,
-                                Track = currentUser.ID + "#;",
-                                DeptID = tick.DeptID
-                            };
-                            _ticketRepository.Insert(ticket);
+                                // Create ticket
+                                getTicket = new Ticket
+                                {
+                                    Current = currentUser.ID,
+                                    Created = DateTime.Now,
+                                    CreatedBy = currentUser.ID,
+                                    Status = TicketStatus.KhoiTao,
+                                    Track = currentUser.ID + "#;",
+                                    DeptID = tick.DeptID
+                                };
+                                _ticketRepository.Insert(getTicket);
+                            }
+
 
                             // create ticket detail
                             var listDetail = listTicketDetail.Select(item => new TicketDetails
@@ -100,7 +110,7 @@ namespace Standard.Controllers
                                 Quantity = item.Quantity,
                                 Reason = item.Reason,
                                 Title = item.Title,
-                                TicketID = ticket.ID
+                                TicketID = getTicket.ID
                             }).ToList();
                             _ticketDetailRepository.Insert(listDetail);
 
@@ -113,14 +123,14 @@ namespace Standard.Controllers
                                 var dept = _deptRepository.GetById(tick.DeptID);
                                 if (dept != null && dept.LeaderUserID.HasValue)
                                 {
-                                    ticket.Track += dept.LeaderUserID + "#;";
-                                    ticket.Status = TicketStatus.ChoThongQua;
-                                    _ticketRepository.Update(ticket);
+                                    getTicket.Track += dept.LeaderUserID + "#;";
+                                    getTicket.Status = TicketStatus.ChoThongQua;
+                                    _ticketRepository.Update(getTicket);
 
                                     // add to table Ticket User 
                                     _ticketUserRepository.Insert(new TicketUser
                                     {
-                                        TicketID = ticket.ID,
+                                        TicketID = getTicket.ID,
                                         UserID = dept.LeaderUserID.Value
                                     });
                                 }
@@ -142,7 +152,7 @@ namespace Standard.Controllers
         public ActionResult Delete(int id)
         {
             var tick = _ticketRepository.GetById(id);
-            if (tick.CreatedBy != fwUserDAL.GetCurrentUser().ID || tick.Status != TicketStatus.ChoDuyet)
+            if (tick.CreatedBy != fwUserDAL.GetCurrentUser().ID || tick.Status != TicketStatus.KhoiTao)
                 return RedirectToAction("AccessDenied", "Home");
 
             // delete 

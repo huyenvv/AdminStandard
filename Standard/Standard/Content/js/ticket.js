@@ -69,7 +69,7 @@ function CheckTicket(flag) {
         $("#loaiticket").addClass("hide");
         if ($("table tbody tr").length > 0) {
             $("#loaiticketDetail").addClass("hide");
-            $("#isSave").val(flag);
+            $("#isSend").val(flag);
             return true;
         }
         $("#loaiticketDetail").removeClass("hide");

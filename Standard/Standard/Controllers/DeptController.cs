@@ -9,10 +9,11 @@ namespace Standard.Controllers
 {
     public class DeptController : BaseController
     {
-        private readonly DeptRepository _deptRepository;
+        private readonly DeptRepository _deptRepository;        
         public DeptController()
         {
-            _deptRepository = new DeptRepository();
+            var db = DB.Entities;
+            _deptRepository = new DeptRepository(db);
         }
         public ActionResult Index()
         {
