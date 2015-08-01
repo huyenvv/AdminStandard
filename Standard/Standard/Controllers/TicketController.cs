@@ -71,7 +71,7 @@ namespace Standard.Controllers
             return View(tick);
         }
         [HttpPost]
-        public ActionResult Create(Ticket tick, bool isSend = false)
+        public ActionResult Create(Ticket tick, List<HttpPostedFileBase> files, bool isSend = false)
         {
             // TODO: Add insert logic here
             if (tick.Type > 0 && tick.DeptID > 0)
@@ -82,10 +82,21 @@ namespace Standard.Controllers
                     if (listTicketDetail.Count > 0)
                     {
                         var currentUser = fwUserDAL.GetCurrentUser();
+                        // xu ly file 
+                        string fileNames = "";
+                        foreach (var item in files)
+                        {
+                            if (item != null)
+                            {
+                                var fileName = FileUpload.CreateFile(item, UploadFolder.Ticket, false);
+                                fileNames += fileName + ";#";
+                            }
+                        }
                         var getTicket = _ticketRepository.GetById(tick.ID);
                         if (getTicket != null && getTicket.TicketDetails.Count > 0)
                         {
                             // edit
+                            getTicket.FilePath += fileNames;
                             getTicket.Type = tick.Type;
                             getTicket.DeptID = tick.DeptID;
                             _ticketRepository.Update(getTicket);
@@ -98,17 +109,18 @@ namespace Standard.Controllers
                             // Create ticket
                             getTicket = new Ticket
                             {
+                                FilePath = fileNames,
                                 Current = currentUser.ID,
                                 Created = DateTime.Now,
                                 CreatedBy = currentUser.ID,
                                 Status = TicketStatus.KhoiTao,
                                 Track = currentUser.ID + "#;",
-                                DeptID = tick.DeptID
+                                DeptID = tick.DeptID,
+                                Type = tick.Type
                             };
                             _ticketRepository.Insert(getTicket);
                             db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", getTicket.ID, DB.CurrentUser.ID));
                         }
-
 
                         // create ticket detail
                         var listDetail = listTicketDetail.Select(item => new TicketDetails

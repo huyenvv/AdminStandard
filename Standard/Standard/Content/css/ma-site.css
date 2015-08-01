@@ -31,3 +31,6 @@
 .table-bordered {
     border: 1px solid #f0f0f0;
 }
+.m-r-10 {
+    margin-right: 0px !important;
+}
