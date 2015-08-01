@@ -15,21 +15,22 @@
         if (check) {
             $("#messerror").addClass("hide");
             var no = $("table tbody tr").length + 1;
+            var id = 10000 + no;
             var dienGiai = $("#DienGiai").val();
             var mucDich = $("#MucDich").val();
             var ngayCan = $("#NgayCan").val();
             var data = {
-                Id: no,
-                DienGiai: dienGiai,
-                SoLuong: soluong,
-                LyDo: mucDich,
-                NgayCan: ngayCan
+                ID: id,
+                Title: dienGiai,
+                Quantity: soluong,
+                Reason: mucDich,
+                DateRequire: ngayCan
             };
             $.post("/Ticket/AddTicketDetail", data)
               .done(function (ok) {
                   $("table").removeClass("hide");
                   $("table tbody").append("<tr><td>" + no + "</td><td>" + dienGiai + "</td><td>" + soluong + "</td><td>" + mucDich + "</td><td>" + ngayCan + "</td><td>" +
-                      "<button class='color-red btn btn-icon' onclick='return removeTicketDetail(" + no + ",this);'><span class='md md-delete'></span></button>" +
+                      "<button class='color-red btn btn-icon' onclick='return removeTicketDetail(" + id + ",this);'><span class='md md-delete'></span></button>" +
                       "</td></tr>");
               });
         } else {
@@ -57,11 +58,12 @@ function removeTicketDetail(id, e) {
     return false;
 }
 
-function CheckTicket() {
+function CheckTicket(flag) {
     if ($('input.inlineCheckbox1:checked').length > 0) {
         $("#loaiticket").addClass("hide");
         if ($("table tbody tr").length > 0) {
             $("#loaiticketDetail").addClass("hide");
+            $("#isSave").val(flag);
             return true;
         }
         $("#loaiticketDetail").removeClass("hide");
