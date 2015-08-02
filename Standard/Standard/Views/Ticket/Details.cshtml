@@ -65,6 +65,10 @@
         {
             <button type="button" onclick="location.href='@Url.Action("Duyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Phê duyệt</button>
         }
+        @if (TicketController.CanTaoCheckout(Model))
+        {
+            <a href="@Url.Action("TaoCheckout", new { ticketID = Model.ID })" class=" btn btn-primary waves-effect"><i class="md md-check"></i> Tạo phiếu yêu cầu thanh toán</a>
+        }
         <button type="button" onclick="window.history.back();" class="btn btn-default waves-effect">Quay lại</button>
     </div>
     <br />
