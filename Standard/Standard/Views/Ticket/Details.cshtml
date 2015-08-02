@@ -49,23 +49,23 @@
         <br />
     </div>
     <div class="col-sm-12">
-        @if (Model.Status == TicketStatus.KhoiTao && Model.Current == DB.CurrentUser.ID)
+        @if (TicketController.CanGuiYeuCau(Model))
         {
-            <button type="submit" class="btn btn-primary waves-effect" onclick="return CheckTicket(true);"><i class="md md-check"></i> Gửi yêu cầu</button>
+            <button type="button" onclick="location.href='@Url.Action("GuiYeuCau", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Gửi yêu cầu</button>
         }
         @if (TicketController.CanThongQua(Model))
         {
-            <button onclick="location.href='@Url.Action("ThongQua", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Thông qua</button>
+            <button type="button" onclick="location.href='@Url.Action("ThongQua", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Thông qua</button>
         }
         @if (TicketController.CanKiemDuyet(Model))
         {
-            <button onclick="location.href='@Url.Action("KiemDuyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Đồng ý kiểm duyệt</button>
+            <button type="button" onclick="location.href='@Url.Action("KiemDuyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Đồng ý kiểm duyệt</button>
         }
         @if (TicketController.CanDuyet(Model))
         {
-            <button onclick="location.href='@Url.Action("Duyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Phê duyệt</button>
+            <button type="button" onclick="location.href='@Url.Action("Duyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Phê duyệt</button>
         }
-        <button onclick="history.back();" class="btn btn-default waves-effect">Quay lại</button>
+        <button type="button" onclick="window.history.back();" class="btn btn-default waves-effect">Quay lại</button>
     </div>
     <br />
     <br />
@@ -164,6 +164,7 @@
 {
     using (Html.BeginForm("PhanHoi", "Ticket", FormMethod.Post))
     {
+        @Html.Hidden("id", Model.ID)
         <div class="col-sm-12">
             <div class="form-group fg-float">
                 <div class="fg-line">

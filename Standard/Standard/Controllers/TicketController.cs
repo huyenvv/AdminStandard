@@ -36,20 +36,6 @@ namespace Standard.Controllers
         {
             return View(db.Ticket.FirstOrDefault(m => m.ID == id));
         }
-
-        public ActionResult Create(int id = 0)
-        {
-            ViewBag.listDept = _deptRepository.GetAll();
-            var tick = _ticketRepository.GetById(id);
-            if (tick == null) return View(new Ticket { Created = DateTime.Now });
-
-            if (tick.CreatedBy != fwUserDAL.GetCurrentUser().ID || tick.Status != TicketStatus.KhoiTao)
-                return RedirectToAction("AccessDenied", "Home");
-
-            SessionUtilities.Set(Constant.SESSION_TicketDetails, tick.TicketDetails.ToList());
-            return View(tick);
-        }
-
         public JsonResult AddTicketDetail(TicketDetails detail)
         {
             var listTicketDetail = new List<TicketDetails>();
@@ -61,7 +47,18 @@ namespace Standard.Controllers
             SessionUtilities.Set(Constant.SESSION_TicketDetails, listTicketDetail);
             return Json(new { }, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult Create(int id = 0)
+        {
+            ViewBag.listDept = _deptRepository.GetKiemSoat();
+            var tick = _ticketRepository.GetById(id);
+            if (tick == null) return View(new Ticket { Created = DateTime.Now });
 
+            if (tick.CreatedBy != fwUserDAL.GetCurrentUser().ID || tick.Status != TicketStatus.KhoiTao)
+                return RedirectToAction("AccessDenied", "Home");
+
+            SessionUtilities.Set(Constant.SESSION_TicketDetails, tick.TicketDetails.ToList());
+            return View(tick);
+        }
         [HttpPost]
         public ActionResult Create(Ticket tick, bool isSend = false)
         {
@@ -171,23 +168,54 @@ namespace Standard.Controllers
             return Json(new { }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public ActionResult PhanHoi(int id, string ykien)
+        public ActionResult PhanHoi(int id, string ykien, string returnUrl)
         {
+            var obj = db.Ticket.FirstOrDefault(m => m.ID == id);
+            var feedback = db.Feedback.Add(new Feedback() { Created = DateTime.Now, TicketID = id, UserID = DB.CurrentUser.ID, Title = ykien });
+            db.SaveChanges();
 
-            return AccessDenied();
+            obj.Status = TicketStatus.KhoiTao;
+            obj.Track += ";#" + DB.CurrentUser.ID;
+            obj.FeedbackID = feedback.ID;
+            db.SaveChanges();
+            if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
+            return RedirectToAction("Index", "Ticket");
+        }
+        public ActionResult GuiYeuCau(int id, string returnUrl)
+        {
+            var obj = db.Ticket.FirstOrDefault(m => m.ID == id);
+            if (!CanGuiYeuCau(obj)) return AccessDenied();
+            obj.Track += ";#" + DB.CurrentUser.ID;
+            obj.Status = TicketStatus.ChoThongQua;
+            obj.FeedbackID = null;
+            //Lấy trưởng phòng của người tạo
+            var userDAL = new fwUserDAL();
+            var lstNhom = userDAL.GetByID(obj.CreatedBy).fwGroup.Select(m => m.ID).ToList();
+            var dept = db.Dept.Where(m => lstNhom.Contains(m.GroupID)).FirstOrDefault();
+
+            obj.Current = dept.LeaderUserID.Value;
+            db.SaveChanges();
+            if (!obj.TicketUser.Any(m => m.UserID == dept.LeaderUserID.Value))
+                db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", obj.ID, dept.LeaderUserID.Value));
+
+            if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
+            return RedirectToAction("Index", "Home");
         }
         public ActionResult ThongQua(int id, string returnUrl)
         {
             var obj = db.Ticket.FirstOrDefault(m => m.ID == id);
             if (!CanThongQua(obj)) return AccessDenied();
             obj.Track += ";#" + DB.CurrentUser.ID;
-            obj.Status = TicketStatus.CanKiemDuyet;
+            obj.Status = TicketStatus.ChoKiemDuyet;
+            obj.FeedbackID = null;
+            //Lấy bộ phận kiểm duyệt
             var bp = _deptRepository.GetById(obj.DeptID);
+            //Lấy người trong bộ phận kiểm duyệt
             var u = new fwGroupDAL().GetByID(bp.GroupID).fwUser.FirstOrDefault();
             obj.Current = u.ID;
             if (!obj.TicketUser.Any(m => m.UserID == u.ID))
-                obj.TicketUser.Add(new TicketUser() { TicketID = obj.ID, UserID = u.ID });
-
+                db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", obj.ID, u.ID));
+            db.SaveChanges();
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
             return RedirectToAction("Index", "Home");
         }
@@ -197,11 +225,14 @@ namespace Standard.Controllers
             if (!CanKiemDuyet(obj)) return AccessDenied();
             obj.Track += ";#" + DB.CurrentUser.ID;
             obj.Status = TicketStatus.ChoDuyet;
+            obj.FeedbackID = null;
+            //lấy người có quyền phê duyệt
             var u = new fwUserDAL().ListByRole(RoleList.ApproveTicket).FirstOrDefault();
             obj.Current = u.ID;
             if (!obj.TicketUser.Any(m => m.UserID == u.ID))
-                obj.TicketUser.Add(new TicketUser() { TicketID = obj.ID, UserID = u.ID });
+                db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", obj.ID, u.ID));
 
+            db.SaveChanges();
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
             return RedirectToAction("Index", "Home");
         }
@@ -211,22 +242,30 @@ namespace Standard.Controllers
             if (!CanDuyet(obj)) return AccessDenied();
             obj.Track += ";#" + DB.CurrentUser.ID;
             obj.Status = TicketStatus.DaDuyet;
+            obj.FeedbackID = null;
+            //Gán người xử lý giờ là người tạo phiếu, người tạo phiếu sẽ tiếp tục tạo phiếu thanh toán
+            obj.Current = obj.CreatedBy;
 
+            db.SaveChanges();
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
             return RedirectToAction("Index", "Home");
         }
         #region Check role
+        public static bool CanGuiYeuCau(Ticket obj)
+        {
+            return obj.Status == TicketStatus.KhoiTao && obj.Current == DB.CurrentUser.ID;
+        }
         public static bool CanThongQua(Ticket obj)
         {
             return DB.CurrentUser.ID == obj.Current && obj.Status == TicketStatus.ChoThongQua;
         }
         public static bool CanKiemDuyet(Ticket obj)
         {
-            return DB.CurrentUser.ID == obj.Current && obj.Status == TicketStatus.CanKiemDuyet;
+            return DB.CurrentUser.ID == obj.Current && obj.Status == TicketStatus.ChoKiemDuyet;
         }
         public static bool CanDuyet(Ticket obj)
         {
-            return DB.CurrentUser.ID == obj.Current && obj.Status == TicketStatus.ChoDuyet && new fwUserDAL().UserInRole(RoleList.ApproveTicket);
+            return DB.CurrentUser.ID == obj.Current && obj.Status == TicketStatus.ChoDuyet && new fwUserDAL().UserInRole(DB.CurrentUser.ID, RoleList.ApproveTicket);
         }
         #endregion
     }

@@ -28,7 +28,7 @@ namespace Standard
     {
         public const int KhoiTao = 0;
         public const int ChoThongQua = 1;
-        public const int CanKiemDuyet = 2;
+        public const int ChoKiemDuyet = 2;
         public const int ChoDuyet = 3;
         public const int DaDuyet = 4;
 
