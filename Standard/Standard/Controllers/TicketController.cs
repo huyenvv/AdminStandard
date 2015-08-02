@@ -170,8 +170,10 @@ namespace Standard.Controllers
             }
             return Json(new { }, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult PhanHoi(string ykien)
+        [HttpPost]
+        public ActionResult PhanHoi(int id, string ykien)
         {
+
             return AccessDenied();
         }
         public ActionResult ThongQua(int id, string returnUrl)
