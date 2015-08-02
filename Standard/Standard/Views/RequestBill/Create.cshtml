@@ -99,7 +99,7 @@
     @Html.ValidationSummary(true)
     <div class="row">
         <div class="col-md-12">
-            <button type="submit" class="btn btn-primary" onclick="return CheckCheckout(false);">Lưu lại</button>
+            @*<button type="submit" class="btn btn-primary" onclick="return CheckCheckout(false);">Lưu lại</button>*@
             <button type="submit" class="btn btn-primary" onclick="return CheckCheckout(true);">Gửi đề nghị</button>
             <a href="@Request.QueryString["returnUrl"]" class="btn btn-default">Hủy</a>
         </div>
