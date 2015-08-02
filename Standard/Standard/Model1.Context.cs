@@ -33,5 +33,6 @@ namespace Standard
         public virtual DbSet<CheckoutDetails> CheckoutDetails { get; set; }
         public virtual DbSet<ChkFeedback> ChkFeedback { get; set; }
         public virtual DbSet<Feedback> Feedback { get; set; }
+        public virtual DbSet<CheckoutUser> CheckoutUser { get; set; }
     }
 }

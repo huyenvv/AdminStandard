@@ -10210,10 +10210,10 @@ body #content {
 
 #sidebar .profile-menu > a {
   display: block;
-  height: 129px;
+  height: 165px;
   margin-bottom: 5px;
   width: 100%;
-  background: url(../img/profile-menu.png) no-repeat left top;
+  background: url(../img/profile-menu.jpg) no-repeat left top;
   background-size: 100%;
 }
 
@@ -10233,7 +10233,7 @@ body #content {
   background: rgba(0, 0, 0, 0.37);
   padding: 7px 14px;
   color: #fff;
-  margin-top: 20px;
+  margin-top: 109px;
   position: relative;
 }
 

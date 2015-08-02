@@ -18,6 +18,8 @@
         <AssociationConnector Association="DB_9CF750_dbModel.FK_CheckoutDetails_Checkout" />
         <AssociationConnector Association="DB_9CF750_dbModel.FK_ChkFeedback_Checkout" />
         <AssociationConnector Association="DB_9CF750_dbModel.FK_Feedback_Ticket" />
+        <EntityTypeShape EntityType="DB_9CF750_dbModel.CheckoutUser" Width="1.5" PointX="3" PointY="14" />
+        <AssociationConnector Association="DB_9CF750_dbModel.FK_CheckoutUser_Ticket" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

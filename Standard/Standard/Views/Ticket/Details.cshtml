@@ -160,8 +160,9 @@
     </div>
     <br />
 }
-<div id="frmChiTietYeuCau">
-    @using (Html.BeginForm("PhanHoi", "Ticket", FormMethod.Post))
+@if (Model.Status != TicketStatus.KhoiTao && Model.Status != TicketStatus.DaDuyet && Model.Current == DB.CurrentUser.ID)
+{
+    using (Html.BeginForm("PhanHoi", "Ticket", FormMethod.Post))
     {
         <div class="col-sm-12">
             <div class="form-group fg-float">
@@ -182,5 +183,5 @@
             <button type="submit" class="btn btn-primary btn-icon-text waves-effect"><i class="md md-arrow-back"></i>  Phản hồi</button>
         </div>
     }
-</div>
+}
 

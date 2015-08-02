@@ -8,6 +8,7 @@ using WebLib.Models;
 
 namespace Standard.Controllers
 {
+    [CustomAuthorize(RoleList.SystemManager)]
     public class WebLibController : BaseController
     {
         public ActionResult Delete(int id, string tableName, string returnUrl)

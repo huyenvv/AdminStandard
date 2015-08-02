@@ -32,6 +32,8 @@ namespace Standard
         public string FilePath { get; set; }
         public Nullable<int> PassedBy { get; set; }
         public Nullable<int> ApprovedBy { get; set; }
+        public Nullable<int> CheckoutID { get; set; }
+        public Nullable<int> FeedbackID { get; set; }
     
         public virtual ICollection<TicketDetails> TicketDetails { get; set; }
         public virtual ICollection<TicketUser> TicketUser { get; set; }
