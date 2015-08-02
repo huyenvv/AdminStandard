@@ -17,7 +17,7 @@ namespace Standard.Controllers
         {
             ViewBag.ticketCount = db.TicketUser.Where(m => m.UserID == DB.CurrentUser.ID && m.Ticket.Current == DB.CurrentUser.ID && m.Ticket.CheckoutID == null).Count();
 
-            ViewBag.checkoutCount = db.CheckoutUser.Where(m => m.UserID == DB.CurrentUser.ID && m.Checkout.Current == DB.CurrentUser.ID && m.Checkout.Status != TicketStatus.DaDuyet).Count();
+            ViewBag.checkoutCount = db.CheckoutUser.Where(m => m.UserID == DB.CurrentUser.ID && m.Checkout.Current == DB.CurrentUser.ID).Count();
             return View();
         }
 

@@ -23,22 +23,30 @@ namespace Standard.Controllers
             _deptRepository = new DeptRepository(db);
             _checkoutDetailRepository = new CheckoutDetailsRepository(db);
         }
-        //
-        // GET: /RequestBill/
-        public ActionResult Index()
+        public ActionResult Index(int? status)
         {
-            return View(_checkoutRepository.GetAll());
+            var list = DB.CurrentUser.UserName == WebLib.Constant.AdminFix ? db.Checkout : db.CheckoutUser.Where(m => m.UserID == DB.CurrentUser.ID).Select(m => m.Checkout);
+            if (status.HasValue)
+            {
+                if (status.Value != -1)
+                {
+                    list = list.Where(m => m.Status == status.Value);
+                }
+            }
+            else
+            {
+                list = list.Where(m => m.Current == DB.CurrentUser.ID);
+            }
+            return View(list.ToList());
         }
 
-        //
-        // GET: /RequestBill/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            ViewBag.listDept = _deptRepository.GetKiemSoatNB();
+            var obj = db.Checkout.FirstOrDefault(m => m.ID == id);
+            return View(obj);
         }
 
-        //
-        // GET: /RequestBill/Create
         public ActionResult Create(int CheckoutId = 0)
         {
             ViewBag.listDept = _deptRepository.GetKiemSoatNB();
@@ -52,69 +60,105 @@ namespace Standard.Controllers
             return View(checkout);
         }
 
-        //
-        // POST: /RequestBill/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(FormCollection frm, Checkout model, int ticketID)
         {
             try
             {
-                // TODO: Add insert logic here
+                model.Created = DateTime.Now;
+                model.CreatedBy = DB.CurrentUser.ID;
+                model.SumTotal = 0;
+                model.Total = 0;
+                model.Track += ";#" + model.CreatedBy;
 
+                //Lấy bộ phận kiểm duyệt
+                var bp = _deptRepository.GetById(model.DeptID);
+                //Lấy người trong bộ phận kiểm duyệt
+                var u = new fwGroupDAL().GetByID(bp.GroupID).fwUser.FirstOrDefault();
+                model.Current = u.ID;
+
+                model.Status = CheckoutStatus.ChoKiemSoat;
+                db.Checkout.Add(model);
+                db.SaveChanges();
+
+                var obj = db.Ticket.FirstOrDefault(m => m.ID == ticketID);
+                foreach (var item in obj.TicketDetails)
+                {
+                    var checkoutdetails = new CheckoutDetails();
+                    checkoutdetails.Title = item.Title;
+                    checkoutdetails.VND = decimal.Parse("0" + frm["details_" + item.ID]);
+                    checkoutdetails.CheckoutID = model.ID;
+                    model.SumTotal += checkoutdetails.VND;
+                    model.CheckoutDetails.Add(checkoutdetails);
+                }
+                model.Total = model.SumTotal;
+
+                obj.CheckoutID = model.ID;
+
+                db.SaveChanges();
+                db.Database.ExecuteSqlCommand(string.Format("insert into CheckouttUser values({0},{1})", model.ID, model.Current));
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return Redirect(Request.RawUrl);
             }
         }
 
-        //
-        // GET: /RequestBill/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        //
-        // POST: /RequestBill/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        //
-        // GET: /RequestBill/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            new WebLib.DAL.fwBaseDAL("Ticket").Delete(id);
+            return View("Index");
         }
 
-        //
-        // POST: /RequestBill/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+
+        public ActionResult KiemDuyet(int id)
         {
-            try
-            {
-                // TODO: Add delete logic here
+            var obj = db.Checkout.FirstOrDefault(m => m.ID == id);
+            if (!CanKiemDuyet(obj)) return AccessDenied();
+            obj.Track += ";#" + DB.CurrentUser.ID;
+            obj.Status = TicketStatus.ChoDuyet;
+            obj.ChkFeedbackID = null;
+            //lấy người có quyền phê duyệt
+            var u = new fwUserDAL().ListByRole(RoleList.ApproveTicket).FirstOrDefault();
+            obj.Current = u.ID;
+            if (!obj.CheckoutUser.Any(m => m.UserID == u.ID))
+                db.Database.ExecuteSqlCommand(string.Format("insert into CheckoutUser values({0},{1})", obj.ID, u.ID));
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            db.SaveChanges();
+            return RedirectToAction("Index", "RequestBill");
         }
+        public ActionResult Duyet(int id)
+        {
+            var obj = db.Checkout.FirstOrDefault(m => m.ID == id);
+            if (!CanDuyet(obj)) return AccessDenied();
+            obj.Track += ";#" + DB.CurrentUser.ID;
+            obj.Status = TicketStatus.DaDuyet;
+            obj.ChkFeedbackID = null;
+            //lấy người có quyền kế toán
+            var u = new fwUserDAL().ListByRole(RoleList.Accounting).FirstOrDefault();
+            obj.Current = u.ID;
+            if (!obj.CheckoutUser.Any(m => m.UserID == u.ID))
+                db.Database.ExecuteSqlCommand(string.Format("insert into CheckoutUser values({0},{1})", obj.ID, u.ID));
+
+            db.SaveChanges();
+
+            return RedirectToAction("Index", "RequestBill");
+        }
+
+        #region Check role
+        public static bool CanGuiYeuCau(Checkout obj)
+        {
+            return obj.Status == CheckoutStatus.KhoiTao && obj.Current == DB.CurrentUser.ID;
+        }
+        public static bool CanKiemDuyet(Checkout obj)
+        {
+            return DB.CurrentUser.ID == obj.Current && obj.Status == CheckoutStatus.ChoKiemSoat;
+        }
+        public static bool CanDuyet(Checkout obj)
+        {
+            return DB.CurrentUser.ID == obj.Current && obj.Status == CheckoutStatus.ChoDuyet && new fwUserDAL().UserInRole(DB.CurrentUser.ID, RoleList.ApproveTicket);
+        }
+        #endregion
     }
 }

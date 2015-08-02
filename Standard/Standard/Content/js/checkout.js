@@ -18,4 +18,13 @@
     }
 
     return check;
+
+
 }
+
+$(function () {
+    $('#TicketStatusChange').change(function () {
+        var id = $(this).val();
+        location.href = "/RequestBill/Index?status=" + id;
+    });
+});
