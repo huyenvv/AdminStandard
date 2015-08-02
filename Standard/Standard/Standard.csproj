@@ -240,6 +240,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\script.sql" />
+    <Content Include="Content\lib\ma\js\charts.js" />
+    <Content Include="Content\lib\ma\js\fileinput.min.js" />
     <Content Include="Content\lib\ma\js\input-mask.min.js" />
     <Content Include="Content\js\ma-layout.js" />
     <Content Include="Content\js\checkout.js" />
@@ -282,6 +284,7 @@
     <Content Include="Content\lib\ma\js\demo.js" />
     <Content Include="Content\lib\ma\css\fullcalendar.min.css" />
     <Content Include="Content\lib\ma\js\functions.js" />
+    <Content Include="Content\lib\ma\js\jquery.easypiechart.min.js" />
     <Content Include="Content\lib\ma\js\jquery.min.js" />
     <Content Include="Content\lib\ma\js\jquery.nicescroll.min.js" />
     <Content Include="Content\lib\ma\css\material-design-iconic-font.min.css" />
