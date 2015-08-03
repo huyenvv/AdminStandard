@@ -14,7 +14,7 @@
     var listFiles = !string.IsNullOrEmpty(Model.FilePath) ? Model.FilePath.Split(new string[] { ";#" }, StringSplitOptions.RemoveEmptyEntries) : new string[0];
 
     string ykien = null;
-    if(Model.FeedbackID!=null)
+    if (Model.FeedbackID != null)
     { ykien = DB.Entities.Feedback.FirstOrDefault(m => m.ID == Model.FeedbackID.Value).Title; }
 }
 <link href="~/Content/css/ticket.css" rel="stylesheet" />
@@ -32,194 +32,201 @@
     @Html.HiddenFor(m => m.ID)
 
     @Html.ValidationSummary(true)
-    <div class="col-sm-12 process-circle">
-        @for (int i = 0; i < TicketStatus.TicketStatusTitle.Length; i++)
-        {
-            if (Model.Status == i)
+    <div class="row">
+        <div class="col-sm-12 process-circle">
+            @for (int i = 0; i < TicketStatus.TicketStatusTitle.Length; i++)
             {
-                <button class="btn bgm-amber waves-effect" onclick="return false;">@TicketStatus.TicketStatusTitle[i]</button>
-            }
-            else
-            {
-                <button class="btn bgm-gray waves-effect" disabled="disabled">@TicketStatus.TicketStatusTitle[i]</button>
-            }
-            if (i != TicketStatus.TicketStatusTitle.Length - 1)
-            {
-                <button class="btn btn-default btn-xs btn-icon waves-effect waves-circle waves-float" disabled="disabled"><i class="md md-arrow-forward"></i></button>
-            }
-        }
-    </div>
-    <div class="process-circle">
-        <br /><hr />
-        <br />
-    </div>
-    <div class="col-sm-12">
-        @if (TicketController.CanGuiYeuCau(Model))
-        {
-            <button type="button" onclick="location.href='@Url.Action("GuiYeuCau", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Gửi yêu cầu</button>
-        }
-        @if (TicketController.CanThongQua(Model))
-        {
-            <button type="button" onclick="location.href='@Url.Action("ThongQua", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Thông qua</button>
-        }
-        @if (TicketController.CanKiemDuyet(Model))
-        {
-            <button type="button" onclick="location.href='@Url.Action("KiemDuyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Đồng ý kiểm duyệt</button>
-        }
-        @if (TicketController.CanDuyet(Model))
-        {
-            <button type="button" onclick="location.href='@Url.Action("Duyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Phê duyệt</button>
-        }
-        @if (TicketController.CanTaoCheckout(Model))
-        {
-            <a href="@Url.Action("TaoCheckout", new { ticketID = Model.ID })" class=" btn btn-primary waves-effect"><i class="md md-check"></i> Tạo phiếu yêu cầu thanh toán</a>
-        }
-        <button type="button" onclick="window.history.back();" class="btn btn-default waves-effect">Quay lại</button>
-    </div>
-    <br />
-    <br />
-    <div class="col-sm-12">
-        <div id="ListFile">
-            @if (listFiles.Length > 0)
-            {
-                <label>Danh sách tệp tin: </label>
-                <div class="clearfix"></div>
-                foreach (var item in listFiles)
+                if (Model.Status == i)
                 {
-                    var itemFileName = item.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-                    <a href="#" onclick="showFile('@item')">@itemFileName[itemFileName.Length - 1]</a><br />
+                    <button class="btn bgm-amber waves-effect" onclick="return false;">@TicketStatus.TicketStatusTitle[i]</button>
+                }
+                else
+                {
+                    <button class="btn bgm-gray waves-effect" disabled="disabled">@TicketStatus.TicketStatusTitle[i]</button>
+                }
+                if (i != TicketStatus.TicketStatusTitle.Length - 1)
+                {
+                    <button class="btn btn-default btn-xs btn-icon waves-effect waves-circle waves-float" disabled="disabled"><i class="md md-arrow-forward"></i></button>
                 }
             }
-            <div class="clearfix"></div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-sm-12">
+            @if (TicketController.CanGuiYeuCau(Model))
+            {
+                <button type="button" onclick="location.href='@Url.Action("GuiYeuCau", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Gửi yêu cầu</button>
+            }
+            @if (TicketController.CanThongQua(Model))
+            {
+                <button type="button" onclick="location.href='@Url.Action("ThongQua", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Thông qua</button>
+            }
+            @if (TicketController.CanKiemDuyet(Model))
+            {
+                <button type="button" onclick="location.href='@Url.Action("KiemDuyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Đồng ý kiểm duyệt</button>
+            }
+            @if (TicketController.CanDuyet(Model))
+            {
+                <button type="button" onclick="location.href='@Url.Action("Duyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Phê duyệt</button>
+            }
+            @if (TicketController.CanTaoCheckout(Model))
+            {
+                <a href="@Url.Action("TaoCheckout", new { ticketID = Model.ID })" class=" btn btn-primary waves-effect"><i class="md md-check"></i> Tạo phiếu yêu cầu thanh toán</a>
+            }
+            <button type="button" onclick="window.history.back();" class="btn btn-default waves-effect">Quay lại</button>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="ListFile">
+                @if (listFiles.Length > 0)
+                {
+                    <label>Danh sách tệp tin: </label>
+                    <div class="clearfix"></div>
+                    foreach (var item in listFiles)
+                    {
+                        var itemFileName = item.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                        <a href="#" onclick="showFile('@item')">@itemFileName[itemFileName.Length - 1]</a><br />
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-12">
+            <label class="checkbox checkbox-inline m-r-20">
+                <input type="checkbox" class="inlineCheckbox1" name="Type" value="1" @(listType[1]) disabled />
+                <i class="input-helper"></i>
+                (1) Mua <br />@*<i>Purchase</i>*@
+            </label>
+            <label class="checkbox checkbox-inline m-r-20">
+                <input type="checkbox" class="inlineCheckbox1" name="Type" value="2" @(listType[2]) disabled />
+                <i class="input-helper"></i>
+                (2) Thay thế<br />@*<i>Replacement</i>*@
+            </label>
+            <label class="checkbox checkbox-inline m-r-20">
+                <input type="checkbox" class="inlineCheckbox1" name="Type" value="3" @(listType[3]) disabled />
+                <i class="input-helper"></i>
+                (3) Bảo trì, sửa chữa<br />@*<i>Maintenance/Repair</i>*@
+            </label>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-4">
+            <span>Ngày đề nghị: </span><h4 class="color-blue">@Model.Created.ToString("dd/MM/yyyy")</h4>
+        </div>
+        <div class="col-sm-4">
+            <span>Người đề nghị: </span><h4 class="color-blue">@createby.Name</h4>
+        </div>
+        <div class="col-sm-4">
+            <span>Bộ phận: </span><h4 class="color-blue">@dept.Title</h4>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+                            TT<br />
+                            @*<i>No</i>*@
+                        </th>
+                        <th>
+                            Diễn giải <br />
+                            @*<i>Description</i>*@
+                        </th>
+                        <th>
+                            SL<br />
+                            @*<i>Q'tty</i>*@
+                        </th>
+                        <th>
+                            Mục đích, lý do<br />
+                            @*<i>Perpose, Reason</i>*@
+                        </th>
+                        <th>
+                            Ngày cần<br />
+                            @*<i>Date require</i>*@
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (listTickKet != null && listTickKet.Count > 0)
+                    {
+                        var dem = 1;
+                        foreach (var item in listTickKet)
+                        {
+                            <tr>
+                                <td>
+                                    @(dem++)
+                                </td>
+                                <td>
+                                    @item.Title
+                                </td>
+                                <td>
+                                    @item.Quantity
+                                </td>
+                                <td>
+                                    @item.Reason
+                                </td>
+                                <td>
+                                    @item.DateRequire.ToString("dd/MM/yyyy")
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
             <br />
         </div>
     </div>
-    <div class="col-sm-12">
-        <label class="checkbox checkbox-inline m-r-20">
-            <input type="checkbox" class="inlineCheckbox1" name="Type" value="1" @(listType[1]) disabled />
-            <i class="input-helper"></i>
-            (1) Mua <br /><i>Purchase</i>
-        </label>
-        <label class="checkbox checkbox-inline m-r-20">
-            <input type="checkbox" class="inlineCheckbox1" name="Type" value="2" @(listType[2]) disabled />
-            <i class="input-helper"></i>
-            (2) Thay thế<br /><i>Replacement</i>
-        </label>
-        <label class="checkbox checkbox-inline m-r-20">
-            <input type="checkbox" class="inlineCheckbox1" name="Type" value="3" @(listType[3]) disabled />
-            <i class="input-helper"></i>
-            (3) Bảo trì, sửa chữa<br /><i>Maintenance/Repair</i>
-        </label>
-    </div>
-    <br /><br />
-    <br />
-    <div class="col-sm-4">
-        <span>Ngày đề nghị: </span><h4 class="color-blue">@Model.Created.ToString("dd/MM/yyyy")</h4>
-    </div>
-    <div class="col-sm-4">
-        <span>Người đề nghị: </span><h4 class="color-blue">@createby.Name</h4>
-    </div>
-    <div class="col-sm-4">
-        <span>Bộ phận: </span><h4 class="color-blue">@dept.Title</h4>
-    </div> <br />
-    <br />
-    <div class="col-sm-12">
-        <table class="table table-striped table-vmiddle @(listTickKet!=null && listTickKet.Count > 0 ? "" : "hide")">
-            <thead>
-                <tr>
-                    <th>
-                        TT<br />
-                        <i>No</i>
-                    </th>
-                    <th>
-                        Diễn giải <br />
-                        <i>Description</i>
-                    </th>
-                    <th>
-                        SL<br />
-                        <i>Q'tty</i>
-                    </th>
-                    <th>
-                        Mục đích, lý do<br />
-                        <i>Perpose, Reason</i>
-                    </th>
-                    <th>
-                        Ngày cần<br />
-                        <i>Date require</i>
-                    </th>
-                    <th>
-
-                    </th>
-
-                </tr>
-            </thead>
-            <tbody>
-                @if (listTickKet != null && listTickKet.Count > 0)
-                {
-                    var dem = 1;
-                    foreach (var item in listTickKet)
-                    {
-                        <tr>
-                            <td>
-                                @(dem++)
-                            </td>
-                            <td>
-                                @item.Title
-                            </td>
-                            <td>
-                                @item.Quantity
-                            </td>
-                            <td>
-                                @item.Reason
-                            </td>
-                            <td>
-                                @item.DateRequire.ToString("dd/MM/yyyy")
-                            </td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
-        <br />
-    </div>
     <br />
 }
-@if(ykien!=null)
+@if (ykien != null)
 {
-    <div class="col-sm-12">
+    <div class="row">
+        <div class="col-sm-12">
             <div class="form-group fg-float">
                 <div class="fg-line">
                     <label>
                         Ý kiến phản hồi
                     </label>
-                    <textarea class="form-control fg-input input-lg"rows="3" >@ykien</textarea>
+                    <textarea class="form-control fg-input input-lg" rows="3">@ykien</textarea>
                 </div>
 
             </div>
         </div>
+    </div>
 }
 @if (Model.Status != TicketStatus.KhoiTao && Model.Status != TicketStatus.DaDuyet && Model.Current == DB.CurrentUser.ID)
 {
     using (Html.BeginForm("PhanHoi", "Ticket", FormMethod.Post))
     {
         @Html.Hidden("id", Model.ID)
-        <div class="col-sm-12">
-            <div class="form-group fg-float">
-                <div class="fg-line">
-                    <label>
-                        Ý kiến phản hồi
-                    </label>
-                    <textarea class="form-control fg-input input-lg" id="txtPhanHoi" rows="3" name="ykien"></textarea>
-                </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group fg-float">
+                    <div class="fg-line">
+                        <label>
+                            Ý kiến phản hồi
+                        </label>
+                        <textarea class="form-control fg-input input-lg" id="txtPhanHoi" rows="3" name="ykien"></textarea>
+                    </div>
 
+                </div>
             </div>
-        </div>
-        <div class="col-sm-12">
-            <div id="messerror" class="hide field-validation-error">Bạn cần nhập ý kiến phản hồi!</div>
-        </div>
-        <div class="clearfix"></div>
-        <div class="col-sm-6">
-            <button type="submit" class="btn btn-primary btn-icon-text waves-effect"><i class="md md-arrow-back"></i>  Phản hồi</button>
+            <div class="col-sm-12">
+                <div id="messerror" class="hide field-validation-error">Bạn cần nhập ý kiến phản hồi!</div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-sm-6">
+                <button type="submit" class="btn btn-primary btn-icon-text waves-effect"><i class="md md-arrow-back"></i>  Phản hồi</button>
+            </div>
         </div>
     }
 }

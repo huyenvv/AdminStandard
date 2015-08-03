@@ -110,14 +110,10 @@ function showFile(url) {
 function AddRows(id) {
     var obj = $(id + " tbody");
     var no = obj.find("tr").length + 1;
-    obj.append('<tr><td>' + no + '</td><td></td><td></td><td></td><td class="typeDate"></td></tr>');
+    obj.append('<tr><td class="noChange">' + no + '</td><td></td><td class="typeNumber"></td><td></td><td class="typeDate"></td></tr>');
     $(id).editableTableWidget();
 
-    $('table td.typeDate').on('validate', function (evt, newValue) {
-        if (!validateDate(newValue)) {
-            return false; // mark cell as invalid 
-        }
-    });
+    AddEventEditTable();
 }
 
 function GetDataTable(id) {

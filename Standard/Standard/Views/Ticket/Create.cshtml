@@ -14,13 +14,10 @@
 
 
 @section style{
-    <link href="~/Content/css/ticket.css" rel="stylesheet" />
-    <link href="/Content/lib/ma/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link href="~/Content/css/ticket.css" rel="stylesheet" />    
 }
 
 @section  scripts{
-    <script src="/Content/lib/ma/js/moment.min.js"></script>
-    <script src="/Content/lib/ma/js/bootstrap-datetimepicker.min.js"></script>
     <script src="~/Content/js/ticket.js"></script>
     <script src="~/Content/lib/ma/js/fileinput.min.js"></script>
     <script src="~/Content/lib/edit-table/editabletable.js"></script>
@@ -30,7 +27,7 @@
         @if ((listTickKet == null) || (listTickKet != null && listTickKet.Count == 0))
         {
             @:AddRows('#mainTable');
-                }
+                                }
         $('#mainTable').find('td:nth(1)').focus().click();
     </script>
 }
@@ -48,62 +45,33 @@
         <button type="submit" class="btn btn-primary" onclick="return CheckTicket(false);">Lưu lại</button>
         <button type="submit" class="btn btn-primary" onclick="return CheckTicket(true);">Gửi phiếu đề nghị</button>
         <a href="@returnUrl" class="btn btn-default">Hủy</a>
+        <br />
+        <br />
+        <br />
     </div>
-    <br />
-    <br />
-    <div class="col-sm-12">
-        <div id="ListFile">
-            @if (Model.ID == 0)
-            {
-                <div class="fileinput fileinput-new" data-provides="fileinput">
-                    <span class="btn-file m-r-10 waves-effect">
-                        <a href="#" class="fileinput-new"><i class="md md-attach-file"></i>Đính kèm tệp</a>
-                        <input type="hidden"><input type="file" name="files" class="ticketFiles">
-                    </span>
-                    <a href="#" class="fileinput-filename"></a>
-                    <a href="#" class="close fileinput-exists" data-dismiss="fileinput" onclick="removeAttachFile(this);">×</a>
-                </div>
-            }
-            @if (listFiles.Length > 0)
-            {
-                <label>Danh sách tệp tin: </label>
-                <div class="clearfix"></div>
-                foreach (var item in listFiles)
-                {
-                    var itemFileName = item.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-                    <a href="#">@itemFileName[itemFileName.Length - 1]</a><br />
-                }
-            }
-            <div class="clearfix"></div>
-        </div>
-        <a href="#" onclick="addAttachFile();"><i class="md md-add"></i>Thêm tệp tin</a>
-        <br /><br />
-    </div>
-
-    <br />
-    <br />
     <div class="col-sm-12">
         <label class="checkbox checkbox-inline m-r-20">
             <input type="checkbox" class="onCheckbox" name="Type" value="1" @(listType[1])>
             <i class="input-helper"></i>
-            (1) Mua <br /><i>Purchase</i>
+            (1) Mua <br />@*<i>Purchase</i>*@
         </label>
         <label class="checkbox checkbox-inline m-r-20">
             <input type="checkbox" class="onCheckbox" name="Type" value="2" @(listType[2])>
             <i class="input-helper"></i>
-            (2) Thay thế<br /><i>Replacement</i>
+            (2) Thay thế<br />@*<i>Replacement</i>*@
         </label>
         <label class="checkbox checkbox-inline m-r-20">
             <input type="checkbox" class="onCheckbox" name="Type" value="3" @(listType[3])>
             <i class="input-helper"></i>
-            (3) Bảo trì, sửa chữa<br /><i>Maintenance/Repair</i>
+            (3) Bảo trì, sửa chữa<br />@*<i>Maintenance/Repair</i>*@
         </label>
         <div id="loaiticket" class="hide has-error">
             <small id="loaiticket" class="help-block">Bạn phải chọn một trong 3 loại trên!</small>
         </div>
+        <br /><br />
+        <br />
     </div>
-    <br /><br />
-    <br />
+
     <div class="col-sm-4">
         <div class="form-group fg-float">
             <div class="fg-line">
@@ -136,28 +104,29 @@
         </div>
     </div>
     <div class="col-sm-12">
+        <br />
         <table id="mainTable" class="table table-bordered">
             <thead>
                 <tr>
                     <th width="10">
                         TT<br />
-                        <i>No</i>
+                        @*<i>No</i>*@
                     </th>
                     <th>
                         Diễn giải <br />
-                        <i>Description</i>
+                        @*<i>Description</i>*@
                     </th>
                     <th>
                         SL<br />
-                        <i>Q'tty</i>
+                        @*<i>Q'tty</i>*@
                     </th>
                     <th>
                         Mục đích, lý do<br />
-                        <i>Perpose, Reason</i>
+                        @*<i>Perpose, Reason</i>*@
                     </th>
                     <th>
                         Ngày cần<br />
-                        <i>Date require (dd/mm/yyyy)</i>
+                        @*<i>Date require (dd/mm/yyyy)</i>*@
 
                     </th>
                 </tr>
@@ -197,63 +166,36 @@
             <small id="loaiticket" class="help-block">Bạn phải thêm ticket detail trước.</small>
         </div>
 
-        <a href="#" class="btn btn-primary btn-xs" onclick="AddRows('#mainTable'); return false;"> Thêm dòng</a>
+        <a href="#" class="btn btn-primary btn-xs pull-right" onclick="AddRows('#mainTable'); return false;"><i class="md md-add"></i> Thêm dòng</a>
     </div>
 
     <br />
-    @*<div id="frmChiTietYeuCau">
-            <div class="col-sm-12">
-                <div class="form-group fg-float">
-                    <div class="fg-line">
-                        <label>Diễn giải / <i>Description</i></label>
-                        <input type="text" id="DienGiai" name="DienGiai" value="" class="form-control fg-input" />
-                    </div>
-
+    <div class="col-sm-12">
+        <div id="ListFile">
+            @if (Model.ID == 0)
+            {
+                <div class="fileinput fileinput-new" data-provides="fileinput">
+                    <span class="btn-file">
+                        <a href="#" class="fileinput-new"><i class="md md-attach-file"></i>Đính kèm tệp</a>
+                        <input type="hidden"><input type="file" name="files" class="ticketFiles">
+                    </span>
+                    <a href="#" class="fileinput-filename"></a>
+                    <a href="#" class="close fileinput-exists" data-dismiss="fileinput" onclick="removeAttachFile(this);">×</a>
                 </div>
-            </div>
-
-            <div class="col-sm-12">
-                <div class="form-group fg-float">
-                    <div class="fg-line">
-                        <label>
-                            Mục đích, lý do /
-                            <i>Perpose, Reason</i>
-                        </label>
-                        <textarea class="form-control fg-input" id="MucDich" rows="3" name="MucDich"></textarea>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <div class="fg-line">
-                        <label>
-                            Số lượng /
-                            <i>Quantity</i>
-                        </label>
-                        <input type="number" id="Quantity" name="Quantity" value="" class="form-control fg-input" />
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <label>
-                    Ngày cần  / <i>Date require</i>
-                </label>
-                <div class="input-group form-group">
-                    <div class="dtp-container dropdown fg-line">
-                        <input type="text" class="form-control date-time-picker" data-toggle="dropdown" id="NgayCan" name="NgayCan" aria-expanded="false">
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-12">
-                <div id="messerror" class="hide field-validation-error">Bạn cần nhập đẩy đủ thông tin trên!</div>
-            </div>
+            }
+            @if (listFiles.Length > 0)
+            {
+                <label>Danh sách tệp tin: </label>
+                <div class="clearfix"></div>
+                foreach (var item in listFiles)
+                {
+                    var itemFileName = item.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                    <a href="#">@itemFileName[itemFileName.Length - 1]</a><br />
+                }
+            }
             <div class="clearfix"></div>
-            <div class="col-sm-6">
-                <a href="#" class="btn btn-primary btn-xs" id="ThemChiTiet"> Thêm diễn giải</a>
-            </div>
-
-        </div>*@
-
+        </div>
+        <a href="#" onclick="addAttachFile(); return false;" class="btn btn-primary btn-xs"><i class="md md-add"></i>Thêm tệp tin</a>
+        <br /><br />
+    </div>
 }

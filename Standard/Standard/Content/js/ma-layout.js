@@ -14,7 +14,23 @@
                 $(id).html(kq).modal('show');
             }
         });
-        
+
     });
-    
+
 });
+
+function AddEventEditTable() {
+    $('table td.typeDate').on('validate', function (evt, newValue) {
+        if (!validateDate(newValue)) {
+            return false; // mark cell as invalid 
+        }
+    });
+    $('table td.noChange').on('validate', function (evt, newValue) {
+        return false;
+    });
+    $('table td.typeNumber').on('validate', function (evt, newValue) {
+        if (!isNumeric(newValue)) {
+            return false; // mark cell as invalid 
+        }
+    });
+}

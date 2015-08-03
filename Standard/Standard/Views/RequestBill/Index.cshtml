@@ -10,10 +10,9 @@
 @section  scripts{
     <script src="~/Content/js/checkout.js"></script>
 }
-<div class="col-sm-6">
-    <div class="form-group">
-        
-        <div class="col-sm-9">
+<div class="row">
+    <div class="col-sm-4">
+        <div class="form-group">
             <div class="fg-line">
                 <div class="select">
                     <select class="form-control" id="TicketStatusChange">
@@ -29,53 +28,57 @@
         </div>
     </div>
 </div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Người yêu cầu</th>
-            <th>Nội dung</th>
-            <th>Trạng thái</th>
-            <th></th>
-        </tr>
-    </thead>
-    @foreach (var item in Model)
-    {
-        var u = userDAL.GetByID(item.CreatedBy);
-        var first = item.CheckoutDetails.FirstOrDefault();
-        string title = first != null ? first.Title : "";
-        <tr>
-            <td>
-                @if(DB.CurrentUser.ID==item.Current)
-                {
-                    <b><a href="@Url.Action("Details", new { id = item.ID })">@(u == null ? null : u.Name)</a></b>
-                }
-                else
-                { 
-                <a href="@Url.Action("Details", new { id = item.ID })">@(u == null ? null : u.Name)</a>
-                }
-            </td>
-            <td>
-                @if (DB.CurrentUser.ID == item.Current)
-                {
-                    <b><a href="@Url.Action("Details", new { id = item.ID })">@title</a></b>
-                }
-                else
-                {
-                    <a href="@Url.Action("Details", new { id = item.ID })">@title</a>
-                }
-            </td>
-            <td>
-                <button class="btn btn-@listColor[item.Status] btn-xs" disabled="disabled">@CheckoutStatus.CheckoutStatusTitle[item.Status]</button>
-            </td>
-            <td>
-                @if ((DB.CurrentUser.ID==item.Current || DB.CurrentUser.UserName==WebLib.Constant.AdminFix )&& item.Status == CheckoutStatus.KhoiTao)
-                {
-                   <a href="@Url.Action("Delete", new { id = item.ID, returnUrl = Request.RawUrl })" class="btn btn-danger btn-icon waves-effect waves-circle waves-float confirmDelete"><i class="md md-close"></i></a>
-                }
-                
-                
-            </td>
-        </tr>
-    }
+<div class="row">
+    <div class="col-sm-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Người yêu cầu</th>
+                    <th>Nội dung</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            @foreach (var item in Model)
+            {
+                var u = userDAL.GetByID(item.CreatedBy);
+                var first = item.CheckoutDetails.FirstOrDefault();
+                string title = first != null ? first.Title : "";
+                <tr>
+                    <td>
+                        @if (DB.CurrentUser.ID == item.Current)
+                        {
+                            <b><a href="@Url.Action("Details", new { id = item.ID })">@(u == null ? null : u.Name)</a></b>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Details", new { id = item.ID })">@(u == null ? null : u.Name)</a>
+                        }
+                    </td>
+                    <td>
+                        @if (DB.CurrentUser.ID == item.Current)
+                        {
+                            <b><a href="@Url.Action("Details", new { id = item.ID })">@title</a></b>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Details", new { id = item.ID })">@title</a>
+                        }
+                    </td>
+                    <td>
+                        <button class="btn btn-@listColor[item.Status] btn-xs" disabled="disabled">@CheckoutStatus.CheckoutStatusTitle[item.Status]</button>
+                    </td>
+                    <td>
+                        @if ((DB.CurrentUser.ID == item.Current || DB.CurrentUser.UserName == WebLib.Constant.AdminFix) && item.Status == CheckoutStatus.KhoiTao)
+                        {
+                            <a href="@Url.Action("Delete", new { id = item.ID, returnUrl = Request.RawUrl })" class="btn btn-danger btn-icon waves-effect waves-circle waves-float confirmDelete"><i class="md md-close"></i></a>
+                        }
 
-</table>
+
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+
+</div>

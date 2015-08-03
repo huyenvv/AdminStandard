@@ -22,76 +22,40 @@
         lstChkDetails.Add(new CheckoutDetails() { Title = item.Title, ID = item.ID });
     }
 }
+<style>
+    .table > thead > tr > th {
+        background: #eeeeee;
+    }
+</style>
+
+
 
 @section style{
     <link href="/Content/lib/ma/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+
 }
 @section  scripts{
     <script src="/Content/lib/ma/js/moment.min.js"></script>
     <script src="/Content/lib/ma/js/bootstrap-datetimepicker.min.js"></script>
-    <script src="~/Content/lib/ma/js/input-mask.min.js"></script>
-    <script src="~/Content/js/angular.min.js"></script>
-    <script src="~/Content/js/checkout.js"></script>
+    <script src="~/Content/lib/edit-table/editabletable.js"></script>
+    @*<script src="~/Content/lib/edit-table/numeric-input.js"></script>*@
     <script>
-        var app = angular.module('myApp', []);
-        app.controller('myCtrl', function ($scope) {
-
-            $scope.vnd = [
-                @for (int i = 0; i < listDetail.Count; i++)
-                {
-                    @(listDetail.ElementAt(i).VND + ",")
-                }
-            0];
-            $scope.usd = [
-                @for (int i = 0; i < listDetail.Count; i++)
-                {
-                    @(listDetail.ElementAt(i).USD + ",")
-                }
-            0];
-            $scope.getTotalVND = function () {
-                if ($scope.vnd.length > 0) {
-                    var value = eval($scope.vnd.join('+').replace(/\./g, ''));
-                    return format(value, '');
-                }
-            };
-            $scope.getTotalUSD = function () {
-                if ($scope.usd.length > 0) {
-                    var value = eval($scope.usd.join('+').replace(/\./g, ''));
-                    return format(value, '');
-                }
-            };
-            format = function (n, currency) {
-                return currency + " " + n.toFixed(0).replace(/./g, function (c, i, a) {
-                    return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "." + c : c;
-                });
-            }
-
-
-            // Tạm ứng phí ngân hàng
-            $scope.tamungVND = 0;
-            $scope.tamungUSD = 0;
-            $scope.PhiNganHangVND = 0;
-            $scope.PhiNganHangUSD = 0;
-
-            $scope.getAllTotalVND = function () {
-                if ($scope.vnd.length > 1) {
-                    var subtotal = eval($scope.vnd.join('+').replace(/\./g, ''));
-                    var value = subtotal + "-" + $scope.tamungVND + "+" + $scope.PhiNganHangVND;
-                    var allTotal = value.replace(/\./g, '');
-                    return format(allTotal, '');
-                }
-            };
-            $scope.getAllTotalUSD = function () {
-                if ($scope.usd.length > 1) {
-                    var subtotal = eval($scope.usd.join('+').replace(/\./g, ''));
-                    var value = subtotal + "-" + $scope.tamungUSD + "+" + $scope.PhiNganHangUSD;
-                    var allTotal = value.replace(/\./g, '');
-                    return format(allTotal, '');
-                }
-            };
-        });
+        $('#mainTable').editableTableWidget();
+        @if ((lstChkDetails == null) || (lstChkDetails != null && lstChkDetails.Count == 0))
+        {
+            @:AddRows('#mainTable');
+                                                                        }
+        $('#mainTable').find('td:nth(0)').focus().click();
+        AddEventEditTable();
     </script>
 
+    <script src="~/Content/js/checkout.js"></script>
+    <script>
+        $('table td.typeNumber').on('change', function (evt, newValue) {
+            // do something with the new cell value
+            TinhTien();
+        });
+    </script>
 }
 
 
@@ -101,6 +65,10 @@
     @Html.Hidden("isSend", true)
     @Html.Hidden("ticketID", ticketID)
     @Html.HiddenFor(m => m.ID)
+    @Html.Hidden("listCheckoutDetailJson")
+    @Html.Hidden("tamUng")
+    @Html.Hidden("phiNganHang")
+
 
     @Html.ValidationSummary(true)
     <div class="row">
@@ -123,7 +91,10 @@
             <div class="col-sm-3">
                 <div class="form-group fg-float">
                     <div class="fg-line">
-                        <label>Ngày <i>(Dated)</i></label>
+                        <label>
+                            Ngày
+                            @*<i>(Dated)</i>*@
+                        </label>
                         <input type="text" name="PaymentDate" value="@Model.Created.ToString("dd/MM/yyyy")" class=" form-control date-picker" data-toggle="dropdown" aria-expanded="false" />
                     </div>
                 </div>
@@ -131,7 +102,10 @@
             <div class="col-sm-3">
                 <div class="form-group fg-float">
                     <div class="fg-line">
-                        <label>Số ghi sổ <i>(No)</i></label>
+                        <label>
+                            Số ghi sổ
+                            @*<i>(No)</i>*@
+                        </label>
                         <input type="text" name="No" value="@Model.No" class=" form-control fg-input" />
                     </div>
                 </div>
@@ -141,7 +115,10 @@
             <div class="col-sm-12">
                 <div class="form-group fg-float">
                     <div class="fg-line">
-                        <label>Người hưởng <i>(Ben)</i></label>
+                        <label>
+                            Người hưởng
+                            @*<i>(Ben)</i>*@
+                        </label>
                         <input type="text" name="Ben" value="@Model.Ben" class=" form-control fg-input" />
                     </div>
                 </div>
@@ -149,7 +126,10 @@
             <div class="col-sm-6">
                 <div class="form-group fg-float">
                     <div class="fg-line">
-                        <label>Phòng <i>(Dept)</i></label>
+                        <label>
+                            Phòng
+                            @*<i>(Dept)</i>*@
+                        </label>
                         <div class="select">
                             <select class="form-control" name="DeptID">
                                 @foreach (var item in listDept)
@@ -163,22 +143,29 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-md-4">Hình thức thanh toán <i>(Payment method)</i> : </label>
+            <label class="col-md-4">
+                Hình thức thanh toán
+                @*<i>(Payment method)</i>*@
+                :
+            </label>
             <div class="col-md-8">
                 <label class="checkbox checkbox-inline m-r-20">
                     <input type="checkbox" class="onCheckbox" name="PaymentMethod" value="0" @listType[0] />
                     <i class="input-helper"></i>
-                    Tiền mặt <br /><i>(Cash)</i>
+                    Tiền mặt
+                    @*<br /><i>(Cash)</i>*@
                 </label>
                 <label class="checkbox checkbox-inline m-r-20">
                     <input type="checkbox" class="onCheckbox" name="PaymentMethod" value="1" @listType[1] />
                     <i class="input-helper"></i>
-                    Chuyển khoản <br /><i>(Bank transfer)</i>
+                    Chuyển khoản
+                    @*<br /><i>(Bank transfer)</i>*@
                 </label>
                 <label class="checkbox checkbox-inline m-r-20">
                     <input type="checkbox" class="onCheckbox" name="PaymentMethod" value="2" @listType[2] />
                     <i class="input-helper"></i>
-                    Quyết toán tạm ứng <br /><i>(Advance clearing)</i>
+                    Quyết toán tạm ứng
+                    @*<br /><i>(Advance clearing)</i>*@
                 </label>
                 <div id="loaiticket" class="hide has-error">
                     <small id="loaiticket" class="help-block">Bạn phải chọn một trong 3 loại trên!</small>
@@ -189,31 +176,34 @@
     <br />
     <div class="row" ng-app="myApp" ng-controller="myCtrl">
         <div class="col-md-12">
-            <table class="table table-bordered">
+            <table id="mainTable" class="table table-bordered">
                 <thead>
                     <tr>
-                        @*<th rowspan="2" class="text-center">
-                                Mã
-                                <i>Dept</i>
-                            </th>
-                            <th colspan="2" class="text-center">
-                                Chứng từ
-                                <i>(Documents)</i>
-                            </th>*@
                         <th rowspan="2" class="text-center">
-                            Nội dung <i>(Description)</i>
+                            Mã
+                            @*<i>Dept</i>*@
+                        </th>
+                        <th colspan="2" class="text-center">
+                            Chứng từ
+                            @*<i>(Documents)</i>*@
+                        </th>
+                        <th rowspan="2" class="text-center">
+                            Nội dung
+                            @*<i>(Description)</i>*@
                         </th>
                         <th colspan="2" class="text-center">
                             Số tiền
                         </th>
                     </tr>
                     <tr>
-                        @*<th class="text-center">
-                                Số <i>(No.)</i>
-                            </th>
-                            <th class="text-center">
-                                Ngày <i>(Date)</i>
-                            </th>*@
+                        <th class="text-center">
+                            Số
+                            @*<i>(No.)</i>*@
+                        </th>
+                        <th class="text-center">
+                            Ngày (dd/mm/yyyy)
+                            @*<i>(Date)</i>*@
+                        </th>
                         <th class="text-center" width="150">
                             VNĐ
                         </th>
@@ -223,86 +213,55 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 0; i < lstChkDetails.Count; i++)
+                    @foreach (var item in lstChkDetails)
                     {
                         <tr>
-                            <td>
-                                <div class="fg-line">
-                                    <textarea rows="3" class=" form-control">@lstChkDetails.ElementAt(i).Title</textarea>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="fg-line">
-                                    <input type="text" class=" form-control input-mask" name="details_@(lstChkDetails.ElementAt(i).ID)" ng-model="vnd[@i]" data-mask="000.000.000.000.000,00" />
-                                </div>
-                            </td>
-                            <td>
-                                <div class="fg-line">
-                                    <input type="text" class=" form-control input-mask" name="details_@(lstChkDetails.ElementAt(i).ID)" ng-model="usd[@i]" data-mask="000.000.000.000.000,00" />
-                                </div>
-                            </td>
+                            <td></td>
+                            <td></td>
+                            <td class="typeDate"></td>
+                            <td>@item.Title</td>
+                            <td class="text-right typeNumber vndetail">@item.VND</td>
+                            <td class="text-right typeNumber usdetail">@item.USD</td>
                         </tr>
                     }
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td>
-                            <strong>Cộng</strong> <i>(Sub-total)</i>
+                        <td colspan="4">
+                            <strong>Cộng</strong>
+                            @*<i>(Sub-total)</i>*@
                         </td>
-                        <td class="text-right">
-                            {{getTotalVND()}}
-                        </td>
-                        <td class="text-right">
-                            {{getTotalUSD()}}
-                        </td>
+                        <td class="text-right noChange vndCong"></td>
+                        <td class="text-right noChange usdCong"></td>
                     </tr>
                     <tr>
-                        <td>
-                            <strong>Tạm ứng</strong> <i>(Advance payment)</i>
+                        <td colspan="4">
+                            <strong>Tạm ứng</strong>
+                            @*<i>(Advance payment)</i>*@:
                         </td>
-                        <td>
-                            <div class="fg-line">
-                                <input type="text" class=" form-control input-mask" ng-model="tamungVND" data-mask="000.000.000.000.000,00" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="fg-line">
-                                <input type="text" class=" form-control input-mask" ng-model="tamungUSD" data-mask="000.000.000.000.000,00" />
-                            </div>
-                        </td>
+                        <td class="text-right typeNumber vndTamung"></td>
+                        <td class="text-right typeNumber usdTamung"></td>
                     </tr>
                     <tr>
-                        <td>
-                            <strong>Phí ngân hàng</strong> <i>(Bank charge)</i>
+                        <td colspan="4">
+                            <strong>Phí ngân hàng</strong>
+                            @*<i>(Bank charge)</i>*@:
                         </td>
-                        <td>
-                            <div class="fg-line">
-                                <input type="text" class=" form-control input-mask" ng-model="PhiNganHangVND" data-mask="000.000.000.000.000,00" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="fg-line">
-                                <input type="text" class=" form-control input-mask" ng-model="PhiNganHangUSD" data-mask="000.000.000.000.000,00" />
-                            </div>
-                        </td>
+                        <td class="text-right typeNumber vndPhiNH"></td>
+                        <td class="text-right typeNumber usdPhiNH"></td>
                     </tr>
                     <tr>
-                        <td>
-                            <strong>Tổng cộng</strong> <i>(Total)</i>
+                        <td colspan="4">
+                            <strong>Tổng cộng</strong>
+                            @*<i>(Total)</i>*@:
                         </td>
-                        <td>
-                            {{getAllTotalVND()}}
-                        </td>
-                        <td>
-                            {{getAllTotalUSD()}}
-                        </td>
+                        <td class="text-right noChange vndTongCong"></td>
+                        <td class="text-right noChange usdTongCong"></td>
                     </tr>
                     <tr>
-                        <td colspan="3">
-                            <strong> Bằng chữ </strong><i>(in words): </i>
-                            <div class="fg-line">
-                                <input type="text" class=" form-control" name="InWords" />
-                            </div>
+                        <td colspan="6">
+                            <strong> Bằng chữ </strong>
+                            @*<i>(in words): </i>*@         :
                         </td>
                     </tr>
                 </tfoot>

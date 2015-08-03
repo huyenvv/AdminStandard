@@ -2,10 +2,6 @@
     border: 1px solid red;
 }
 
-.error {
-    border: 3px solid red!important;
-}
-
 .input-lg {
     font-size: 16px;
 }
@@ -14,4 +10,7 @@
     .process-circle {
         display: none;
     }
+}
+.table > thead > tr > th {
+    background:#eeeeee;
 }

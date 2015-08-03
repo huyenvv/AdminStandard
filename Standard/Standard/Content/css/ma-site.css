@@ -29,7 +29,7 @@
     content: "";
 }
 .table-bordered {
-    border: 1px solid #f0f0f0;
+    border: 1px solid #D2D2D2;
 }
 .m-r-10 {
     margin-right: 0px !important;
@@ -39,4 +39,13 @@
 }
 div#modalDefault {
     text-align: left;
+}
+
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+    padding: 5px;
+}
+
+
+.error {
+    border: 3px solid red!important;
 }

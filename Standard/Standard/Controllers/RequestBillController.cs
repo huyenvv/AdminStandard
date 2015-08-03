@@ -1,4 +1,5 @@
-﻿using Standard.Repository;
+﻿using Newtonsoft.Json;
+using Standard.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +52,7 @@ namespace Standard.Controllers
         {
             ViewBag.listDept = _deptRepository.GetKiemSoatNB();
             var checkout = _checkoutRepository.GetById(CheckoutId);
-            if (checkout == null) return View(new Checkout { Created = DateTime.Now });
+            if (checkout == null) return View(new Checkout { Created = DateTime.Now, PaymentMethod = PaymentMethod.ChuyenKhoan });
 
             if (checkout.CreatedBy != fwUserDAL.GetCurrentUser().ID || checkout.Status != CheckoutStatus.KhoiTao)
                 return AccessDenied();
@@ -70,6 +71,36 @@ namespace Standard.Controllers
                 model.SumTotal = 0;
                 model.Total = 0;
                 model.Track += ";#" + model.CreatedBy;
+
+                var listCheckoutDetailJson = new List<CheckoutDetails>();
+                try
+                {
+                    listCheckoutDetailJson = JsonConvert.DeserializeObject<List<CheckoutDetails>>(frm["listCheckoutDetailJson"]);
+                }
+                catch (Exception)
+                {
+                    listCheckoutDetailJson = new List<CheckoutDetails>();
+                }
+
+                var tamUng = new CheckoutDetails();
+                try
+                {
+                    tamUng = JsonConvert.DeserializeObject<CheckoutDetails>(frm["tamUng"]);
+                }
+                catch (Exception)
+                {
+                    tamUng = new CheckoutDetails();
+                }
+
+                var phiNganHang = new CheckoutDetails();
+                try
+                {
+                    phiNganHang = JsonConvert.DeserializeObject<CheckoutDetails>(frm["phiNganHang"]);
+                }
+                catch (Exception)
+                {
+                    phiNganHang = new CheckoutDetails();
+                }
 
                 //Lấy bộ phận kiểm duyệt
                 var bp = _deptRepository.GetById(model.DeptID);
