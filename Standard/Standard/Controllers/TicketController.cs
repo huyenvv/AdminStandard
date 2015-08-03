@@ -152,7 +152,7 @@ namespace Standard.Controllers
                                 _ticketRepository.Update(getTicket);
 
                                 // add to table Ticket User 
-                                db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", getTicket.ID, dept.LeaderUserID.HasValue));
+                                db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", getTicket.ID, dept.LeaderUserID.Value));
                             }
 
                         }
