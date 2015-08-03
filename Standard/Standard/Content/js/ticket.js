@@ -78,6 +78,9 @@ function CheckTicket(flag) {
         if ($("table tbody tr").length > 0) {
             $("#loaiticketDetail").addClass("hide");
             $("#isSend").val(flag);
+
+            //before send create ticket details
+            GetDataTable('#mainTable');
             return true;
         }
         $("#loaiticketDetail").removeClass("hide");
@@ -102,9 +105,32 @@ function showFile(url) {
     return false;
 }
 
+
+
 function AddRows(id) {
     var obj = $(id + " tbody");
     var no = obj.find("tr").length + 1;
-    obj.append('<tr><td>' + no + '</td><td></td><td></td><td></td><td></td></tr>');
+    obj.append('<tr><td>' + no + '</td><td></td><td></td><td></td><td class="typeDate"></td></tr>');
     $(id).editableTableWidget();
+
+    $('table td.typeDate').on('validate', function (evt, newValue) {
+        if (!validateDate(newValue)) {
+            return false; // mark cell as invalid 
+        }
+    });
+}
+
+function GetDataTable(id) {
+    var data = [];
+    $(id + " tbody tr").each(function () {
+        var listtds = $(this).children();
+        var obj = {
+            Title: $(listtds[1]).text(),
+            Quantity: $(listtds[2]).text(),
+            Reason: $(listtds[3]).text(),
+            DateRequire: $(listtds[4]).text()
+        };
+        data.push(obj);
+    });
+    $("#listTicketDetailJson").val(JSON.stringify(data));
 }

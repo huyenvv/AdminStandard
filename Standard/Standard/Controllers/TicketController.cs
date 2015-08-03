@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Standard.Repository;
 using WebLib;
 using WebLib.DAL;
+using Newtonsoft.Json;
 
 namespace Standard.Controllers
 {
@@ -71,15 +72,26 @@ namespace Standard.Controllers
             return View(tick);
         }
         [HttpPost]
-        public ActionResult Create(Ticket tick, List<HttpPostedFileBase> files, bool isSend = false)
+        public ActionResult Create(Ticket tick, List<HttpPostedFileBase> files, string listTicketDetailJson, bool isSend = false)
         {
             // TODO: Add insert logic here
             if (tick.Type > 0 && tick.DeptID > 0)
             {
-                if (SessionUtilities.Exist(Constant.SESSION_TicketDetails))
+                var listTicketDetails = new List<TicketDetails>();
+                if (!string.IsNullOrEmpty(listTicketDetailJson))
                 {
-                    var listTicketDetail = (List<TicketDetails>)SessionUtilities.Get(Constant.SESSION_TicketDetails);
-                    if (listTicketDetail.Count > 0)
+                    try
+                    {
+                        listTicketDetails = JsonConvert.DeserializeObject<List<TicketDetails>>(listTicketDetailJson);
+                    }
+                    catch (Exception)
+                    {
+                        listTicketDetails = new List<TicketDetails>();
+                    }
+                }
+                if (listTicketDetails.Count > 0)
+                {
+                    if (listTicketDetails.Count > 0)
                     {
                         var currentUser = fwUserDAL.GetCurrentUser();
                         // xu ly file 
@@ -123,7 +135,7 @@ namespace Standard.Controllers
                         }
 
                         // create ticket detail
-                        var listDetail = listTicketDetail.Select(item => new TicketDetails
+                        var listDetail = listTicketDetails.Select(item => new TicketDetails
                         {
                             DateRequire = item.DateRequire,
                             Quantity = item.Quantity,
@@ -134,7 +146,6 @@ namespace Standard.Controllers
                         _ticketDetailRepository.Insert(listDetail);
 
                         // remove ticket detail session
-                        SessionUtilities.Set(Constant.SESSION_TicketDetails, null);
 
                         // isSend = true => send for lead dept
                         if (isSend)
@@ -154,10 +165,7 @@ namespace Standard.Controllers
                                 // add to table Ticket User 
                                 db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", getTicket.ID, dept.LeaderUserID.Value));
                             }
-
                         }
-
-
                     }
                 }
             }
