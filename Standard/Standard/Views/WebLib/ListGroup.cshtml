@@ -12,13 +12,13 @@
     {
         <tr>
             <td>
-                <a href="@Url.Action("AddUserToGroup", new { groupID = item.ID })">@item.Title</a>
+                <a href="@Url.Action("EditGroup", new { id = item.ID, returnUrl = Request.RawUrl })">@item.Title</a>
             </td>
             <td>
                 <a href="@Url.Action("AddRoleToGroup", new { id = item.ID })">Roles</a>
             </td>
             <td>
-                @Html.ActionLink("Edit", "EditGroup", new { id = item.ID, returnUrl = Request.RawUrl }) |
+                @Html.ActionLink("Add User", "AddUserToGroup", new { groupID = item.ID }) |
                 @Html.ActionLink("Delete", "Delete", new { id = item.ID, tableName = "fwGroup", returnUrl = Request.RawUrl }, new { @class = "confirmDelete" })
             </td>
         </tr>

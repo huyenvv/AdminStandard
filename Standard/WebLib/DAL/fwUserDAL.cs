@@ -144,7 +144,13 @@ where r.Code='" + roleCode+"'";
         }
         public static void Logout()
         {
-            StringHelper.HttpContext.Response.Cookies.Remove(Constant.Session_CurrentUser);
+            //StringHelper.HttpContext.Response.Cookies.Remove(Constant.Session_CurrentUser);
+            if (StringHelper.HttpContext.Request.Cookies[Constant.Session_CurrentUser] != null)
+            {
+                var c = new System.Web.HttpCookie(Constant.Session_CurrentUser);
+                c.Expires = DateTime.Now.AddDays(-1);
+                StringHelper.HttpContext.Response.Cookies.Add(c);
+            }
             SessionUtilities.Remove(Constant.Session_CurrentUser);
         }
         public int Authorize(params string[] roles)
