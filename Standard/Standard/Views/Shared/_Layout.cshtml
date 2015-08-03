@@ -9,18 +9,18 @@
     <title>VAN LAACK @ViewBag.Title</title>
 
     <!-- Vendor CSS -->
-    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Shadows+Into+Light' rel='stylesheet' type='text/css'>
-    <link href="/Content/lib/ma/css/animate.min.css" rel="stylesheet">
-    <link href="/Content/lib/ma/css/sweetalert-override.min.css" rel="stylesheet">
+    @*<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Shadows+Into+Light' rel='stylesheet' type='text/css'>
+        <link href="/Content/lib/ma/css/animate.min.css" rel="stylesheet">
+        <link href="/Content/lib/ma/css/sweetalert-override.min.css" rel="stylesheet">*@
     <link href="/Content/lib/ma/css/material-design-iconic-font.min.css" rel="stylesheet">
-    <link href="/Content/lib/ma/css/material-design-iconic-font.min1.css" rel="stylesheet">
-    <link href="/Content/lib/ma/css/socicon.min.css" rel="stylesheet">
-    <link href="/Content/lib/ma/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
-
+    @*<link href="/Content/lib/ma/css/material-design-iconic-font.min1.css" rel="stylesheet">
+        <link href="/Content/lib/ma/css/socicon.min.css" rel="stylesheet">
+    *@
+    @RenderSection("style", required: false)
     <!-- CSS -->
     <link href="/Content/lib/ma/css/app.min.1.css" rel="stylesheet">
-    <link href="/Content/lib/ma/css/app.min.2.css" rel="stylesheet">
+    @*<link href="/Content/lib/ma/css/app.min.2.css" rel="stylesheet">*@
     <link href="/Content/css/common.css" rel="stylesheet">
     <link href="/Content/css/ma-site.css" rel="stylesheet">
 </head>
@@ -65,26 +65,24 @@
 
     <script src="/Content/lib/ma/js/jquery.nicescroll.min.js"></script>
     <script src="/Content/lib/ma/js/waves.min.js"></script>
-    <script src="/Content/lib/ma/js/bootstrap-growl.min.js"></script>
-    <script src="/Content/lib/ma/js/sweetalert.min.js"></script>
-    <script src="/Content/lib/ma/js/moment.min.js"></script>
-    <script src="/Content/lib/ma/js/autosize.min.js"></script>
-    <script src="/Content/lib/ma/js/bootstrap-datetimepicker.min.js"></script>
-    <script src="~/Content/lib/ma/js/jquery.easypiechart.min.js"></script>
-    <script src="~/Content/lib/ma/js/charts.js"></script>
+    @*<script src="/Content/lib/ma/js/bootstrap-growl.min.js"></script>
+        <script src="/Content/lib/ma/js/sweetalert.min.js"></script>        
+        <script src="/Content/lib/ma/js/autosize.min.js"></script>
+    *@
+
 
     <!-- Placeholder for IE9 -->
     <!--[if IE 9 ]>
         <script src="vendors/bower_components/jquery-placeholder/jquery.placeholder.min.js"></script>
     <![endif]-->
-    <script src="/Content/lib/ma/js/functions.js"></script>
-    <script src="/Content/lib/ma/js/demo.js"></script>
+    @*<script src="/Content/lib/ma/js/demo.js"></script>*@
     <script src="/Content/js/common.js"></script>
     <script src="/Content/js/ma-layout.js"></script>
     @RenderSection("scripts", required: false)
     @{
         var routeValues = HttpContext.Current.Request.RequestContext.RouteData.Values;
     }
+    <script src="/Content/lib/ma/js/functions.js"></script>
     <script type="text/javascript">
         function getController() {
             return "@routeValues["controller"]";

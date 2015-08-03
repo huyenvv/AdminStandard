@@ -11,10 +11,18 @@
     ViewBag.Title = "ĐỀ NGHỊ DỤNG CỤ LÀM VIỆC/ REQUEST FOR WORKING FACILITIES";
     var listFiles = !string.IsNullOrEmpty(Model.FilePath) ? Model.FilePath.Split(new string[] { ";#" }, StringSplitOptions.RemoveEmptyEntries) : new string[0];
 }
-<link href="~/Content/css/ticket.css" rel="stylesheet" />
+
+
+@section style{
+    <link href="~/Content/css/ticket.css" rel="stylesheet" />
+    <link href="/Content/lib/ma/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+}
+
 @section  scripts{
-    <script src="~/Content/lib/ma/js/fileinput.min.js"></script>
+    <script src="/Content/lib/ma/js/moment.min.js"></script>
+    <script src="/Content/lib/ma/js/bootstrap-datetimepicker.min.js"></script>
     <script src="~/Content/js/ticket.js"></script>
+    <script src="~/Content/lib/ma/js/fileinput.min.js"></script>
 }
 
 

@@ -73,7 +73,7 @@
             <td>
                 @if ((DB.CurrentUser.ID == item.Current || DB.CurrentUser.UserName == WebLib.Constant.AdminFix) && item.Status == CheckoutStatus.KhoiTao)
                 {
-                    <a href="@Url.Action("Delete", new { id = item.ID, returnUrl = Request.RawUrl })" class="btn btn-danger btn-icon waves-effect waves-circle waves-float confirmDelete"><i class="md md-close"></i></a>
+                    <a href="@Url.Action("Delete", new { id = item.ID, returnUrl = Request.RawUrl })" class="confirmDelete">Xóa</a>
                 }
             </td>
         </tr>
