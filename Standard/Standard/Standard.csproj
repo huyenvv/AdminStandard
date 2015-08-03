@@ -241,6 +241,8 @@
   <ItemGroup>
     <Content Include="App_Data\script.sql" />
     <Content Include="Content\js\angular.min.js" />
+    <Content Include="Content\lib\edit-table\editabletable.js" />
+    <Content Include="Content\lib\edit-table\numeric-input.js" />
     <Content Include="Content\lib\ma\js\charts.js" />
     <Content Include="Content\lib\ma\js\fileinput.min.js" />
     <Content Include="Content\lib\ma\js\input-mask.min.js" />

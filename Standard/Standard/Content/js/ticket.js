@@ -101,3 +101,10 @@ function showFile(url) {
     }
     return false;
 }
+
+function AddRows(id) {
+    var obj = $(id + " tbody");
+    var no = obj.find("tr").length + 1;
+    obj.append('<tr><td>' + no + '</td><td></td><td></td><td></td><td></td></tr>');
+    $(id).editableTableWidget();
+}
