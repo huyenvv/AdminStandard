@@ -9,9 +9,8 @@
     {
         listType[Model.PaymentMethod.Value] = "checked='checked'";
     }
-    var listDept = (List<Dept>)ViewBag.listDept;
-    var listIDGRoup = currentUser.fwGroup.Select(m=>m.ID);
-    var currentDept = listDept.Where(m => listIDGRoup.Contains(m.GroupID)).ToList();
+    var listIDGRoup = currentUser.fwGroup.Select(m=>m.ID).ToList();
+    var currentDept = DB.Entities.Dept.Where(m => listIDGRoup.Contains(m.GroupID)).ToList();
     
     var listDetail = Model.CheckoutDetails;
     var ticketID = int.Parse(Request.QueryString["ticketID"]);
