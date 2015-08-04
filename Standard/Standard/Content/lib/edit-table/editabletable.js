@@ -43,9 +43,9 @@ $.fn.editableTableWidget = function (options) {
 			},
 			movement = function (element, keycode) {
 				if (keycode === ARROW_RIGHT) {
-					return element.next('td');
+				    return element.next('td:not(.noedit)');
 				} else if (keycode === ARROW_LEFT) {
-					return element.prev('td');
+				    return element.prev('td:not(.noedit)');
 				} else if (keycode === ARROW_UP) {
 					return element.parent().prev().children().eq(element.index());
 				} else if (keycode === ARROW_DOWN) {
@@ -110,7 +110,7 @@ $.fn.editableTableWidget = function (options) {
 			}
 		});
 
-		element.find('td').prop('tabindex', 1);
+		element.find('td:not(.noedit)').prop('tabindex', 1);
 
 		$(window).on('resize', function () {
 			if (editor.is(':visible')) {
