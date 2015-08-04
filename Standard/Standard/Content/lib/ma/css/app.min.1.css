@@ -10472,7 +10472,6 @@ input:focus {
         transition: background-color;
         -webkit-transition-duration: 300ms;
         transition-duration: 300ms;
-        font-family: roboto;
     }
 
     .dropdown-menu.dropdown-menu-lg {

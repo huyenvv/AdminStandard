@@ -58,4 +58,13 @@ namespace Standard
         public const int ChuyenKhoan = 1;
         public const int QuyetToanTamUng = 2;
     }
+
+    public class DoKhan
+    {
+        public const int BinhThuong = 0;
+        public const int Khan = 1;
+        public const int RatKhan = 2;
+
+        public static string[] Title = new string[] { "Bình thường", "Khẩn", "Rất khẩn" };
+    }
 }

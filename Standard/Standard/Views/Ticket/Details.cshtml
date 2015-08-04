@@ -5,7 +5,7 @@
     var currentUser = fwUserDAL.GetCurrentUser();
     var createby = new fwUserDAL().GetByID(Model.CreatedBy);
     var listTickKet = Model.TicketDetails;
-    var dept = DB.Entities.Dept.FirstOrDefault(m => m.ID == Model.DeptID);    
+    var dept = DB.Entities.Dept.FirstOrDefault(m => m.ID == Model.DeptID);
     var currentRequest = Request.QueryString["returnUrl"];
     var returnUrl = !string.IsNullOrEmpty(currentRequest) ? currentRequest : Url.Action("Index");
     ViewBag.Title = "ĐỀ NGHỊ DỤNG CỤ LÀM VIỆC/ REQUEST FOR WORKING FACILITIES";
@@ -16,6 +16,16 @@
     { ykien = DB.Entities.Feedback.FirstOrDefault(m => m.ID == Model.FeedbackID.Value).Title; }
 
     var listTicketType = DB.Entities.TicketType.ToList();
+
+    int doKhan;
+    try
+    {
+        doKhan = int.Parse(Model.DoKhan);
+    }
+    catch (Exception)
+    {
+        doKhan = 0;
+    }
 }
 <link href="~/Content/css/ticket.css" rel="stylesheet" />
 @section  scripts{
@@ -79,18 +89,12 @@
     </div>
     <br />
     <div class="row">
-        <div class="col-sm-12">
-            <div id="ListFile">
-                @if (listFiles.Length > 0)
-                {
-                    <label>Danh sách tệp tin: </label>
-                    <div class="clearfix"></div>
-                    foreach (var item in listFiles)
-                    {
-                        var itemFileName = item.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-                        <a href="#" onclick="showFile('@item')">@itemFileName[itemFileName.Length - 1]</a><br />
-                    }
-                }
+        <div class="col-sm-4">
+            <div class="form-group fg-float">
+                <div class="fg-line">
+                    <label>Độ khẩn: </label>
+                    <input type="text" name="DoKhan" value="@DoKhan.Title[doKhan]" class="form-control" readonly />
+                </div>
             </div>
         </div>
     </div>
@@ -179,9 +183,25 @@
         </div>
     </div>
     <br />
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="ListFile">
+                @if (listFiles.Length > 0)
+                {
+                    <label>Danh sách tệp tin: </label>
+                    <div class="clearfix"></div>
+                    foreach (var item in listFiles)
+                    {
+                        var itemFileName = item.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                        <a href="#" onclick="showFile('@item')">@itemFileName[itemFileName.Length - 1]</a><br />
+                    }
+                }
+            </div>
+        </div>
+    </div>
 }
 @if (ykien != null)
-{
+{   <br />
     <div class="row">
         <div class="col-sm-12">
             <div class="form-group fg-float">

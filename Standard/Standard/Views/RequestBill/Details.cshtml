@@ -183,7 +183,7 @@
                         @*<i>(Sub-total)</i>*@
                     </td>
                     <td class="text-right">@Model.Total.ToString("N0")</td>
-                    <td class="text-right"></td>
+                    <td class="text-right">@(Model.TotalUSD.HasValue ? Model.TotalUSD.Value.ToString("N0") : "")</td>
                 </tr>
                 <tr>
                     <td colspan="4">
@@ -191,7 +191,7 @@
                         @*<i>(Advance payment)</i>*@:
                     </td>
                     <td class="text-right">@(Model.AdvandPayment.HasValue ? Model.AdvandPayment.Value.ToString("N0") : "")</td>
-                    <td class="text-right"></td>
+                    <td class="text-right">@(Model.AdvandPaymentUSD.HasValue ? Model.AdvandPaymentUSD.Value.ToString("N0") : "")</td>
                 </tr>
                 <tr>
                     <td colspan="4">
@@ -199,7 +199,7 @@
                         @*<i>(Bank charge)</i>*@:
                     </td>
                     <td class="text-right">@(Model.BankingCharge.HasValue ? Model.BankingCharge.Value.ToString("N0") : "")</td>
-                    <td class="text-right"></td>
+                    <td class="text-right">@(Model.BankingChargeUSD.HasValue ? Model.BankingChargeUSD.Value.ToString("N0") : "")</td>
                 </tr>
                 <tr>
                     <td colspan="4">
@@ -207,13 +207,14 @@
                         @*<i>(Total)</i>*@:
                     </td>
                     <td class="text-right">@Model.SumTotal.ToString("N0")</td>
-                    <td class="text-right"></td>
+                    <td class="text-right">@(Model.SumTotalUSD.HasValue ? Model.SumTotalUSD.Value.ToString("N0") : "")</td>
                 </tr>
                 <tr>
-                    <td colspan="6">
+                    <td>
                         <strong> Bằng chữ </strong>
                         @*<i>(in words): </i>*@         :
                     </td>
+                    <td colspan="5">@Model.InWords</td>
                 </tr>
             </tfoot>
         </table>

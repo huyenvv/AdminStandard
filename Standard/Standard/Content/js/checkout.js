@@ -76,4 +76,6 @@ function getValueTableEdit() {
         USD: $("td.usdPhiNH").text()
     };
     $("#phiNganHang").val(JSON.stringify(phiNganhang));
+
+    $("#InWords").val($("#BangChu").text());
 }

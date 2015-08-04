@@ -15,8 +15,8 @@
 @section style{
     <link href="~/Content/css/ticket.css" rel="stylesheet" />
     <style>
-        #mainTable{
-            margin-bottom:10px;
+        #mainTable {
+            margin-bottom: 10px;
         }
     </style>
 }
@@ -31,7 +31,7 @@
         @if ((listTickKet == null) || (listTickKet != null && listTickKet.Count == 0))
         {
             @:AddRows('#mainTable');
-                                                                                                }
+                                                                                                                }
         $('#mainTable').find('td:nth(1)').focus().click();
     </script>
 }
@@ -50,6 +50,23 @@
             <button type="submit" class="btn btn-primary" onclick="return CheckTicket(false);">Lưu lại</button>
             <button type="submit" class="btn btn-primary" onclick="return CheckTicket(true);">Gửi phiếu đề nghị</button>
             <a href="@returnUrl" class="btn btn-default">Hủy</a>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="form-group fg-float">
+                <div class="fg-line">
+                    <label>Độ khẩn</label>
+                    <div class="select">
+                        <select class="form-control" name="DoKhan">
+                            <option value="@DoKhan.BinhThuong" @(Model.DoKhan == DoKhan.BinhThuong.ToString() ? "selected" : "")>@DoKhan.Title[DoKhan.BinhThuong]</option>
+                            <option value="@DoKhan.Khan" @(Model.DoKhan == DoKhan.Khan.ToString() ? "selected" : "")>@DoKhan.Title[DoKhan.Khan]</option>
+                            <option value="@DoKhan.RatKhan" @(Model.DoKhan == DoKhan.RatKhan.ToString() ? "selected" : "")>@DoKhan.Title[DoKhan.RatKhan]</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <br />
@@ -86,7 +103,8 @@
                 </div>
 
             </div>
-        </div><div class="col-sm-4">
+        </div>
+        <div class="col-sm-4">
             <div class="form-group fg-float">
                 <div class="fg-line">
                     <label>Bộ phận</label>

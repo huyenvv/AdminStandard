@@ -68,6 +68,7 @@
     @Html.Hidden("listCheckoutDetailJson")
     @Html.Hidden("tamUng")
     @Html.Hidden("phiNganHang")
+    @Html.HiddenFor(m=>m.InWords)
 
 
     @Html.ValidationSummary(true)
@@ -263,7 +264,7 @@
                             <strong> Bằng chữ </strong>
                             @*<i>(in words): </i>*@         :
                         </td>
-                        <td colspan="5"></td>
+                        <td colspan="5" id="BangChu"></td>
                     </tr>
                 </tfoot>
             </table>
