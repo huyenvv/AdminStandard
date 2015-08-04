@@ -10,6 +10,9 @@
         listType[Model.PaymentMethod.Value] = "checked='checked'";
     }
     var listDept = (List<Dept>)ViewBag.listDept;
+    var listIDGRoup = currentUser.fwGroup.Select(m=>m.ID);
+    var currentDept = listDept.Where(m => listIDGRoup.Contains(m.GroupID)).ToList();
+    
     var listDetail = Model.CheckoutDetails;
     var ticketID = int.Parse(Request.QueryString["ticketID"]);
     var db = DB.Entities;
@@ -133,7 +136,7 @@
                         </label>
                         <div class="select">
                             <select class="form-control" name="DeptID">
-                                @foreach (var item in listDept)
+                                @foreach (var item in currentDept)
                                 {
                                     <option value="@item.ID" @(item.ID == Model.DeptID ? "selected='selected'" : "")>@item.Title</option>
                                 }
