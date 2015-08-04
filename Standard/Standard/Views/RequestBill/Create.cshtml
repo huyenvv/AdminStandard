@@ -44,7 +44,7 @@
         @if ((lstChkDetails == null) || (lstChkDetails != null && lstChkDetails.Count == 0))
         {
             @:AddRows('#mainTable');
-                                                                        }
+                                                                                }
         $('#mainTable').find('td:nth(0)').focus().click();
         AddEventEditTable();
     </script>
@@ -259,10 +259,11 @@
                         <td class="text-right noChange usdTongCong"></td>
                     </tr>
                     <tr>
-                        <td colspan="6">
+                        <td>
                             <strong> Bằng chữ </strong>
                             @*<i>(in words): </i>*@         :
                         </td>
+                        <td colspan="5"></td>
                     </tr>
                 </tfoot>
             </table>

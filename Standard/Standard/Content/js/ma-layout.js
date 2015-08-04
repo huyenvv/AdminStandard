@@ -21,7 +21,7 @@
 
 function AddEventEditTable() {
     $('table td.typeDate').on('validate', function (evt, newValue) {
-        if (!validateDate(newValue)) {
+        if (!isDate(newValue)) {
             return false; // mark cell as invalid 
         }
     });

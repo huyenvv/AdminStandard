@@ -4,17 +4,21 @@
     var currentUser = fwUserDAL.GetCurrentUser();
     var listTickKet = WebLib.SessionUtilities.Exist(Constant.SESSION_TicketDetails) ? (List<TicketDetails>)WebLib.SessionUtilities.Get(Constant.SESSION_TicketDetails) : null;
     var listDept = (List<Dept>)ViewBag.listDept;
-    var listType = new[] { "", "", "", "" };
-    listType[Model.Type] = "checked='checked'";
     var currentRequest = Request.QueryString["returnUrl"];
     var returnUrl = !string.IsNullOrEmpty(currentRequest) ? currentRequest : Url.Action("Index");
     ViewBag.Title = "ĐỀ NGHỊ DỤNG CỤ LÀM VIỆC/ REQUEST FOR WORKING FACILITIES";
     var listFiles = !string.IsNullOrEmpty(Model.FilePath) ? Model.FilePath.Split(new string[] { ";#" }, StringSplitOptions.RemoveEmptyEntries) : new string[0];
+    var listTicketType = DB.Entities.TicketType.ToList();
 }
 
 
 @section style{
-    <link href="~/Content/css/ticket.css" rel="stylesheet" />    
+    <link href="~/Content/css/ticket.css" rel="stylesheet" />
+    <style>
+        #mainTable{
+            margin-bottom:10px;
+        }
+    </style>
 }
 
 @section  scripts{
@@ -27,7 +31,7 @@
         @if ((listTickKet == null) || (listTickKet != null && listTickKet.Count == 0))
         {
             @:AddRows('#mainTable');
-                                }
+                                                                                                }
         $('#mainTable').find('td:nth(1)').focus().click();
     </script>
 }
@@ -41,161 +45,158 @@
     @Html.Hidden("listTicketDetailJson")
 
     @Html.ValidationSummary(true)
-    <div class="col-sm-12">
-        <button type="submit" class="btn btn-primary" onclick="return CheckTicket(false);">Lưu lại</button>
-        <button type="submit" class="btn btn-primary" onclick="return CheckTicket(true);">Gửi phiếu đề nghị</button>
-        <a href="@returnUrl" class="btn btn-default">Hủy</a>
-        <br />
-        <br />
-        <br />
+    <div class="row">
+        <div class="col-sm-12">
+            <button type="submit" class="btn btn-primary" onclick="return CheckTicket(false);">Lưu lại</button>
+            <button type="submit" class="btn btn-primary" onclick="return CheckTicket(true);">Gửi phiếu đề nghị</button>
+            <a href="@returnUrl" class="btn btn-default">Hủy</a>
+        </div>
     </div>
-    <div class="col-sm-12">
-        <label class="checkbox checkbox-inline m-r-20">
-            <input type="checkbox" class="onCheckbox" name="Type" value="1" @(listType[1])>
-            <i class="input-helper"></i>
-            (1) Mua <br />@*<i>Purchase</i>*@
-        </label>
-        <label class="checkbox checkbox-inline m-r-20">
-            <input type="checkbox" class="onCheckbox" name="Type" value="2" @(listType[2])>
-            <i class="input-helper"></i>
-            (2) Thay thế<br />@*<i>Replacement</i>*@
-        </label>
-        <label class="checkbox checkbox-inline m-r-20">
-            <input type="checkbox" class="onCheckbox" name="Type" value="3" @(listType[3])>
-            <i class="input-helper"></i>
-            (3) Bảo trì, sửa chữa<br />@*<i>Maintenance/Repair</i>*@
-        </label>
-        <div id="loaiticket" class="hide has-error">
-            <small id="loaiticket" class="help-block">Bạn phải chọn một trong 3 loại trên!</small>
+    <br />
+    <div class="row">
+        <div class="col-sm-12">
+            @foreach (var item in listTicketType)
+            {
+                <label class="checkbox checkbox-inline m-r-20">
+                    <input type="checkbox" class="onCheckbox" name="Type" value="@item.ID" @(item.ID == Model.Type ? "checked" : "")>
+                    <i class="input-helper"></i>
+                    @item.Title
+                </label>
+            }
+            <div id="loaiticket" class="hide has-error">
+                <small id="loaiticket" class="help-block">Bạn phải chọn một trong 3 loại trên!</small>
+            </div>
         </div>
-        <br /><br />
-        <br />
     </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="form-group fg-float">
+                <div class="fg-line">
+                    <label>Ngày đề nghị</label>
+                    <input type="text" name="NgayDenghi" value="@Model.Created.ToString("dd/MM/yyyy")" class=" form-control fg-input" readonly="readonly" />
+                </div>
 
-    <div class="col-sm-4">
-        <div class="form-group fg-float">
-            <div class="fg-line">
-                <label>Ngày đề nghị</label>
-                <input type="text" name="NgayDenghi" value="@Model.Created.ToString("dd/MM/yyyy")" class=" form-control fg-input" readonly="readonly" />
             </div>
+        </div><div class="col-sm-4">
+            <div class="form-group fg-float">
+                <div class="fg-line">
+                    <label>Người đề nghị</label>
+                    <input type="text" name="NguoiDeNghi" value="@(currentUser != null ? currentUser.UserName : "")" class=" form-control fg-input" readonly="readonly" />
+                </div>
 
-        </div>
-    </div><div class="col-sm-4">
-        <div class="form-group fg-float">
-            <div class="fg-line">
-                <label>Người đề nghị</label>
-                <input type="text" name="NguoiDeNghi" value="@(currentUser != null ? currentUser.UserName : "")" class=" form-control fg-input" readonly="readonly" />
             </div>
-
-        </div>
-    </div><div class="col-sm-4">
-        <div class="form-group fg-float">
-            <div class="fg-line">
-                <label>Bộ phận</label>
-                <div class="select">
-                    <select class="form-control" name="DeptID">
-                        @foreach (var item in listDept)
-                        {
-                            <option value="@item.ID" @(item.ID == Model.DeptID ? "selected='selected'" : "")>@item.Title</option>
-                        }
-                    </select>
+        </div><div class="col-sm-4">
+            <div class="form-group fg-float">
+                <div class="fg-line">
+                    <label>Bộ phận</label>
+                    <div class="select">
+                        <select class="form-control" name="DeptID">
+                            @foreach (var item in listDept)
+                            {
+                                <option value="@item.ID" @(item.ID == Model.DeptID ? "selected='selected'" : "")>@item.Title</option>
+                            }
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-sm-12">
-        <br />
-        <table id="mainTable" class="table table-bordered">
-            <thead>
-                <tr>
-                    <th width="10">
-                        TT<br />
-                        @*<i>No</i>*@
-                    </th>
-                    <th>
-                        Diễn giải <br />
-                        @*<i>Description</i>*@
-                    </th>
-                    <th>
-                        SL<br />
-                        @*<i>Q'tty</i>*@
-                    </th>
-                    <th>
-                        Mục đích, lý do<br />
-                        @*<i>Perpose, Reason</i>*@
-                    </th>
-                    <th>
-                        Ngày cần<br />
-                        @*<i>Date require (dd/mm/yyyy)</i>*@
+    <br />
+    <div class="row">
+        <div class="col-sm-12">
+            <table id="mainTable" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th width="10">
+                            TT<br />
+                            @*<i>No</i>*@
+                        </th>
+                        <th>
+                            Diễn giải <br />
+                            @*<i>Description</i>*@
+                        </th>
+                        <th>
+                            SL<br />
+                            @*<i>Q'tty</i>*@
+                        </th>
+                        <th>
+                            Mục đích, lý do<br />
+                            @*<i>Perpose, Reason</i>*@
+                        </th>
+                        <th>
+                            Ngày cần<br />
+                            @*<i>Date require (dd/mm/yyyy)</i>*@
 
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (listTickKet != null && listTickKet.Count > 0)
-                {
-                    var dem = 1;
-                    foreach (var item in listTickKet)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (listTickKet != null && listTickKet.Count > 0)
                     {
-                        <tr>
-                            <td>
-                                @(dem++)
-                            </td>
-                            <td>
-                                @item.Title
-                            </td>
-                            <td>
-                                @item.Quantity
-                            </td>
-                            <td>
-                                @item.Reason
-                            </td>
-                            <td>
-                                @item.DateRequire
-                            </td>
-                            @*<td>
-                                    <button class="color-red btn btn-icon" onclick="return removeTicketDetail('@item.ID',this);"><span class="md md-delete"></span></button>
-                                </td>*@
-                        </tr>
+                        var dem = 1;
+                        foreach (var item in listTickKet)
+                        {
+                            <tr>
+                                <td>
+                                    @(dem++)
+                                </td>
+                                <td>
+                                    @item.Title
+                                </td>
+                                <td>
+                                    @item.Quantity
+                                </td>
+                                <td>
+                                    @item.Reason
+                                </td>
+                                <td>
+                                    @item.DateRequire
+                                </td>
+                                @*<td>
+                                        <button class="color-red btn btn-icon" onclick="return removeTicketDetail('@item.ID',this);"><span class="md md-delete"></span></button>
+                                    </td>*@
+                            </tr>
+                        }
                     }
-                }
-            </tbody>
-        </table>
-        <br />
-        <div id="loaiticketDetail" class="hide has-error">
-            <small id="loaiticket" class="help-block">Bạn phải thêm ticket detail trước.</small>
+                </tbody>
+            </table>
+            <div id="loaiticketDetail" class="hide has-error">
+                <small id="loaiticket" class="help-block">Bạn phải thêm ticket detail trước.</small>
+            </div>
+            <div></div>
+            <a href="#" class="btn btn-primary btn-xs pull-right" onclick="AddRows('#mainTable'); return false;"><i class="md md-add"></i> Thêm dòng</a>
         </div>
-
-        <a href="#" class="btn btn-primary btn-xs pull-right" onclick="AddRows('#mainTable'); return false;"><i class="md md-add"></i> Thêm dòng</a>
     </div>
 
     <br />
-    <div class="col-sm-12">
-        <div id="ListFile">
-            @if (Model.ID == 0)
-            {
-                <div class="fileinput fileinput-new" data-provides="fileinput">
-                    <span class="btn-file">
-                        <a href="#" class="fileinput-new"><i class="md md-attach-file"></i>Đính kèm tệp</a>
-                        <input type="hidden"><input type="file" name="files" class="ticketFiles">
-                    </span>
-                    <a href="#" class="fileinput-filename"></a>
-                    <a href="#" class="close fileinput-exists" data-dismiss="fileinput" onclick="removeAttachFile(this);">×</a>
-                </div>
-            }
-            @if (listFiles.Length > 0)
-            {
-                <label>Danh sách tệp tin: </label>
-                <div class="clearfix"></div>
-                foreach (var item in listFiles)
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="ListFile">
+                @if (Model.ID == 0)
                 {
-                    var itemFileName = item.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-                    <a href="#">@itemFileName[itemFileName.Length - 1]</a><br />
+                    <div class="fileinput fileinput-new" data-provides="fileinput">
+                        <span class="btn-file">
+                            <a href="#" class="fileinput-new"><i class="md md-attach-file"></i>Đính kèm tệp</a>
+                            <input type="hidden"><input type="file" name="files" class="ticketFiles">
+                        </span>
+                        <a href="#" class="fileinput-filename"></a>
+                        <a href="#" class="close fileinput-exists" data-dismiss="fileinput" onclick="removeAttachFile(this);">×</a>
+                    </div>
                 }
-            }
-            <div class="clearfix"></div>
+                @if (listFiles.Length > 0)
+                {
+                    <label>Danh sách tệp tin: </label>
+                    <div class="clearfix"></div>
+                    foreach (var item in listFiles)
+                    {
+                        var itemFileName = item.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                        <a href="#">@itemFileName[itemFileName.Length - 1]</a><br />
+                    }
+                }
+                <div class="clearfix"></div>
+            </div>
+            <a href="#" onclick="addAttachFile(); return false;" class="btn btn-primary btn-xs"><i class="md md-add"></i>Thêm tệp tin</a>
         </div>
-        <a href="#" onclick="addAttachFile(); return false;" class="btn btn-primary btn-xs"><i class="md md-add"></i>Thêm tệp tin</a>
-        <br /><br />
     </div>
 }

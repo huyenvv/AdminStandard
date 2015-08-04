@@ -1,4 +1,4 @@
-﻿.input-error{
+﻿.input-error {
     border: 1px solid red;
 }
 
@@ -11,6 +11,8 @@
         display: none;
     }
 }
+
 .table > thead > tr > th {
-    background:#eeeeee;
+    background: #eeeeee!important;
 }
+

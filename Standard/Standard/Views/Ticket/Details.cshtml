@@ -5,9 +5,7 @@
     var currentUser = fwUserDAL.GetCurrentUser();
     var createby = new fwUserDAL().GetByID(Model.CreatedBy);
     var listTickKet = Model.TicketDetails;
-    var dept = DB.Entities.Dept.FirstOrDefault(m => m.ID == Model.DeptID);
-    var listType = new[] { "", "", "", "" };
-    listType[Model.Type] = "checked='checked'";
+    var dept = DB.Entities.Dept.FirstOrDefault(m => m.ID == Model.DeptID);    
     var currentRequest = Request.QueryString["returnUrl"];
     var returnUrl = !string.IsNullOrEmpty(currentRequest) ? currentRequest : Url.Action("Index");
     ViewBag.Title = "ĐỀ NGHỊ DỤNG CỤ LÀM VIỆC/ REQUEST FOR WORKING FACILITIES";
@@ -16,6 +14,8 @@
     string ykien = null;
     if (Model.FeedbackID != null)
     { ykien = DB.Entities.Feedback.FirstOrDefault(m => m.ID == Model.FeedbackID.Value).Title; }
+
+    var listTicketType = DB.Entities.TicketType.ToList();
 }
 <link href="~/Content/css/ticket.css" rel="stylesheet" />
 @section  scripts{
@@ -97,21 +97,14 @@
     <br />
     <div class="row">
         <div class="col-sm-12">
-            <label class="checkbox checkbox-inline m-r-20">
-                <input type="checkbox" class="inlineCheckbox1" name="Type" value="1" @(listType[1]) disabled />
-                <i class="input-helper"></i>
-                (1) Mua <br />@*<i>Purchase</i>*@
-            </label>
-            <label class="checkbox checkbox-inline m-r-20">
-                <input type="checkbox" class="inlineCheckbox1" name="Type" value="2" @(listType[2]) disabled />
-                <i class="input-helper"></i>
-                (2) Thay thế<br />@*<i>Replacement</i>*@
-            </label>
-            <label class="checkbox checkbox-inline m-r-20">
-                <input type="checkbox" class="inlineCheckbox1" name="Type" value="3" @(listType[3]) disabled />
-                <i class="input-helper"></i>
-                (3) Bảo trì, sửa chữa<br />@*<i>Maintenance/Repair</i>*@
-            </label>
+            @foreach (var item in listTicketType)
+            {
+                <label class="checkbox checkbox-inline m-r-20">
+                    <input type="checkbox" class="onCheckbox" name="Type" value="@item.ID" @(item.ID == Model.Type ? "checked" : "") disabled />
+                    <i class="input-helper"></i>
+                    @item.Title
+                </label>
+            }
         </div>
     </div>
     <br />
@@ -132,7 +125,7 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>
+                        <th class="text-center" width="10">
                             TT<br />
                             @*<i>No</i>*@
                         </th>
@@ -140,7 +133,7 @@
                             Diễn giải <br />
                             @*<i>Description</i>*@
                         </th>
-                        <th>
+                        <th width="10">
                             SL<br />
                             @*<i>Q'tty</i>*@
                         </th>
@@ -162,7 +155,7 @@
                         foreach (var item in listTickKet)
                         {
                             <tr>
-                                <td>
+                                <td class="text-center">
                                     @(dem++)
                                 </td>
                                 <td>

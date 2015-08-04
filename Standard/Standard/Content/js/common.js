@@ -22,6 +22,21 @@ function validateDate(testdate) {
     return date_regex.test(testdate);
 }
 
+function isDate(str) {
+    // format date dd/mm/yyyy
+    if (str == undefined) { return false; }
+    var parms = str.split(/[\.\-\/]/);
+    var yyyy = parseInt(parms[2], 10);
+    var mm = parseInt(parms[1], 10);
+    var dd = parseInt(parms[0], 10);
+    var date = new Date(yyyy, mm - 1, dd, 12, 0, 0, 0);
+    return parms.length == 3 &&
+        parms[2].length == 4 &&
+        mm === (date.getMonth() + 1) &&
+        dd === date.getDate() &&
+        yyyy === date.getFullYear();
+}
+
 function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
