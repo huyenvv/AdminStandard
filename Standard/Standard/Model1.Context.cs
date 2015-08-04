@@ -26,7 +26,6 @@ namespace Standard
         }
     
         public virtual DbSet<Checkout> Checkout { get; set; }
-        public virtual DbSet<CheckoutDetails> CheckoutDetails { get; set; }
         public virtual DbSet<ChkFeedback> ChkFeedback { get; set; }
         public virtual DbSet<Dept> Dept { get; set; }
         public virtual DbSet<Feedback> Feedback { get; set; }
@@ -35,5 +34,6 @@ namespace Standard
         public virtual DbSet<TicketType> TicketType { get; set; }
         public virtual DbSet<CheckoutUser> CheckoutUser { get; set; }
         public virtual DbSet<TicketUser> TicketUser { get; set; }
+        public virtual DbSet<CheckoutDetails> CheckoutDetails { get; set; }
     }
 }

@@ -20,6 +20,9 @@ namespace Standard
         public decimal VND { get; set; }
         public Nullable<decimal> USD { get; set; }
         public Nullable<decimal> EUR { get; set; }
+        public string DeptCode { get; set; }
+        public string No { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
     
         public virtual Checkout Checkout { get; set; }
     }

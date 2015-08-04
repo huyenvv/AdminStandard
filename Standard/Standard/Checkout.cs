@@ -16,9 +16,9 @@ namespace Standard
     {
         public Checkout()
         {
-            this.CheckoutDetails = new HashSet<CheckoutDetails>();
             this.CheckoutUser = new HashSet<CheckoutUser>();
             this.ChkFeedback = new HashSet<ChkFeedback>();
+            this.CheckoutDetails = new HashSet<CheckoutDetails>();
         }
     
         public int ID { get; set; }
@@ -47,8 +47,8 @@ namespace Standard
         public Nullable<decimal> AdvandPaymentUSD { get; set; }
         public Nullable<decimal> OnExpensesUSD { get; set; }
     
-        public virtual ICollection<CheckoutDetails> CheckoutDetails { get; set; }
         public virtual ICollection<CheckoutUser> CheckoutUser { get; set; }
         public virtual ICollection<ChkFeedback> ChkFeedback { get; set; }
+        public virtual ICollection<CheckoutDetails> CheckoutDetails { get; set; }
     }
 }

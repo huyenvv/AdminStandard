@@ -20,6 +20,9 @@ namespace Standard
         public int Quantity { get; set; }
         public string Reason { get; set; }
         public System.DateTime DateRequire { get; set; }
+        public string Dept { get; set; }
+        public string No { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
     
         public virtual Ticket Ticket { get; set; }
     }

@@ -57,6 +57,9 @@ function getValueTableEdit() {
     $("table#mainTable tbody tr").each(function () {
         var listtds = $(this).children();
         var obj = {
+            DeptCode: $(listtds[0]).text(),
+            No: $(listtds[1]).text(),
+            Date: $(listtds[2]).text(),
             Title: $(listtds[3]).text(),
             VND: $(listtds[4]).text(),
             USD: $(listtds[5]).text()
