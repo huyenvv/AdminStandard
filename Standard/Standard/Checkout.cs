@@ -41,6 +41,11 @@ namespace Standard
         public Nullable<int> InternalControl { get; set; }
         public Nullable<int> ChkFeedbackID { get; set; }
         public int Status { get; set; }
+        public Nullable<decimal> BankingChargeUSD { get; set; }
+        public Nullable<decimal> TotalUSD { get; set; }
+        public Nullable<decimal> SumTotalUSD { get; set; }
+        public Nullable<decimal> AdvandPaymentUSD { get; set; }
+        public Nullable<decimal> OnExpensesUSD { get; set; }
     
         public virtual ICollection<CheckoutDetails> CheckoutDetails { get; set; }
         public virtual ICollection<CheckoutUser> CheckoutUser { get; set; }

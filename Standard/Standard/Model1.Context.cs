@@ -32,8 +32,8 @@ namespace Standard
         public virtual DbSet<Feedback> Feedback { get; set; }
         public virtual DbSet<Ticket> Ticket { get; set; }
         public virtual DbSet<TicketDetails> TicketDetails { get; set; }
+        public virtual DbSet<TicketType> TicketType { get; set; }
         public virtual DbSet<CheckoutUser> CheckoutUser { get; set; }
         public virtual DbSet<TicketUser> TicketUser { get; set; }
-        public virtual DbSet<TicketType> TicketType { get; set; }
     }
 }

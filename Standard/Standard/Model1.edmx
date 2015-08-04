@@ -29,6 +29,11 @@
           <Property Name="InternalControl" Type="int" />
           <Property Name="ChkFeedbackID" Type="int" />
           <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="BankingChargeUSD" Type="money" />
+          <Property Name="TotalUSD" Type="money" />
+          <Property Name="SumTotalUSD" Type="money" />
+          <Property Name="AdvandPaymentUSD" Type="money" />
+          <Property Name="OnExpensesUSD" Type="money" />
         </EntityType>
         <EntityType Name="CheckoutDetails">
           <Key>
@@ -270,6 +275,7 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <EntitySet Name="Feedback" EntityType="DB_9CF750_dbModel.Feedback" />
           <EntitySet Name="Ticket" EntityType="DB_9CF750_dbModel.Ticket" />
           <EntitySet Name="TicketDetails" EntityType="DB_9CF750_dbModel.TicketDetails" />
+          <EntitySet Name="TicketType" EntityType="DB_9CF750_dbModel.TicketType" />
           <EntitySet Name="CheckoutUser" EntityType="DB_9CF750_dbModel.CheckoutUser" />
           <EntitySet Name="TicketUser" EntityType="DB_9CF750_dbModel.TicketUser" />
           <AssociationSet Name="FK_CheckoutDetails_Checkout" Association="DB_9CF750_dbModel.FK_CheckoutDetails_Checkout">
@@ -296,7 +302,6 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
             <End Role="Ticket" EntitySet="Ticket" />
             <End Role="TicketUser" EntitySet="TicketUser" />
           </AssociationSet>
-          <EntitySet Name="TicketType" EntityType="DB_9CF750_dbModel.TicketType" />
         </EntityContainer>
         <EntityType Name="Checkout">
           <Key>
@@ -322,6 +327,11 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <Property Name="InternalControl" Type="Int32" />
           <Property Name="ChkFeedbackID" Type="Int32" />
           <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="BankingChargeUSD" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="TotalUSD" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="SumTotalUSD" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="AdvandPaymentUSD" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="OnExpensesUSD" Type="Decimal" Precision="19" Scale="4" />
           <NavigationProperty Name="CheckoutDetails" Relationship="DB_9CF750_dbModel.FK_CheckoutDetails_Checkout" FromRole="Checkout" ToRole="CheckoutDetails" />
           <NavigationProperty Name="CheckoutUser" Relationship="DB_9CF750_dbModel.FK_CheckoutUser_Ticket" FromRole="Checkout" ToRole="CheckoutUser" />
           <NavigationProperty Name="ChkFeedback" Relationship="DB_9CF750_dbModel.FK_ChkFeedback_Checkout" FromRole="Checkout" ToRole="ChkFeedback" />
@@ -387,10 +397,10 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <Property Name="ApprovedBy" Type="Int32" />
           <Property Name="CheckoutID" Type="Int32" />
           <Property Name="FeedbackID" Type="Int32" />
+          <Property Name="DoKhan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Feedback" Relationship="DB_9CF750_dbModel.FK_Feedback_Ticket" FromRole="Ticket" ToRole="Feedback" />
           <NavigationProperty Name="TicketDetails" Relationship="DB_9CF750_dbModel.FK_TicketDetails_Ticket" FromRole="Ticket" ToRole="TicketDetails" />
           <NavigationProperty Name="TicketUser" Relationship="DB_9CF750_dbModel.FK_TicketUser_Ticket" FromRole="Ticket" ToRole="TicketUser" />
-          <Property Name="DoKhan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="TicketDetails">
           <Key>
@@ -403,6 +413,13 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <Property Name="Reason" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DateRequire" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Ticket" Relationship="DB_9CF750_dbModel.FK_TicketDetails_Ticket" FromRole="TicketDetails" ToRole="Ticket" />
+        </EntityType>
+        <EntityType Name="TicketType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="CheckoutUser">
           <Key>
@@ -506,13 +523,6 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="TicketType">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Title" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -522,6 +532,11 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <EntitySetMapping Name="Checkout">
             <EntityTypeMapping TypeName="DB_9CF750_dbModel.Checkout">
               <MappingFragment StoreEntitySet="Checkout">
+                <ScalarProperty Name="OnExpensesUSD" ColumnName="OnExpensesUSD" />
+                <ScalarProperty Name="AdvandPaymentUSD" ColumnName="AdvandPaymentUSD" />
+                <ScalarProperty Name="SumTotalUSD" ColumnName="SumTotalUSD" />
+                <ScalarProperty Name="TotalUSD" ColumnName="TotalUSD" />
+                <ScalarProperty Name="BankingChargeUSD" ColumnName="BankingChargeUSD" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="ChkFeedbackID" ColumnName="ChkFeedbackID" />
                 <ScalarProperty Name="InternalControl" ColumnName="InternalControl" />
@@ -622,6 +637,14 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="TicketType">
+            <EntityTypeMapping TypeName="DB_9CF750_dbModel.TicketType">
+              <MappingFragment StoreEntitySet="TicketType">
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="CheckoutUser">
             <EntityTypeMapping TypeName="DB_9CF750_dbModel.CheckoutUser">
               <MappingFragment StoreEntitySet="CheckoutUser">
@@ -635,14 +658,6 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
               <MappingFragment StoreEntitySet="TicketUser">
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="TicketID" ColumnName="TicketID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TicketType">
-            <EntityTypeMapping TypeName="DB_9CF750_dbModel.TicketType">
-              <MappingFragment StoreEntitySet="TicketType">
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
