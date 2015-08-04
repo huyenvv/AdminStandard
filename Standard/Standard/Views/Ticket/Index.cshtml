@@ -76,7 +76,7 @@
                         <button class="btn btn-@listColor[item.Status] btn-xs" disabled="disabled">@TicketStatus.TicketStatusTitle[item.Status]</button>
                     </td>
                     <td>
-                        @if ((DB.CurrentUser.ID == item.Current || DB.CurrentUser.UserName == WebLib.Constant.AdminFix) && item.Status == CheckoutStatus.KhoiTao)
+                        @if ((DB.CurrentUser.ID == item.Current && item.Status == CheckoutStatus.KhoiTao) || new WebLib.DAL.fwUserDAL().UserInRole(RoleList.SystemManager))
                         {
                             <a href="@Url.Action("Delete", new { id = item.ID, returnUrl = Request.RawUrl })" class="confirmDelete">Xóa</a>
                         }

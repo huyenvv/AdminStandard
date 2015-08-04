@@ -12,11 +12,9 @@ namespace Standard
     using System;
     using System.Collections.Generic;
     
-    public partial class CheckoutUser
+    public partial class TicketType
     {
-        public int CheckoutID { get; set; }
-        public int UserID { get; set; }
-    
-        public virtual Checkout Checkout { get; set; }
+        public int ID { get; set; }
+        public string Title { get; set; }
     }
 }

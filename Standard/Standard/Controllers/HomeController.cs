@@ -46,5 +46,35 @@ namespace Standard.Controllers
         }
         #endregion
 
+        #region Ticket Type
+        public ActionResult ListTicketType()
+        {
+            return View(DB.Entities.TicketType.ToList());
+        }
+
+        public ActionResult EditTicketType(int? id, string returnUrl)
+        {
+            var obj = id.HasValue ? DB.Entities.TicketType.FirstOrDefault(m => m.ID == id) : null;
+            return View(obj == null ? new TicketType() : obj);
+        }
+        [HttpPost]
+        public ActionResult EditTicketType(TicketType model, string returnUrl)
+        {
+            if (model.ID == 0)
+                db.TicketType.Add(model);
+            else
+            {
+                db.Entry(model).State = System.Data.Entity.EntityState.Modified;
+            }
+            db.SaveChanges();
+            if (returnUrl == null) return RedirectToAction("ListTicketType"); else return Redirect(returnUrl);
+        }
+        public ActionResult DeleteTicketType(int id, string returnUrl)
+        {
+            new WebLib.DAL.fwBaseDAL("TicketType").Delete(id);
+            if (returnUrl == null) return RedirectToAction("ListTicketType"); else return Redirect(returnUrl);
+        }
+        #endregion
+
     }
 }

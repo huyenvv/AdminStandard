@@ -20,6 +20,7 @@
         <AssociationConnector Association="DB_9CF750_dbModel.FK_Feedback_Ticket" />
         <AssociationConnector Association="DB_9CF750_dbModel.FK_TicketDetails_Ticket" />
         <AssociationConnector Association="DB_9CF750_dbModel.FK_TicketUser_Ticket" />
+        <EntityTypeShape EntityType="DB_9CF750_dbModel.TicketType" Width="1.5" PointX="3.375" PointY="9.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

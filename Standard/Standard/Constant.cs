@@ -24,7 +24,14 @@ namespace Standard
         public const string Normal = "Normal";
         public const string Accounting = "Accounting";
     }
+    public class DeptType
+    {
+        public const int None = 0;
+        public const int KiemTra = 1;
+        public const int KiemSoatNB = 2;
 
+        public static string[] Title = new string[] { "-", "Kiểm tra", "Kiểm soát NB" };
+    }
     public class TicketStatus
     {
         public const int KhoiTao = 0;

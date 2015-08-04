@@ -1,0 +1,23 @@
+﻿@model List<TicketType>
+
+@{
+    ViewBag.Title = "Các loại yêu cầu";
+}
+
+<p>
+    <a href="@Url.Action("EditTicketType", new { returnUrl = Request.RawUrl })" class="btn btn-primary">Thêm loại phiếu yêu cầu</a>
+</p>
+<table class="table">
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <a href="@Url.Action("EditTicketType", new { id = item.ID, returnUrl = Request.RawUrl })">@item.Title</a>
+            </td>
+            <td>
+                <a href="@Url.Action("DeleteTicketType", new { id = item.ID, returnUrl = Request.RawUrl })" class="btn btn-icon command-delete confirmDelete"><span class="md md-delete"></span></a>
+            </td>
+        </tr>
+    }
+
+</table>
