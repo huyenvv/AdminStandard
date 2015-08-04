@@ -10,318 +10,212 @@
         listType[Model.PaymentMethod.Value] = "checked='checked'";
     }
     var listDept = (List<Dept>)ViewBag.listDept;
-    var listDetail = Model.CheckoutDetails;
+    var lstChkDetails = Model.CheckoutDetails;
+    var dept = listDept.FirstOrDefault(m => m.ID == Model.DeptID);
 }
-@section style{
-    <link href="/Content/lib/ma/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
-}
+<style>
+    .table > thead > tr > th {
+        background: #eeeeee;
+    }
+</style>
 @section  scripts{
-    <script src="/Content/lib/ma/js/moment.min.js"></script>
-    <script src="/Content/lib/ma/js/bootstrap-datetimepicker.min.js"></script>
-    <script src="~/Content/lib/ma/js/input-mask.min.js"></script>
-    <script src="~/Content/js/angular.min.js"></script>
     <script src="~/Content/js/checkout.js"></script>
-    <script>
-        var app = angular.module('myApp', []);
-        app.controller('myCtrl', function ($scope) {
-
-            $scope.vnd = [
-                @for (int i = 0; i < listDetail.Count; i++)
-                {
-                    @(listDetail.ElementAt(i).VND + ",")
-                }
-            0];
-            $scope.usd = [
-                @for (int i = 0; i < listDetail.Count; i++)
-                {
-                    @(listDetail.ElementAt(i).USD + ",")
-                }
-            0];
-            $scope.getTotalVND = function () {
-                if ($scope.vnd.length > 0) {
-                    var value = eval($scope.vnd.join('+').replace(/\./g, ''));
-                    return format(value, '');
-                }
-            };
-            $scope.getTotalUSD = function () {
-                if ($scope.usd.length > 0) {
-                    var value = eval($scope.usd.join('+').replace(/\./g, ''));
-                    return format(value, '');
-                }
-            };
-            format = function (n, currency) {
-                return currency + " " + n.toFixed(0).replace(/./g, function (c, i, a) {
-                    return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "." + c : c;
-                });
-            }
-
-
-            // Tạm ứng phí ngân hàng
-            $scope.tamungVND = 0;
-            $scope.tamungUSD = 0;
-            $scope.PhiNganHangVND = 0;
-            $scope.PhiNganHangUSD = 0;
-
-            $scope.getAllTotalVND = function () {
-                if ($scope.vnd.length > 1) {
-                    var subtotal = eval($scope.vnd.join('+').replace(/\./g, ''));
-                    var value = subtotal + "-" + $scope.tamungVND + "+" + $scope.PhiNganHangVND;
-                    var allTotal = value.replace(/\./g, '');
-                    return format(allTotal, '');
-                }
-            };
-            $scope.getAllTotalUSD = function () {
-                if ($scope.usd.length > 1) {
-                    var subtotal = eval($scope.usd.join('+').replace(/\./g, ''));
-                    var value = subtotal + "-" + $scope.tamungUSD + "+" + $scope.PhiNganHangUSD;
-                    var allTotal = value.replace(/\./g, '');
-                    return format(allTotal, '');
-                }
-            };
-        });
-    </script>
-
 }
 
 
-@using (Html.BeginForm(null, null, new { returnUrl = Request.QueryString["returnUrl"] }, FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
-    @Html.Hidden("isSend", true)
-    @Html.HiddenFor(m => m.ID)
 
-    @Html.ValidationSummary(true)
-    <div class="row">
-        <div class="col-sm-12 process-circle">
-            @for (int i = 0; i < CheckoutStatus.CheckoutStatusTitle.Length; i++)
+<div class="row">
+    <div class="col-sm-12 process-circle">
+        @for (int i = 0; i < CheckoutStatus.CheckoutStatusTitle.Length; i++)
+        {
+            if (Model.Status == i)
             {
-                if (Model.Status == i)
-                {
-                    <button class="btn bgm-amber waves-effect" onclick="return false;">@CheckoutStatus.CheckoutStatusTitle[i]</button>
-                }
-                else
-                {
-                    <button class="btn bgm-gray waves-effect" disabled="disabled">@CheckoutStatus.CheckoutStatusTitle[i]</button>
-                }
-                if (i != CheckoutStatus.CheckoutStatusTitle.Length - 1)
-                {
-                    <button class="btn btn-default btn-xs btn-icon waves-effect waves-circle waves-float" disabled="disabled"><i class="md md-arrow-forward"></i></button>
-                }
+                <button class="btn bgm-amber waves-effect" onclick="return false;">@CheckoutStatus.CheckoutStatusTitle[i]</button>
             }
+            else
+            {
+                <button class="btn bgm-gray waves-effect" disabled="disabled">@CheckoutStatus.CheckoutStatusTitle[i]</button>
+            }
+            if (i != CheckoutStatus.CheckoutStatusTitle.Length - 1)
+            {
+                <button class="btn btn-default btn-xs btn-icon waves-effect waves-circle waves-float" disabled="disabled"><i class="md md-arrow-forward"></i></button>
+            }
+        }
+    </div>
+    <div class="process-circle">
+        <br /><hr />
+        <br />
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        @if (RequestBillController.CanKiemDuyet(Model))
+        {
+            <button type="button" onclick="location.href='@Url.Action("KiemDuyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Đồng ý kiểm duyệt</button>
+        }
+        @if (RequestBillController.CanDuyet(Model))
+        {
+            <button type="button" onclick="location.href='@Url.Action("Duyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Phê duyệt</button>
+        }
+        <button type="button" onclick="window.history.back();" class="btn btn-default waves-effect">Quay lại</button>
+    </div>
+</div>
+<br />
+
+<div class="validationWrapper">
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-group fg-float">
+                <div class="fg-line">
+                    <label>Ngày <i>(Dated)</i></label>
+                    <input type="text" name="PaymentDate" value="@Model.Created.ToString("dd/MM/yyyy")" class=" form-control" readonly />
+                </div>
+            </div>
         </div>
-        <div class="process-circle">
-            <br /><hr />
-            <br />
+        <div class="col-sm-3">
+            <div class="form-group fg-float">
+                <div class="fg-line">
+                    <label>Số ghi sổ <i>(No)</i></label>
+                    <input type="text" name="No" value="@Model.No" class=" form-control fg-input" readonly />
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-12">
-            @if (RequestBillController.CanKiemDuyet(Model))
-            {
-                <button type="button" onclick="location.href='@Url.Action("KiemDuyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Đồng ý kiểm duyệt</button>
-            }
-            @if (RequestBillController.CanDuyet(Model))
-            {
-                <button type="button" onclick="location.href='@Url.Action("Duyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Phê duyệt</button>
-            }
-            <button type="button" onclick="window.history.back();" class="btn btn-default waves-effect">Quay lại</button>
-        </div>
-    </div>
-    <br />
-
-    <div class="validationWrapper">
-        <br />
-        <div class="row">
-            <div class="col-sm-3">
-                <div class="form-group fg-float">
-                    <div class="fg-line">
-                        <label>Ngày <i>(Dated)</i></label>
-                        <input type="text" name="PaymentDate" value="@Model.Created.ToString("dd/MM/yyyy")" class=" form-control date-picker" data-toggle="dropdown" aria-expanded="false" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group fg-float">
-                    <div class="fg-line">
-                        <label>Số ghi sổ <i>(No)</i></label>
-                        <input type="text" name="No" value="@Model.No" class=" form-control fg-input" />
-                    </div>
+            <div class="form-group fg-float">
+                <div class="fg-line">
+                    <label>Người hưởng <i>(Ben)</i></label>
+                    <input type="text" name="Ben" value="@Model.Ben" class=" form-control fg-input" readonly />
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="form-group fg-float">
-                    <div class="fg-line">
-                        <label>Người hưởng <i>(Ben)</i></label>
-                        <input type="text" name="Ben" value="@Model.Ben" class=" form-control fg-input" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group fg-float">
-                    <div class="fg-line">
-                        <label>Phòng <i>(Dept)</i></label>
-                        <div class="select">
-                            <select class="form-control" name="DeptID">
-                                @foreach (var item in listDept)
-                                {
-                                    <option value="@item.ID" @(item.ID == Model.DeptID ? "selected='selected'" : "")>@item.Title</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <label class="col-md-4">Hình thức thanh toán <i>(Payment method)</i> : </label>
-            <div class="col-md-8">
-                <label class="checkbox checkbox-inline m-r-20">
-                    <input type="checkbox" class="onCheckbox" name="PaymentMethod" value="0" @listType[0] disabled />
-                    <i class="input-helper"></i>
-                    Tiền mặt <br /><i>(Cash)</i>
-                </label>
-                <label class="checkbox checkbox-inline m-r-20">
-                    <input type="checkbox" class="onCheckbox" name="PaymentMethod" value="1" @listType[1] disabled />
-                    <i class="input-helper"></i>
-                    Chuyển khoản <br /><i>(Bank transfer)</i>
-                </label>
-                <label class="checkbox checkbox-inline m-r-20">
-                    <input type="checkbox" class="onCheckbox" name="PaymentMethod" value="2" @listType[2] disabled />
-                    <i class="input-helper"></i>
-                    Quyết toán tạm ứng <br /><i>(Advance clearing)</i>
-                </label>
-                <div id="loaiticket" class="hide has-error">
-                    <small id="loaiticket" class="help-block">Bạn phải chọn một trong 3 loại trên!</small>
+        <div class="col-sm-6">
+            <div class="form-group fg-float">
+                <div class="fg-line">
+                    <label>Phòng <i>(Dept)</i></label>
+                    <input type="text" name="DeptID" value="@(dept!=null?dept.Title:"")" class=" form-control fg-input" readonly />
                 </div>
             </div>
         </div>
     </div>
-    <br />
-    <div class="row" ng-app="myApp" ng-controller="myCtrl">
-        <div class="col-md-12">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        @*<th rowspan="2" class="text-center">
-                                Mã
-                                <i>Dept</i>
-                            </th>
-                            <th colspan="2" class="text-center">
-                                Chứng từ
-                                <i>(Documents)</i>
-                            </th>*@
-                        <th rowspan="2" class="text-center">
-                            Nội dung <i>(Description)</i>
-                        </th>
-                        <th colspan="2" class="text-center">
-                            Số tiền
-                        </th>
-                    </tr>
-                    <tr>
-                        @*<th class="text-center">
-                                Số <i>(No.)</i>
-                            </th>
-                            <th class="text-center">
-                                Ngày <i>(Date)</i>
-                            </th>*@
-                        <th class="text-center" width="150">
-                            VNĐ
-                        </th>
-                        <th class="text-center" width="150">
-                            USD/EUR
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (int i = 0; i < listDetail.Count; i++)
-                    {
-                        <tr>
-                            <td>
-                                <div class="fg-line">
-                                    <textarea rows="3" class=" form-control">@listDetail.ElementAt(i).Title</textarea>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="fg-line">
-                                    <input type="text" class=" form-control input-mask" name="details_@(listDetail.ElementAt(i).ID)" ng-model="vnd[@i]" data-mask="000.000.000.000.000,00" />
-                                </div>
-                            </td>
-                            <td>
-                                <div class="fg-line">
-                                    <input type="text" class=" form-control input-mask" name="details_@(listDetail.ElementAt(i).ID)" ng-model="usd[@i]" data-mask="000.000.000.000.000,00" />
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td>
-                            <strong>Cộng</strong> <i>(Sub-total)</i>
-                        </td>
-                        <td class="text-right">
-                            {{getTotalVND()}}
-                        </td>
-                        <td class="text-right"></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Tạm ứng</strong> <i>(Advance payment)</i>
-                        </td>
-                        <td>
-                            <div class="fg-line">
-                                <input type="text" class=" form-control input-mask" ng-model="tamungVND" data-mask="000.000.000.000.000,00" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="fg-line">
-                                <input type="text" class=" form-control input-mask" ng-model="tamungUSD" data-mask="000.000.000.000.000,00" />
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Phí ngân hàng</strong> <i>(Bank charge)</i>
-                        </td>
-                        <td>
-                            <div class="fg-line">
-                                <input type="text" class=" form-control input-mask" ng-model="PhiNganHangVND" data-mask="000.000.000.000.000,00" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="fg-line">
-                                <input type="text" class=" form-control input-mask" ng-model="PhiNganHangUSD" data-mask="000.000.000.000.000,00" />
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Tổng cộng</strong> <i>(Total)</i>
-                        </td>
-                        <td>
-                            @Model.Total.ToString("N2")
-                        </td>
-                        <td>
-                            @*{{getAllTotalUSD()}}*@
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3">
-                            <strong> Bằng chữ </strong><i>(in words): </i>
-                            <div class="fg-line">
-                                <input type="text" class=" form-control" value="@Model.InWords" />
-                            </div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-            <br />
-            <div id="loaiCheckoutDetail" class="hide has-error">
-                <small id="loaiCheckout" class="help-block">Bạn phải thêm Checkout detail trước.</small>
+    <div class="row">
+        <label class="col-md-4">Hình thức thanh toán <i>(Payment method)</i> : </label>
+        <div class="col-md-8">
+            <label class="checkbox checkbox-inline m-r-20">
+                <input type="checkbox" class="onCheckbox" name="PaymentMethod" value="0" @listType[0] disabled />
+                <i class="input-helper"></i>
+                Tiền mặt <br /><i>(Cash)</i>
+            </label>
+            <label class="checkbox checkbox-inline m-r-20">
+                <input type="checkbox" class="onCheckbox" name="PaymentMethod" value="1" @listType[1] disabled />
+                <i class="input-helper"></i>
+                Chuyển khoản <br /><i>(Bank transfer)</i>
+            </label>
+            <label class="checkbox checkbox-inline m-r-20">
+                <input type="checkbox" class="onCheckbox" name="PaymentMethod" value="2" @listType[2] disabled />
+                <i class="input-helper"></i>
+                Quyết toán tạm ứng <br /><i>(Advance clearing)</i>
+            </label>
+            <div id="loaiticket" class="hide has-error">
+                <small id="loaiticket" class="help-block">Bạn phải chọn một trong 3 loại trên!</small>
             </div>
         </div>
     </div>
-
-}
+</div>
+<br />
+<div class="row" ng-app="myApp" ng-controller="myCtrl">
+    <div class="col-md-12">
+        <table id="mainTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th rowspan="2" class="text-center">
+                        Mã
+                        @*<i>Dept</i>*@
+                    </th>
+                    <th colspan="2" class="text-center">
+                        Chứng từ
+                        @*<i>(Documents)</i>*@
+                    </th>
+                    <th rowspan="2" class="text-center">
+                        Nội dung
+                        @*<i>(Description)</i>*@
+                    </th>
+                    <th colspan="2" class="text-center">
+                        Số tiền
+                    </th>
+                </tr>
+                <tr>
+                    <th class="text-center">
+                        Số
+                        @*<i>(No.)</i>*@
+                    </th>
+                    <th class="text-center">
+                        Ngày (dd/mm/yyyy)
+                        @*<i>(Date)</i>*@
+                    </th>
+                    <th class="text-center" width="150">
+                        VNĐ
+                    </th>
+                    <th class="text-center" width="150">
+                        USD/EUR
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in lstChkDetails)
+                {
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="typeDate"></td>
+                        <td>@item.Title</td>
+                        <td class="text-right">@item.VND.ToString("N0")</td>
+                        <td class="text-right">@(item.USD.HasValue ? item.USD.Value.ToString("N0") : "")</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">
+                        <strong>Cộng</strong>
+                        @*<i>(Sub-total)</i>*@
+                    </td>
+                    <td class="text-right">@Model.Total.ToString("N0")</td>
+                    <td class="text-right"></td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <strong>Tạm ứng</strong>
+                        @*<i>(Advance payment)</i>*@:
+                    </td>
+                    <td class="text-right">@(Model.AdvandPayment.HasValue ? Model.AdvandPayment.Value.ToString("N0") : "")</td>
+                    <td class="text-right"></td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <strong>Phí ngân hàng</strong>
+                        @*<i>(Bank charge)</i>*@:
+                    </td>
+                    <td class="text-right">@(Model.BankingCharge.HasValue ? Model.BankingCharge.Value.ToString("N0") : "")</td>
+                    <td class="text-right"></td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <strong>Tổng cộng</strong>
+                        @*<i>(Total)</i>*@:
+                    </td>
+                    <td class="text-right">@Model.SumTotal.ToString("N0")</td>
+                    <td class="text-right"></td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        <strong> Bằng chữ </strong>
+                        @*<i>(in words): </i>*@         :
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
