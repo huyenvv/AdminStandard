@@ -45,11 +45,12 @@ namespace Standard
     public class CheckoutStatus
     {
         public const int KhoiTao = 0;
-        public const int ChoKiemSoat = 1;
+        public const int ChoKiemTra = 1;
         public const int ChoDuyet = 2;
         public const int DaDuyet = 3;
+        public const int HoanThanh = 4;
 
-        public static string[] CheckoutStatusTitle = new string[] { "Khởi tạo", "Chờ kiểm soát NB", "Chờ duyệt", "Đã duyệt" };
+        public static string[] CheckoutStatusTitle = new string[] { "Khởi tạo", "Chờ kiểm tra", "Chờ duyệt", "Đã duyệt", "Hoàn thành" };
     }
 
     public class PaymentMethod
