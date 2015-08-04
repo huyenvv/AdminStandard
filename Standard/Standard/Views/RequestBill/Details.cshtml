@@ -185,9 +185,9 @@
                     <td colspan="4">
                         <strong>Cộng</strong>
                         @*<i>(Sub-total)</i>*@
-                    </td>
-                    <td class="text-right">@Model.Total.ToString("N0")</td>
-                    <td class="text-right">@(Model.TotalUSD.HasValue ? Model.TotalUSD.Value.ToString("N0") : "")</td>
+                    </td>                    
+                    <td class="text-right">@Model.SumTotal.ToString("N0")</td>
+                    <td class="text-right">@(Model.SumTotalUSD.HasValue ? Model.SumTotalUSD.Value.ToString("N0") : "")</td>
                 </tr>
                 <tr>
                     <td colspan="4">
@@ -210,8 +210,8 @@
                         <strong>Tổng cộng</strong>
                         @*<i>(Total)</i>*@:
                     </td>
-                    <td class="text-right">@Model.SumTotal.ToString("N0")</td>
-                    <td class="text-right">@(Model.SumTotalUSD.HasValue ? Model.SumTotalUSD.Value.ToString("N0") : "")</td>
+                    <td class="text-right">@Model.Total.ToString("N0")</td>
+                    <td class="text-right">@(Model.TotalUSD.HasValue ? Model.TotalUSD.Value.ToString("N0") : "")</td>
                 </tr>
                 <tr>
                     <td>
