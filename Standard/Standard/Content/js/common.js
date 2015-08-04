@@ -15,3 +15,9 @@ function getListID(classWrapper, hiddenID) {
     $("#" + hiddenID).val(listID);
     return true;
 }
+
+function validateDate(testdate) {
+    // format date dd/mm/yyyy
+    var date_regex = /^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/;
+    return date_regex.test(testdate);
+}

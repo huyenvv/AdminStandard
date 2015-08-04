@@ -26,7 +26,12 @@
     <script src="~/Content/lib/edit-table/editabletable.js"></script>
     <script src="~/Content/lib/edit-table/numeric-input.js"></script>
     <script>
-        $('#mainTable').editableTableWidget().find('td:first').focus();
+        $('#mainTable').editableTableWidget();
+        @if ((listTickKet == null) || (listTickKet != null && listTickKet.Count == 0))
+        {
+            @:AddRows('#mainTable');
+                }
+        $('#mainTable').find('td:nth(1)').focus().click();
     </script>
 }
 
@@ -36,6 +41,7 @@
     @Html.AntiForgeryToken()
     @Html.Hidden("isSend", true)
     @Html.HiddenFor(m => m.ID)
+    @Html.Hidden("listTicketDetailJson")
 
     @Html.ValidationSummary(true)
     <div class="col-sm-12">
@@ -151,7 +157,8 @@
                     </th>
                     <th>
                         Ngày cần<br />
-                        <i>Date require</i>
+                        <i>Date require (dd/mm/yyyy)</i>
+
                     </th>
                 </tr>
             </thead>
@@ -183,19 +190,14 @@
                         </tr>
                     }
                 }
-                else
-                {
-                    <tr><td>1</td><td></td><td></td><td></td><td></td></tr>
-                }
             </tbody>
         </table>
         <br />
         <div id="loaiticketDetail" class="hide has-error">
             <small id="loaiticket" class="help-block">Bạn phải thêm ticket detail trước.</small>
         </div>
-        <div class="col-sm-6">
-            <a href="#" class="btn btn-primary btn-xs" onclick="AddRows('#mainTable'); return false;"> Thêm dòng</a>
-        </div>
+
+        <a href="#" class="btn btn-primary btn-xs" onclick="AddRows('#mainTable'); return false;"> Thêm dòng</a>
     </div>
 
     <br />
