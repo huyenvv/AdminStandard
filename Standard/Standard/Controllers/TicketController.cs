@@ -175,8 +175,9 @@ namespace Standard.Controllers
         public ActionResult Delete(int id)
         {
             var tick = _ticketRepository.GetById(id);
-            if (tick.CreatedBy != fwUserDAL.GetCurrentUser().ID || tick.Status != TicketStatus.KhoiTao)
-                return RedirectToAction("AccessDenied", "Home");
+            if (!new fwUserDAL().UserInRole(RoleList.SystemManager))
+                if (tick.CreatedBy != fwUserDAL.GetCurrentUser().ID || tick.Status != TicketStatus.KhoiTao)
+                    return RedirectToAction("AccessDenied", "Home");
 
             // delete 
             _ticketRepository.Delete(tick);

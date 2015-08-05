@@ -34,6 +34,7 @@ namespace Standard
         public Nullable<int> ApprovedBy { get; set; }
         public Nullable<int> CheckoutID { get; set; }
         public Nullable<int> FeedbackID { get; set; }
+        public string DoKhan { get; set; }
     
         public virtual ICollection<Feedback> Feedback { get; set; }
         public virtual ICollection<TicketDetails> TicketDetails { get; set; }

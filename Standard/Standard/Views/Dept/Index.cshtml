@@ -17,6 +17,7 @@
             <th>Liên kết nhóm</th>
             <th>Trưởng phòng</th>
             <th>Thành viên</th>
+            <th>Loại phòng</th>
         </tr>
     </thead>
     @foreach (var item in Model)
@@ -29,7 +30,7 @@
         {
             titleU += lstU[i].Name + (i < lstU.Count - 1 ? "<br />" : null);
         }
-        titleU += lstU.Count > 2 ? ", ..." : null;
+        titleU += lstU.Count > 2 ? ", ..." : " ( + )";
         <tr>
             <td>
                 <a href="@Url.Action("Edit", new { id = item.ID, returnUrl = Request.RawUrl })">@item.Title</a>
@@ -48,6 +49,9 @@
             </td>
             <td>
                 <a href="@Url.Action("AddUserToGroup", "WebLib", new { groupID = g.ID, returnUrl = Request.RawUrl })">@(titleU == null ? Html.Raw("( + )") : Html.Raw(titleU))</a>
+            </td>
+            <td>
+                @DeptType.Title[item.Type.HasValue ? item.Type.Value : 0]
             </td>
             <td>
                 <a href="@Url.Action("Delete", new { id = item.ID, returnUrl = Request.RawUrl })" class="btn btn-icon command-delete confirmDelete"><span class="md md-delete"></span></a>

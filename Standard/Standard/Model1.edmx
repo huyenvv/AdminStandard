@@ -98,6 +98,7 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.CheckoutUser' does not have a pri
           <Property Name="ApprovedBy" Type="int" />
           <Property Name="CheckoutID" Type="int" />
           <Property Name="FeedbackID" Type="int" />
+          <Property Name="DoKhan" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="TicketDetails">
           <Key>
@@ -109,6 +110,13 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.CheckoutUser' does not have a pri
           <Property Name="Quantity" Type="int" Nullable="false" />
           <Property Name="Reason" Type="nvarchar" MaxLength="500" />
           <Property Name="DateRequire" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TicketType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="255" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -212,6 +220,7 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <EntitySet Name="Feedback" EntityType="Self.Feedback" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Ticket" EntityType="Self.Ticket" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TicketDetails" EntityType="Self.TicketDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TicketType" EntityType="Self.TicketType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CheckoutUser" EntityType="Self.CheckoutUser" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [CheckoutUser].[CheckoutID] AS [CheckoutID], 
@@ -287,6 +296,7 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
             <End Role="Ticket" EntitySet="Ticket" />
             <End Role="TicketUser" EntitySet="TicketUser" />
           </AssociationSet>
+          <EntitySet Name="TicketType" EntityType="DB_9CF750_dbModel.TicketType" />
         </EntityContainer>
         <EntityType Name="Checkout">
           <Key>
@@ -380,6 +390,7 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <NavigationProperty Name="Feedback" Relationship="DB_9CF750_dbModel.FK_Feedback_Ticket" FromRole="Ticket" ToRole="Feedback" />
           <NavigationProperty Name="TicketDetails" Relationship="DB_9CF750_dbModel.FK_TicketDetails_Ticket" FromRole="Ticket" ToRole="TicketDetails" />
           <NavigationProperty Name="TicketUser" Relationship="DB_9CF750_dbModel.FK_TicketUser_Ticket" FromRole="Ticket" ToRole="TicketUser" />
+          <Property Name="DoKhan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="TicketDetails">
           <Key>
@@ -495,6 +506,13 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="TicketType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -575,6 +593,7 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
           <EntitySetMapping Name="Ticket">
             <EntityTypeMapping TypeName="DB_9CF750_dbModel.Ticket">
               <MappingFragment StoreEntitySet="Ticket">
+                <ScalarProperty Name="DoKhan" ColumnName="DoKhan" />
                 <ScalarProperty Name="FeedbackID" ColumnName="FeedbackID" />
                 <ScalarProperty Name="CheckoutID" ColumnName="CheckoutID" />
                 <ScalarProperty Name="ApprovedBy" ColumnName="ApprovedBy" />
@@ -616,6 +635,14 @@ warning 6002: The table/view 'DB_9CF750_db.dbo.TicketUser' does not have a prima
               <MappingFragment StoreEntitySet="TicketUser">
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TicketType">
+            <EntityTypeMapping TypeName="DB_9CF750_dbModel.TicketType">
+              <MappingFragment StoreEntitySet="TicketType">
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

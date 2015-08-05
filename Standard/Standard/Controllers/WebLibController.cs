@@ -61,7 +61,7 @@ namespace Standard.Controllers
                 new fwGroupDAL().Update(model);
             return Redirect(returnUrl);
         }
-        public ActionResult AddUserToGroup(int groupID)
+        public ActionResult AddUserToGroup(int groupID, string returnUrl)
         {
             var dal = new fwUserDAL();
             ViewBag.groupName = new fwGroupDAL().GetByID(groupID).Title;
@@ -72,19 +72,19 @@ namespace Standard.Controllers
             return View(lstUser);
         }
         [HttpPost]
-        public ActionResult AddUserToGroup(int groupID, int userID)
+        public ActionResult AddUserToGroup(int groupID, int userID, string returnUrl)
         {
             var g = new fwGroup();
             g.ID = groupID;
             g.AddUser(userID);
-            return RedirectToAction("AddUserToGroup", new { groupID = groupID });
+            return RedirectToAction("AddUserToGroup", new { groupID = groupID, returnUrl = returnUrl });
         }
-        public ActionResult RemoveFromGroup(int groupID, int userID)
+        public ActionResult RemoveFromGroup(int groupID, int userID, string  returnUrl)
         {
             var g = new fwGroup();
             g.ID = groupID;
             g.RemoveUser(userID);
-            return RedirectToAction("AddUserToGroup", new { groupID = groupID });
+            return RedirectToAction("AddUserToGroup", new { groupID = groupID , returnUrl = returnUrl });
         }
         public ActionResult AddRoleToGroup(int id)
         {
@@ -129,6 +129,31 @@ namespace Standard.Controllers
                 new fwMenuDAL().Insert(model);
             else
                 new fwMenuDAL().Update(model);
+            return RedirectToAction("ListMenu");
+        }
+
+        public ActionResult AddRoleToMenu(int id)
+        {
+            var g = new fwMenuDAL().GetByID(id);
+            ViewBag.LstRole = g.fwRole.Select(m => m.ID).ToList();
+            ViewBag.groupID = id;
+            ViewBag.groupTitle = g.Title;
+            return View(new fwRoleDAL().ListAll());
+        }
+        [HttpPost]
+        public ActionResult AddRoleToMenu(int groupID, string listID)
+        {
+            var g = new fwMenu() { ID = groupID };
+            var lst = listID.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var item in g.fwRole.Select(m => m.ID).ToList())
+            {
+                if (!lst.Contains(item.ToString()))
+                    g.RemoveRole(item);
+            }
+            foreach (var item in lst)
+            {
+                g.AddRole(int.Parse(item));
+            }
             return RedirectToAction("ListMenu");
         }
         #endregion

@@ -3,11 +3,13 @@
 
 @{
     ViewBag.Title = "Add User To Group : \"" + ViewBag.groupName + "\"";
+    var returnUrl = Request.QueryString["returnUrl"];
 }
 
 
 @using (Html.BeginForm("AddUserToGroup", "WebLib", FormMethod.Post, new { @class = "" }))
 {
+    @Html.Hidden("returnUrl", returnUrl)
     @Html.Hidden("groupID", (int)ViewBag.groupID)
     <div class="col-sm-6">
         <div class="form-group">
@@ -41,10 +43,10 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    <a href="@Url.Action("RemoveFromGroup", new { userID = item.ID, groupID = ViewBag.groupID })">Remove from group</a>
+                    <a href="@Url.Action("RemoveFromGroup", new { userID = item.ID, groupID = ViewBag.groupID, returnUrl = returnUrl })">Remove from group</a>
                 </td>
             </tr>
         }
     </table>
-    <button class="btn btn-default" onclick="history.back()">Back</button>
+    <a class="btn btn-default" href="@returnUrl" >Back</a>
 </div>

@@ -35,7 +35,21 @@ namespace WebLib.DAL
         }
         public List<fwRole> ListByGroup(int groupID)
         {
-            string query = "select r.* from fwRole r inner join fwRoleGroup rg on rg.RoleID=r.ID where rg.GroupID=" + groupID;
+            string query = "select r.* from fwRole r inner join fwMenuRole rg on rg.RoleID=r.ID where rg.GroupID=" + groupID;
+            var lst = new List<fwRole>();
+            DataTable dt = DataUtilities.GetTable(query, CommandType.Text);
+            foreach (DataRow row in dt.Rows)
+            {
+                var obj = CreateObj(row);
+                lst.Add(obj);
+            }
+
+            return lst;
+        }
+
+        public List<fwRole> ListByMenu(int menuID)
+        {
+            string query = "select r.* from fwRole r inner join fwMenuRole rm on rm.RoleID=r.ID where rm.MenuID=" + menuID;
             var lst = new List<fwRole>();
             DataTable dt = DataUtilities.GetTable(query, CommandType.Text);
             foreach (DataRow row in dt.Rows)

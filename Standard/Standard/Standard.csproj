@@ -230,6 +230,9 @@
     <Compile Include="TicketDetails.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="TicketType.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="TicketUser.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -400,6 +403,9 @@
     <Content Include="Views\Shared\_ma-Notification.cshtml" />
     <Content Include="Views\Account\_ChangePasswordSuccess.cshtml" />
     <Content Include="Views\Home\ListNoti.cshtml" />
+    <Content Include="Views\Home\ListTicketType.cshtml" />
+    <Content Include="Views\Home\EditTicketType.cshtml" />
+    <Content Include="Views\WebLib\AddRoleToMenu.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Uploads\Checkout\" />

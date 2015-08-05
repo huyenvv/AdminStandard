@@ -20,6 +20,8 @@
         </th>
         <th>
         </th>
+        <th>
+        </th>
     </tr>
 
     @foreach (var item in Model.Where(m => m.ParentID == 0))
@@ -43,6 +45,9 @@
                     Disable
                 </td>
             }
+            <td>
+                @Html.ActionLink("Roles", "AddRoleToMenu", new { id = item.ID, returnUrl = Request.RawUrl }, null)
+            </td>
             <td>
                 @Html.ActionLink("Delete", "Delete", new { id = item.ID, tableName = "fwMenu", returnUrl = Request.RawUrl }, new { @class = "confirmDelete" })
             </td>
@@ -69,7 +74,10 @@
                     </td>
                 }
                 <td>
-                    @Html.ActionLink("Delete", "Delete", new { id = item.ID, tableName = "fwMenu", returnUrl = Request.RawUrl }, new { @class = "confirmDelete" })
+                    @Html.ActionLink("Roles", "AddRoleToMenu", new { id = item1.ID, returnUrl = Request.RawUrl }, null)
+                </td>
+                <td>
+                    @Html.ActionLink("Delete", "Delete", new { id = item1.ID, tableName = "fwMenu", returnUrl = Request.RawUrl }, new { @class = "confirmDelete" })
                 </td>
             </tr>
         }

@@ -16,7 +16,7 @@
         {
             titleU += lstU[i].Name + (i < lstU.Count - 1 ? "<br />" : null);
         }
-        titleU += lstU.Count > 2 ? ", ..." : null;
+        titleU += lstU.Count > 2 ? ", ..." : " ( + )";
         <tr>
             <td>
                 <a href="@Url.Action("EditGroup", new { id = item.ID, returnUrl = Request.RawUrl })">@item.Title</a>

@@ -82,8 +82,8 @@
             <div class="fg-line">
                 <select name="Type" id="Type" class=" form-control">
                     <option value="0"> -:- </option>
-                    <option value="1" @(Model.Type == 1 ? "selected" : null)> Kiểm tra </option>
-                    <option value="2" @(Model.Type == 2 ? "selected" : null)> Kiểm soát nội bộ </option>
+                    <option value="1" @(Model.Type == 1 ? "selected" : null)> @DeptType.Title[1] </option>
+                    <option value="2" @(Model.Type == 2 ? "selected" : null)> @DeptType.Title[2] </option>
                 </select>
             </div>
         </div>
