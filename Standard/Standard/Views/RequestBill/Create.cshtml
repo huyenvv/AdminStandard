@@ -68,7 +68,7 @@
                     return false;
                 }
             });
-            $('table td input.typeNumber').on('change', function () {
+            $('table td input.typeNumber').on('keyup', function () {
                 // do something with the new cell value
                 TinhTien();
             });
@@ -242,8 +242,8 @@
                             <td>@item.No</td>
                             <td class="typeDate">@(item.Date == null ? null : item.Date.Value.ToString("dd/MM/yyyy"))</td>
                             <td>@item.Title</td>
-                            <td class="text-right typeNumber vndetail">@item.VND.ToString("N2")</td>
-                            <td class="text-right typeNumber usdetail">@(item.USD.HasValue ? item.USD.Value.ToString("N2") : "0")</td>
+                            <td class="text-right typeNumber vndetail">@item.VND.ToString("N0")</td>
+                            <td class="text-right typeNumber usdetail">@(item.USD.HasValue ? item.USD.Value.ToString("N0") : "0")</td>
                         </tr>
                     }
                 </tbody>
@@ -253,32 +253,32 @@
                             <strong>Cộng</strong>
                             @*<i>(Sub-total)</i>*@
                         </td>
-                        <td class="text-right noedit vndCong">@Model.SumTotal.ToString("N2")</td>
-                        <td class="text-right noedit usdCong">@(Model.SumTotalUSD.HasValue ? Model.SumTotalUSD.Value.ToString("N2") : "0")</td>
+                        <td class="text-right noedit vndCong">@Model.SumTotal.ToString("N0")</td>
+                        <td class="text-right noedit usdCong">@(Model.SumTotalUSD.HasValue ? Model.SumTotalUSD.Value.ToString("N0") : "0")</td>
                     </tr>
                     <tr>
                         <td colspan="4" class="noedit">
                             <strong>Tạm ứng</strong>
                             @*<i>(Advance payment)</i>*@:
                         </td>
-                        <td class="text-right typeNumber vndTamung">@(Model.AdvandPaymentUSD.HasValue ? Model.AdvandPayment.Value.ToString("N2") : "0")</td>
-                        <td class="text-right typeNumber usdTamung">@(Model.AdvandPaymentUSD.HasValue ? Model.AdvandPaymentUSD.Value.ToString("N2") : "0")</td>
+                        <td class="text-right typeNumber vndTamung">@(Model.AdvandPaymentUSD.HasValue ? Model.AdvandPayment.Value.ToString("N0") : "0")</td>
+                        <td class="text-right typeNumber usdTamung">@(Model.AdvandPaymentUSD.HasValue ? Model.AdvandPaymentUSD.Value.ToString("N0") : "0")</td>
                     </tr>
                     <tr>
                         <td colspan="4" class="noedit">
                             <strong>Phí ngân hàng</strong>
                             @*<i>(Bank charge)</i>*@:
                         </td>
-                        <td class="text-right typeNumber vndPhiNH">@(Model.BankingChargeUSD.HasValue ? Model.BankingChargeUSD.Value.ToString("N2") : "0")</td>
-                        <td class="text-right typeNumber usdPhiNH">@(Model.BankingChargeUSD.HasValue ? Model.BankingChargeUSD.Value.ToString("N2") : "0")</td>
+                        <td class="text-right typeNumber vndPhiNH">@(Model.BankingChargeUSD.HasValue ? Model.BankingChargeUSD.Value.ToString("N0") : "0")</td>
+                        <td class="text-right typeNumber usdPhiNH">@(Model.BankingChargeUSD.HasValue ? Model.BankingChargeUSD.Value.ToString("N0") : "0")</td>
                     </tr>
                     <tr>
                         <td colspan="4" class="noedit">
                             <strong>Tổng cộng</strong>
                             @*<i>(Total)</i>*@:
                         </td>
-                        <td class="text-right noedit vndTongCong">@Model.Total.ToString("N2")</td>
-                        <td class="text-right noedit usdTongCong">@(Model.TotalUSD.HasValue ? Model.TotalUSD.Value.ToString("N2") : "0")</td>
+                        <td class="text-right noedit vndTongCong">@Model.Total.ToString("N0")</td>
+                        <td class="text-right noedit usdTongCong">@(Model.TotalUSD.HasValue ? Model.TotalUSD.Value.ToString("N0") : "0")</td>
                     </tr>
                     <tr>
                         <td class="noedit">
