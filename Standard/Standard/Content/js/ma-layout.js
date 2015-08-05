@@ -39,9 +39,9 @@ function addInputForTableID(id) {
     $("#" + id + " td:not(.noedit)").each(function () {
         var $this = $(this);
         var getClass = $this.attr("class");
-        var input = "<input type='text' class='edittable " + getClass + "' />";
-        $this.append(input);
-        $('.typeDate').datetimepicker({
+        var input = "<input type='text' class='edittable " + getClass + "' value='"+$this.text()+"' />";
+        $this.html(input);
+        $('input.typeDate').datetimepicker({
             format: 'DD/MM/YYYY'
         });
     });

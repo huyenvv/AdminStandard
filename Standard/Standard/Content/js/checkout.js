@@ -63,12 +63,12 @@ function getValueTableEdit() {
     $("table#mainTable tbody tr").each(function () {
         var listtds = $(this).children();
         var obj = {
-            DeptCode: $(listtds[0]).text(),
-            No: $(listtds[1]).text(),
-            Date: $(listtds[2]).text(),
-            Title: $(listtds[3]).text(),
-            VND: $(listtds[4]).text(),
-            USD: $(listtds[5]).text()
+            DeptCode: $(listtds[0]).children().val(),
+            No: $(listtds[1]).children().val(),
+            Date: $(listtds[2]).children().val(),
+            Title: $(listtds[3]).children().val(),
+            VND: $(listtds[4]).children().val(),
+            USD: $(listtds[5]).children().val()
         };
         listCheckoutDetailJson.push(obj);
     });

@@ -22,11 +22,11 @@
         margin-bottom: 10px;
     }
 
-        #mainTable tbody tr td, #mainTable tfooter tr td {
+        #mainTable tbody tr td, #mainTable tfoot tr td {
             padding-bottom: 0;
         }
 
-            #mainTable tbody tr td:not(.noedit), #mainTable tfooter tr td:not(.noedit) {
+            #mainTable tbody tr td:not(.noedit), #mainTable tfoot tr td:not(.noedit) {
                 padding: 0;
             }
 
@@ -49,10 +49,17 @@
                 AddRows('#mainTable');
                 return false;
             });
+
             $(document).on('keydown', '#mainTable tr:last-child td:last-child input', function (e) {
                 var keyCode = e.keyCode || e.which;
                 if (keyCode == 9) {
                     AddRows('#mainTable');
+                }
+            });
+            $(document).on('keydown', 'input.edittable', function (e) {
+                var keyCode = e.keyCode || e.which;
+                if (keyCode == 13) {
+                    return false;
                 }
             });
         });

@@ -9,18 +9,19 @@
     {
         listType[Model.PaymentMethod.Value] = "checked='checked'";
     }
+    var db = DB.Entities;
     var listIDGRoup = currentUser.fwGroup.Select(m => m.ID).ToList();
-    var currentDept = DB.Entities.Dept.Where(m => listIDGRoup.Contains(m.GroupID)).ToList();
+    var currentDept = db.Dept.Where(m => listIDGRoup.Contains(m.GroupID)).ToList();
 
     var listDetail = Model.CheckoutDetails;
-    var ticketID = Model.ID == 0 ? int.Parse(Request.QueryString["ticketID"]) : DB.Entities.Ticket.FirstOrDefault(m => m.CheckoutID == Model.ID).ID;
-    var db = DB.Entities;
+    var ticketID = Model.ID == 0 ? int.Parse(Request.QueryString["ticketID"]) : db.Ticket.FirstOrDefault(m => m.CheckoutID == Model.ID).ID;
+
     var tick = db.Ticket.FirstOrDefault(m => m.ID == ticketID);
     var ticketTitle = tick.Created.ToString("dd/MM/yyyy") + " - " + tick.TicketDetails.FirstOrDefault().Title + " ...";
 
     var lstChkDetails = Model.ID == 0 ? new List<CheckoutDetails>() : db.CheckoutDetails.Where(m => m.CheckoutID == Model.ID).ToList();
     if (Model.ID == 0)
-    { 
+    {
         foreach (var item in tick.TicketDetails)
         {
             lstChkDetails.Add(new CheckoutDetails() { Title = item.Title, ID = item.ID });
@@ -31,32 +32,46 @@
     .table > thead > tr > th {
         background: #eeeeee;
     }
+
+    #mainTable {
+        margin-bottom: 10px;
+    }
+
+        #mainTable tbody tr td, #mainTable tfoot tr td {
+            padding-bottom: 0;
+        }
+
+            #mainTable tbody tr td:not(.noedit), #mainTable tfoot tr td:not(.noedit) {
+                padding: 0;
+            }
+
+    .card .card-body.card-padding {
+        overflow: inherit;
+    }
 </style>
 
-
-
 @section style{
-    <link href="/Content/lib/ma/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link href="/Content/lib/ma/css/bootstrap-datetimepicker.css" rel="stylesheet">
 
 }
 @section  scripts{
-    <script src="/Content/lib/ma/js/moment.min.js"></script>
-    <script src="/Content/lib/ma/js/bootstrap-datetimepicker.min.js"></script>
-    <script src="~/Content/lib/edit-table/editabletable.js"></script>
-    @*<script src="~/Content/lib/edit-table/numeric-input.js"></script>*@
-    <script>
-        $('#mainTable').editableTableWidget();
-        @if ((lstChkDetails == null) || (lstChkDetails != null && lstChkDetails.Count == 0))
-        {
-            @:AddRows('#mainTable');
-                                                                                                        }
-        $('#mainTable').find('td:nth(4)').focus().click();
-        AddEventEditTable();
-    </script>
-
+    <script src="~/Content/lib/ma/js/moment-with-locales.js"></script>
+    <script src="~/Content/lib/ma/js/bootstrap-datetimepicker.js"></script>
     <script src="~/Content/js/checkout.js"></script>
     <script>
-        $('table td.typeNumber').on('change', function (evt, newValue) {
+        $(document).ready(function () {
+            addInputForTableID('mainTable');
+            $(document).on('keydown', 'input.edittable', function (e) {
+                var keyCode = e.keyCode || e.which;
+                if (keyCode == 13) {
+                    return false;
+                }
+            });
+        });
+        $('input.typeDate').datetimepicker({
+            format: 'DD/MM/YYYY'//addInputForTableID('mainTable');
+        });
+        $('table td input.typeNumber').on('change', function (evt, newValue) {
             // do something with the new cell value
             TinhTien();
         });
@@ -101,7 +116,7 @@
                             Ngày
                             @*<i>(Dated)</i>*@
                         </label>
-                        <input type="text" name="PaymentDate" value="@Model.Created.ToString("dd/MM/yyyy")" class=" form-control date-picker" data-toggle="dropdown" aria-expanded="false" />
+                        <input type="text" name="PaymentDate" value="@Model.Created.ToString("dd/MM/yyyy")" class=" form-control typeDate" data-toggle="dropdown" aria-expanded="false" />
                     </div>
                 </div>
             </div>
@@ -227,7 +242,7 @@
                             <td class="typeDate">@(item.Date == null ? null : item.Date.Value.ToString("dd/MM/yyyy"))</td>
                             <td>@item.Title</td>
                             <td class="text-right typeNumber vndetail">@item.VND.ToString("N2")</td>
-                            <td class="text-right typeNumber usdetail">@(item.USD.HasValue?item.USD.Value.ToString("N2"):"0")</td>
+                            <td class="text-right typeNumber usdetail">@(item.USD.HasValue ? item.USD.Value.ToString("N2") : "0")</td>
                         </tr>
                     }
                 </tbody>
