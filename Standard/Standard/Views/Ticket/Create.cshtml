@@ -3,7 +3,7 @@
 @{
     Model.Type = Model.Type == 0 ? 1 : Model.Type;
     var currentUser = fwUserDAL.GetCurrentUser();
-    var listTickKet = WebLib.SessionUtilities.Exist(Constant.SESSION_TicketDetails) ? (List<TicketDetails>)WebLib.SessionUtilities.Get(Constant.SESSION_TicketDetails) : null;
+    var listTickKet = Model.TicketDetails.ToList();
     var listDept = (List<Dept>)ViewBag.listDept;
     var currentRequest = Request.QueryString["returnUrl"];
     var returnUrl = !string.IsNullOrEmpty(currentRequest) ? currentRequest : Url.Action("Index");
@@ -54,6 +54,7 @@
                 var keyCode = e.keyCode || e.which;
                 if (keyCode == 9) {
                     AddRows('#mainTable');
+                    $(this).focus();
                 }
             });
             $(document).on('keydown', 'input.edittable', function (e) {
@@ -73,7 +74,7 @@
         $('.typeDate').datetimepicker({
                format: 'DD/MM/YYYY'//addInputForTableID('mainTable');
         });
-        $('#mainTable').find('td:nth(1)').focus().click();
+        $('#mainTable').find('td:nth(1) input').focus();
 
     </script>
 }
@@ -222,7 +223,7 @@
                 <small id="loaiticket" class="help-block">Bạn phải thêm ticket detail trước.</small>
             </div>
             <div></div>
-            <button class="pull-right" onclick="AddRows('#mainTable'); return false;"><i class="md md-add"></i> Thêm dòng</button>
+            <button class="pull-right btn btn-primary btn-xs" onclick="AddRows('#mainTable'); return false;"><i class="md md-add"></i> Thêm dòng</button>
         </div>
     </div>
 

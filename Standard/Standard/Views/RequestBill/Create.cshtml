@@ -2,7 +2,6 @@
 @using WebLib.DAL
 @{
     var currentUser = fwUserDAL.GetCurrentUser();
-    var listCheckout = WebLib.SessionUtilities.Exist(Constant.SESSION_CheckoutDetails) ? (List<CheckoutDetails>)WebLib.SessionUtilities.Get(Constant.SESSION_CheckoutDetails) : null;
     ViewBag.Title = "ĐỀ NGHỊ THANH TOÁN/ PAYMENT VOUCHER";
     var listType = new[] { "", "", "" };
     if (Model.PaymentMethod.HasValue)
