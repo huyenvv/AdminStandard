@@ -66,69 +66,61 @@ namespace Standard.Controllers
         {
             try
             {
-                model.Created = DateTime.Now;
+                    model.Created = DateTime.Now;
                 model.CreatedBy = DB.CurrentUser.ID;
                 model.SumTotal = 0;
                 model.Total = 0;
                 model.Track += ";#" + model.CreatedBy;
+                model.Current = model.CreatedBy;
+                model.Status = CheckoutStatus.KhoiTao;
+                
 
                 var listCheckoutDetailJson = new List<CheckoutDetails>();
                 try
                 {
                     listCheckoutDetailJson = JsonConvert.DeserializeObject<List<CheckoutDetails>>(frm["listCheckoutDetailJson"]);
                 }
-                catch (Exception)
-                {
-                    listCheckoutDetailJson = new List<CheckoutDetails>();
-                }
+                catch { }
 
                 var tamUng = new CheckoutDetails();
                 try
                 {
                     tamUng = JsonConvert.DeserializeObject<CheckoutDetails>(frm["tamUng"]);
                 }
-                catch (Exception)
-                {
-                    tamUng = new CheckoutDetails();
-                }
+                catch { }
 
                 var phiNganHang = new CheckoutDetails();
                 try
                 {
                     phiNganHang = JsonConvert.DeserializeObject<CheckoutDetails>(frm["phiNganHang"]);
                 }
-                catch (Exception)
-                {
-                    phiNganHang = new CheckoutDetails();
-                }
-
-                //Lấy bộ phận kiểm duyệt
-                var bp = _deptRepository.GetById(model.DeptID);
-                //Lấy người trong bộ phận kiểm duyệt
-                var u = new fwGroupDAL().GetByID(bp.GroupID).fwUser.FirstOrDefault();
-                model.Current = u.ID;
-
-                model.Status = CheckoutStatus.ChoKiemSoat;
+                catch { }
+                model.AdvandPayment = tamUng.VND;
+                model.BankingCharge = phiNganHang.VND;
                 db.Checkout.Add(model);
                 db.SaveChanges();
 
-                var obj = db.Ticket.FirstOrDefault(m => m.ID == ticketID);
-                foreach (var item in obj.TicketDetails)
-                {
-                    var checkoutdetails = new CheckoutDetails();
-                    checkoutdetails.Title = item.Title;
-                    checkoutdetails.VND = decimal.Parse("0" + frm["details_" + item.ID].Replace(",0", null));
-                    checkoutdetails.CheckoutID = model.ID;
-                    model.SumTotal += checkoutdetails.VND;
-                    model.CheckoutDetails.Add(checkoutdetails);
-                }
-                model.Total = model.SumTotal;
+                var details = listCheckoutDetailJson.Select(m => new CheckoutDetails()
+                    {
+                        Title=m.Title,
+                        CheckoutID=model.ID,
+                        VND=m.VND,
+                        USD=m.USD,
+                    });
+                model.SumTotal = details.Sum(m=>m.VND);
+                model.Total = model.SumTotal - model.AdvandPayment.Value + model.BankingCharge.Value;
 
-                obj.CheckoutID = model.ID;
+                //cập nhật lại ticket
+                var ticket = db.Ticket.FirstOrDefault(m => m.ID == ticketID);
+                ticket.CheckoutID = model.ID;
 
                 db.SaveChanges();
+                
                 db.Database.ExecuteSqlCommand(string.Format("insert into CheckoutUser values({0},{1})", model.ID, model.Current));
-                return RedirectToAction("Index");
+
+                
+
+                return GuiKiemTra(model.ID);
             }
             catch
             {
@@ -142,53 +134,102 @@ namespace Standard.Controllers
             return View("Index");
         }
 
-
-        public ActionResult KiemDuyet(int id)
+        #region Process Line
+        public ActionResult GuiKiemTra(int id)
         {
             var obj = db.Checkout.FirstOrDefault(m => m.ID == id);
-            if (!CanKiemDuyet(obj)) return AccessDenied();
+            if (!CanGuiYeuCau(obj)) return AccessDenied();
             obj.Track += ";#" + DB.CurrentUser.ID;
-            obj.Status = CheckoutStatus.ChoDuyet;
+            obj.Status = CheckoutStatus.ChoKiemTra;
             obj.ChkFeedbackID = null;
-            //lấy người có quyền phê duyệt
-            var u = new fwUserDAL().ListByRole(RoleList.ApproveTicket).FirstOrDefault();
+            //lấy người có quyền kế toán
+            var u = new fwUserDAL().ListByRole(RoleList.Accounting).FirstOrDefault();
+            if (u == null) RedirectToAction("Details", new { id = id });
             obj.Current = u.ID;
             if (!obj.CheckoutUser.Any(m => m.UserID == u.ID))
                 db.Database.ExecuteSqlCommand(string.Format("insert into CheckoutUser values({0},{1})", obj.ID, u.ID));
 
             db.SaveChanges();
+
+            CreateNoti(obj.Current, "Cần kiểm tra phiếu yêu cầu thanh toán", Url.Action("Details", new { id = id }));
+
+            return RedirectToAction("Index", "RequestBill");
+        }
+        public ActionResult KiemTra(int id)
+        {
+            var obj = db.Checkout.FirstOrDefault(m => m.ID == id);
+            if (!CanKiemTra(obj)) return AccessDenied();
+            obj.Track += ";#" + DB.CurrentUser.ID;
+            obj.Status = CheckoutStatus.ChoDuyet;
+            obj.ChkFeedbackID = null;
+            //lấy người có quyền duyệt
+            var u = new fwUserDAL().ListByRole(RoleList.ApproveTicket).FirstOrDefault();
+            if (u == null) RedirectToAction("Details", new { id = id });
+            obj.Current = u.ID;
+            if (!obj.CheckoutUser.Any(m => m.UserID == u.ID))
+                db.Database.ExecuteSqlCommand(string.Format("insert into CheckoutUser values({0},{1})", obj.ID, u.ID));
+
+            db.SaveChanges();
+
+            CreateNoti(obj.Current, "Cần duyệt phiếu yêu cầu thanh toán", Url.Action("Details", new { id = id }));
+            CreateNoti(obj.CreatedBy, "Phiếu yêu cầu thanh toán đã được kiểm tra", Url.Action("Details", new { id = id }));
+
             return RedirectToAction("Index", "RequestBill");
         }
         public ActionResult Duyet(int id)
         {
             var obj = db.Checkout.FirstOrDefault(m => m.ID == id);
-            if (!CanDuyet(obj)) return AccessDenied();
+            if (!CanGuiYeuCau(obj)) return AccessDenied();
             obj.Track += ";#" + DB.CurrentUser.ID;
             obj.Status = CheckoutStatus.DaDuyet;
             obj.ChkFeedbackID = null;
             //lấy người có quyền kế toán
             var u = new fwUserDAL().ListByRole(RoleList.Accounting).FirstOrDefault();
+            if (u == null) RedirectToAction("Details", new { id = id });
             obj.Current = u.ID;
             if (!obj.CheckoutUser.Any(m => m.UserID == u.ID))
                 db.Database.ExecuteSqlCommand(string.Format("insert into CheckoutUser values({0},{1})", obj.ID, u.ID));
 
             db.SaveChanges();
 
+            CreateNoti(obj.Current, "Cần xử lý phiếu yêu cầu thanh toán", Url.Action("Details", new { id = id }));
+            CreateNoti(obj.CreatedBy, "Phiếu yêu cầu thanh toán đã được duyệt", Url.Action("Details", new { id = id }));
+
             return RedirectToAction("Index", "RequestBill");
         }
+        public ActionResult ThanhToan(int id)
+        {
+            var obj = db.Checkout.FirstOrDefault(m => m.ID == id);
+            if (!CanGuiYeuCau(obj)) return AccessDenied();
+            obj.Track += ";#" + DB.CurrentUser.ID;
+            obj.Status = CheckoutStatus.HoanThanh;
+            obj.ChkFeedbackID = null;
+            obj.Current = obj.CreatedBy;
+
+            db.SaveChanges();
+
+            CreateNoti(obj.CreatedBy, "Phiếu yêu cầu thanh toán đã được thanh toán", Url.Action("Details", new { id = id }));
+
+            return RedirectToAction("Index", "RequestBill");
+        }
+        #endregion
 
         #region Check role
         public static bool CanGuiYeuCau(Checkout obj)
         {
             return obj.Status == CheckoutStatus.KhoiTao && obj.Current == DB.CurrentUser.ID;
         }
-        public static bool CanKiemDuyet(Checkout obj)
+        public static bool CanKiemTra(Checkout obj)
         {
-            return DB.CurrentUser.ID == obj.Current && obj.Status == CheckoutStatus.ChoKiemSoat;
+            return DB.CurrentUser.ID == obj.Current && obj.Status == CheckoutStatus.ChoKiemTra;
         }
         public static bool CanDuyet(Checkout obj)
         {
             return DB.CurrentUser.ID == obj.Current && obj.Status == CheckoutStatus.ChoDuyet && new fwUserDAL().UserInRole(DB.CurrentUser.ID, RoleList.ApproveTicket);
+        }
+        public static bool CanThanhToan(Checkout obj)
+        {
+            return DB.CurrentUser.ID == obj.Current && obj.Status == CheckoutStatus.DaDuyet && new fwUserDAL().UserInRole(DB.CurrentUser.ID, RoleList.Accounting);
         }
         #endregion
     }
