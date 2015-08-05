@@ -49,6 +49,9 @@ div#modalDefault {
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
     padding: 5px;
 }
+.table > thead > tr > th{
+    text-align:center;
+}
 
 
 .error {
@@ -57,4 +60,6 @@ div#modalDefault {
 
 .edittable {
     width: 100%;
+    padding: 3px;
+    border:none;
 }

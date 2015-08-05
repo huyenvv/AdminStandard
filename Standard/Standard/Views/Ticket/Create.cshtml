@@ -65,8 +65,12 @@
             @:AddRows('#mainTable');
 
         }
-        //addInputForTableID('mainTable');
+        
+        $('.typeDate').datetimepicker({
+               format: 'DD/MM/YYYY'//addInputForTableID('mainTable');
+        });
         $('#mainTable').find('td:nth(1)').focus().click();
+
     </script>
 }
 
@@ -125,7 +129,7 @@
             <div class="form-group fg-float">
                 <div class="fg-line">
                     <label>Ngày đề nghị</label>
-                    <input type="text" name="NgayDenghi" value="@Model.Created.ToString("dd/MM/yyyy")" class=" form-control fg-input" readonly="readonly" />
+                    <input type="text" name="NgayDenghi" value="@Model.Created.ToString("dd/MM/yyyy")" class=" form-control fg-input typeDate" />
                 </div>
 
             </div>
@@ -168,7 +172,7 @@
                             Diễn giải <br />
                             @*<i>Description</i>*@
                         </th>
-                        <th>
+                        <th width="50">
                             SL<br />
                             @*<i>Q'tty</i>*@
                         </th>
@@ -185,32 +189,29 @@
                 </thead>
                 <tbody>
                     @if (listTickKet != null && listTickKet.Count > 0)
-                    {
-                        var dem = 1;
-                        foreach (var item in listTickKet)
-                        {
-                            <tr>
-                                <td class="noedit">
-                                    @(dem++)
-                                </td>
-                                <td>
-                                    @item.Title
-                                </td>
-                                <td class="typeNumber">
-                                    @item.Quantity
-                                </td>
-                                <td>
-                                    @item.Reason
-                                </td>
-                                <td class="typeDate">
-                                    @item.DateRequire
-                                </td>
-                                @*<td>
-                                        <button class="color-red btn btn-icon" onclick="return removeTicketDetail('@item.ID',this);"><span class="md md-delete"></span></button>
-                                    </td>*@
-                            </tr>
-                        }
-                    }
+{
+    var dem = 1;
+    foreach (var item in listTickKet)
+    {
+        <tr class="trtableedit">
+            <td class="noedit">
+                @(dem++)
+            </td>
+            <td>
+                <input type="text" class="edittable" value="@item.Title"  />
+            </td>
+            <td class="typeNumber">
+                <input type="text" class="edittable typeNumber" value="@item.Quantity" />
+            </td>
+            <td>
+                <input type="text" class="edittable" value="@item.Reason" />
+            </td>
+            <td class="typeDate">
+                <input type="text" class="edittable typeDate" value="@item.DateRequire" />
+            </td>
+        </tr>
+    }
+}
                 </tbody>
             </table>
             <div id="loaiticketDetail" class="hide has-error">

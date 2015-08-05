@@ -118,8 +118,8 @@ function showFile(url) {
 
 function AddRows(id) {
     var obj = $(id + " tbody");
-    var no = obj.find("tr").length + 1;
-    obj.append('<tr><td class="noedit">' + no + '</td><td><input type="text" class="edittable"></td><td class="typeNumber"><input type="text" class="edittable typeNumber"></td><td><input type="text" class="edittable"></td></td><td class="typeDate"><input type="text" class="edittable typeDate"></td></td></tr>');
+    var no = obj.find("tr.trtableedit").length + 1;
+    obj.append('<tr class="trtableedit"><td class="noedit">' + no + '</td><td><input type="text" class="edittable"></td><td class="typeNumber"><input type="text" class="edittable typeNumber"></td><td><input type="text" class="edittable"></td></td><td class="typeDate"><input type="text" class="edittable typeDate"></td></td></tr>');
     $('.typeDate').datetimepicker({
         format: 'DD/MM/YYYY'
     });
@@ -130,10 +130,10 @@ function GetDataTable(id) {
     $(id + " tbody tr").each(function () {
         var listtds = $(this).children();
         var obj = {
-            Title: $(listtds[1]).text(),
-            Quantity: $(listtds[2]).text(),
-            Reason: $(listtds[3]).text(),
-            DateRequire: $(listtds[4]).text()
+            Title: $(listtds[1]).children().val(),
+            Quantity: $(listtds[2]).children().val(),
+            Reason: $(listtds[3]).children().val(),
+            DateRequire: $(listtds[4]).children().val()
         };
         data.push(obj);
     });

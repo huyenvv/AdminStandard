@@ -5,6 +5,10 @@
     $('input.onCheckbox').on('change', function () {
         $('input.onCheckbox').not(this).prop('checked', false);
     });
+
+    $(document).on('keyup', 'input.typeNumber', function () {
+        this.value = this.value.replace(/[^0-9\.]/g, '');
+    });
 });
 // lay danh sách list ID
 function getListID(classWrapper, hiddenID) {
