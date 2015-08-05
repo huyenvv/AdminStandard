@@ -61,7 +61,7 @@ namespace WebLib.DAL
 inner join fwMenuRole mr on mr.MenuID=m.ID
 inner join fwRoleGroup rg on rg.RoleID=mr.RoleID
 inner join fwUserGroup ug on ug.GroupID=rg.GroupID
-where ug.UserID=@UserID order by [Order]";
+where ug.UserID=@UserID and m.Actived=1 order by [Order]";
             var lst = new List<fwMenu>();
             DataTable dt = DataUtilities.GetTable(query, CommandType.Text, "@UserID", userID);
             foreach (DataRow row in dt.Rows)

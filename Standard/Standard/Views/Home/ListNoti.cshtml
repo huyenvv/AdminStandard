@@ -1,0 +1,15 @@
+﻿@model List<WebLib.Models.fwNotification>
+@foreach (var item in Model)
+{
+    <a class="lv-item" href="@item.Link">
+        <div class="media">
+            <div class="pull-left">
+                <img class="lv-img-sm" src="/Content/lib/ma/img/1.jpg" alt="">
+            </div>
+            <div class="media-body">
+                <div class="lv-title">@item.FullName</div>
+                <small class="lv-small">@item.Title</small>
+            </div>
+        </div>
+    </a>
+}

@@ -8,7 +8,7 @@
     </li>
 
     <li class="logo hidden-xs">
-        <a href="/">Van Laack</a>
+        <a href="/">Van Laack co, Ltd</a>
     </li>
 
     <li class="pull-right">
@@ -23,7 +23,7 @@
                 <a class="tm-search" href=""></a>
             </li>           
             <li class="dropdown">
-                <a data-toggle="dropdown" class="tm-notification" href=""><i class="tmn-counts">5</i></a>
+                <a id="icon-noti" data-toggle="dropdown" class="tm-notification" href="">@Html.Raw(ViewBag.notiCount + "")</a>
                 <div class="dropdown-menu dropdown-menu-lg pull-right">
                     <div class="listview" id="notifications">
                         <div class="lv-header">
@@ -31,71 +31,15 @@
 
                             <ul class="actions">
                                 <li class="dropdown">
-                                    <a href="" data-clear="notification">
-                                        <i class="md md-done-all"></i>
-                                    </a>
+                                    <a href="" data-clear="notification" id="clear-noti"><i class="md md-done-all"></i></a>
                                 </li>
                             </ul>
                         </div>
-                        <div class="lv-body c-overflow" tabindex="2" style="overflow: hidden; outline: none;">
-                            <a class="lv-item" href="">
-                                <div class="media">
-                                    <div class="pull-left">
-                                        <img class="lv-img-sm" src="/Content/lib/ma/img/1.jpg" alt="">
-                                    </div>
-                                    <div class="media-body">
-                                        <div class="lv-title">Trưởng phòng</div>
-                                        <small class="lv-small">Phiếu yêu cầu được thông qua</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="lv-item" href="">
-                                <div class="media">
-                                    <div class="pull-left">
-                                        <img class="lv-img-sm" src="/Content/lib/ma/img/2.jpg" alt="">
-                                    </div>
-                                    <div class="media-body">
-                                        <div class="lv-title">Kiểm soát nội bộ</div>
-                                        <small class="lv-small">Phiếu yêu cầu đã được kiểm soát nội bộ</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="lv-item" href="">
-                                <div class="media">
-                                    <div class="pull-left">
-                                        <img class="lv-img-sm" src="/Content/lib/ma/img/3.jpg" alt="">
-                                    </div>
-                                    <div class="media-body">
-                                        <div class="lv-title">Nguyễn Duy Khánh</div>
-                                        <small class="lv-small">Phiếu yêu cầu đã được duyệt</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="lv-item" href="">
-                                <div class="media">
-                                    <div class="pull-left">
-                                        <img class="lv-img-sm" src="/Content/lib/ma/img/4.jpg" alt="">
-                                    </div>
-                                    <div class="media-body">
-                                        <div class="lv-title">Nguyễn Duy Khánh</div>
-                                        <small class="lv-small">Phiếu yêu cầu đã được duyệt</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="lv-item" href="">
-                                <div class="media">
-                                    <div class="pull-left">
-                                        <img class="lv-img-sm" src="/Content/lib/ma/img/4.jpg" alt="">
-                                    </div>
-                                    <div class="media-body">
-                                        <div class="lv-title">Kế toán</div>
-                                        <small class="lv-small">Phiếu yêu cầu đã được thanh toán</small>
-                                    </div>
-                                </div>
-                            </a>
+                        <div id="ListNoti" class="lv-body c-overflow" tabindex="2" style="overflow: hidden; outline: none;">
+                            @*Put list notification here*@
                         </div>
 
-                        <a class="lv-footer" href="">View Previous</a>
+                        <a class="lv-footer" href="@(Url.Action("ListNotification", "Home"))">Cũ hơn</a>
                     </div>
 
                     <div id="ascrail2003" class="nicescroll-rails nicescroll-rails-vr" style="width: 0px; z-index: 9; cursor: default; position: absolute; top: 0px; left: 298px; height: 275px; display: none;"><div class="nicescroll-cursors" style="position: relative; top: 0px; float: right; width: 0px; height: 0px; border: 0px; border-radius: 0px; background-color: rgba(0, 0, 0, 0.498039); background-clip: padding-box;"></div></div><div id="ascrail2003-hr" class="nicescroll-rails nicescroll-rails-hr" style="height: 0px; z-index: 9; top: 275px; left: 0px; position: absolute; cursor: default; display: none;"><div class="nicescroll-cursors" style="position: absolute; top: 0px; height: 0px; width: 0px; border: 0px; border-radius: 0px; background-color: rgba(0, 0, 0, 0.498039); background-clip: padding-box;"></div></div>

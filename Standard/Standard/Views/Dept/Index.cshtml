@@ -1,5 +1,6 @@
 ﻿@model List<Standard.Dept>
 @using WebLib.DAL
+@using WebLib.Models
 @{
     ViewBag.Title = "Danh sách bộ phận";
     var gdal = new fwGroupDAL();
@@ -7,20 +8,28 @@
 }
 
 <p>
-    <a href="@Url.Action("Edit", new { returnUrl = Request.RawUrl })" class="btn btn-primary">Thêm bộ phận</a>
+    <a href="@Url.Action("Edit", new { returnUrl = Request.RawUrl })" class="btn btn-primary">Thêm phòng ban</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>Tên phòng</th>
             <th>Liên kết nhóm</th>
-            <th>Tên trưởng phòng</th>
-</tr>
+            <th>Trưởng phòng</th>
+            <th>Thành viên</th>
+        </tr>
     </thead>
     @foreach (var item in Model)
     {
         var g = gdal.GetByID(item.GroupID);
         var u = item.LeaderUserID == null ? null : udal.GetByID(item.LeaderUserID.Value);
+        var lstU = g == null ? null : g.fwUser.Where(m => u == null ? true : m.ID != u.ID).Take(2).ToList();
+        string titleU = null;
+        for (int i = 0; i < lstU.Count; i++)
+        {
+            titleU += lstU[i].Name + (i < lstU.Count - 1 ? "<br />" : null);
+        }
+        titleU += lstU.Count > 2 ? ", ..." : null;
         <tr>
             <td>
                 <a href="@Url.Action("Edit", new { id = item.ID, returnUrl = Request.RawUrl })">@item.Title</a>
@@ -28,7 +37,7 @@
             <td>
                 @if (g != null)
                 {
-                    <a href="@Url.Action("AddUserToGroup", "WebLib", new { groupID = g.ID, returnUrl = Request.RawUrl })">@g.Title</a>
+                    <a href="@Url.Action("EditGroup", "WebLib", new { id = g.ID, returnUrl = Request.RawUrl })">@g.Title</a>
                 }
             </td>
             <td>
@@ -38,8 +47,10 @@
                 }
             </td>
             <td>
-                @Html.ActionLink("Delete", "Delete", new { id = item.ID, returnUrl = Request.RawUrl }, new { @class = "confirmDelete" })
+                <a href="@Url.Action("AddUserToGroup", "WebLib", new { groupID = g.ID, returnUrl = Request.RawUrl })">@(titleU == null ? Html.Raw("( + )") : Html.Raw(titleU))</a>
             </td>
+            <td>
+                <a href="@Url.Action("Delete", new { id = item.ID, returnUrl = Request.RawUrl })" class="btn btn-icon command-delete confirmDelete"><span class="md md-delete"></span></a>
         </tr>
     }
 

@@ -241,6 +241,7 @@
   <ItemGroup>
     <Content Include="App_Data\script.sql" />
     <Content Include="Content\js\angular.min.js" />
+    <Content Include="Content\js\notification.js" />
     <Content Include="Content\lib\edit-table\editabletable.js" />
     <Content Include="Content\lib\edit-table\numeric-input.js" />
     <Content Include="Content\lib\ma\js\charts.js" />
@@ -398,6 +399,7 @@
     <Content Include="Views\RequestBill\Details.cshtml" />
     <Content Include="Views\Shared\_ma-Notification.cshtml" />
     <Content Include="Views\Account\_ChangePasswordSuccess.cshtml" />
+    <Content Include="Views\Home\ListNoti.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Uploads\Checkout\" />

@@ -51,7 +51,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="GroupID">Group <span class="color-red">*</span></label>
+            <label for="GroupID">Nhóm liên kết<span class="color-red">*</span></label>
             <div class="fg-line">
                 <select name="GroupID" id="GroupID" class="form-control">
                     @foreach (var item in lstG)
@@ -63,7 +63,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="LeaderUserID">Trưởng bộ phận</label>
+            <label for="LeaderUserID">Trưởng phòng</label>
             <div class="select fg-line" id="LeaderUserID">
                 <select name="LeaderUserID" class="form-control">
                     <option value=""> -:- </option>
@@ -74,6 +74,16 @@
                             <option value="@item.ID" @(Model.LeaderUserID == item.ID ? "selected" : null)>@item.Name</option>
                         }
                     }
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Type">Kiểu phòng ban </label>
+            <div class="fg-line">
+                <select name="Type" id="Type" class=" form-control">
+                    <option value="0"> -:- </option>
+                    <option value="1" @(Model.Type == 1 ? "selected" : null)> Kiểm tra </option>
+                    <option value="2" @(Model.Type == 2 ? "selected" : null)> Kiểm soát nội bộ </option>
                 </select>
             </div>
         </div>

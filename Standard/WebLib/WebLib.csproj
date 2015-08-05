@@ -46,6 +46,7 @@
     <Compile Include="DAL\Class1.cs" />
     <Compile Include="DAL\fwConfigDAL.cs" />
     <Compile Include="DAL\fwBaseDAL.cs" />
+    <Compile Include="DAL\fwNotificationDAL.cs" />
     <Compile Include="DAL\fwUserDAL.cs" />
     <Compile Include="DAL\fwMenuDAL.cs" />
     <Compile Include="DAL\fwRoleDAL.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="DAL\fwHtmlPageDAL.cs" />
     <Compile Include="DataUtilities.cs" />
     <Compile Include="FileUpload.cs" />
+    <Compile Include="Models\fwNotification.cs" />
     <Compile Include="Models\fwUser.cs" />
     <Compile Include="Models\fwMenu.cs" />
     <Compile Include="Models\fwRole.cs" />
