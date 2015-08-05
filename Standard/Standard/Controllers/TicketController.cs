@@ -8,6 +8,8 @@ using Standard.Repository;
 using WebLib;
 using WebLib.DAL;
 using Newtonsoft.Json;
+using System.Globalization;
+using System.Threading;
 
 namespace Standard.Controllers
 {
@@ -77,16 +79,17 @@ namespace Standard.Controllers
             // TODO: Add insert logic here
             if (tick.Type > 0 && tick.DeptID > 0)
             {
-                var listTicketDetails = new List<TicketDetails>();
+                var listTicketDetails = new List<Fuck>();
                 if (!string.IsNullOrEmpty(listTicketDetailJson))
                 {
                     try
                     {
-                        listTicketDetails = JsonConvert.DeserializeObject<List<TicketDetails>>(listTicketDetailJson);
+                        System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+                        listTicketDetails = serializer.Deserialize<List<Fuck>>(listTicketDetailJson);
                     }
                     catch (Exception)
                     {
-                        listTicketDetails = new List<TicketDetails>();
+                        listTicketDetails = new List<Fuck>();
                     }
                 }
                 if (listTicketDetails.Count > 0)
@@ -137,7 +140,7 @@ namespace Standard.Controllers
                         // create ticket detail
                         var listDetail = listTicketDetails.Select(item => new TicketDetails
                         {
-                            DateRequire = item.DateRequire,
+                            DateRequire = DateTime.Parse(item.DateRequire),
                             Quantity = item.Quantity,
                             Reason = item.Reason,
                             Title = item.Title,
@@ -151,20 +154,7 @@ namespace Standard.Controllers
                         if (isSend)
                         {
                             //Lấy trưởng phòng của người tạo
-                            var userDAL = new fwUserDAL();
-                            var lstNhom = userDAL.GetByID(getTicket.CreatedBy).fwGroup.Select(m => m.ID).ToList();
-                            var dept = db.Dept.Where(m => lstNhom.Contains(m.GroupID)).FirstOrDefault();
-
-                            if (dept != null && dept.LeaderUserID.HasValue)
-                            {
-                                getTicket.Track += dept.LeaderUserID + "#;";
-                                getTicket.Status = TicketStatus.ChoThongQua;
-                                getTicket.Current = dept.LeaderUserID.Value;
-                                _ticketRepository.Update(getTicket);
-
-                                // add to table Ticket User 
-                                db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", getTicket.ID, dept.LeaderUserID.Value));
-                            }
+                            return RedirectToAction("GuiYeuCau", new { id = getTicket.ID });
                         }
                     }
                 }
@@ -222,11 +212,15 @@ namespace Standard.Controllers
             var userDAL = new fwUserDAL();
             var lstNhom = userDAL.GetByID(obj.CreatedBy).fwGroup.Select(m => m.ID).ToList();
             var dept = db.Dept.Where(m => lstNhom.Contains(m.GroupID)).FirstOrDefault();
+            if (dept == null) return RedirectToAction("Details", new { id = id });
 
             obj.Current = dept.LeaderUserID.Value;
             db.SaveChanges();
+            //Phân quyền xem
             if (!obj.TicketUser.Any(m => m.UserID == dept.LeaderUserID.Value))
                 db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", obj.ID, dept.LeaderUserID.Value));
+
+            CreateNoti(obj.Current, "Cần thông qua phiếu đề nghị dụng cụ làm việc", Url.Action("Details", new { id = id }));
 
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
             return RedirectToAction("Index", "Home");
@@ -245,6 +239,10 @@ namespace Standard.Controllers
             obj.Current = u.ID;
             if (!obj.TicketUser.Any(m => m.UserID == u.ID))
                 db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", obj.ID, u.ID));
+
+            CreateNoti(obj.CreatedBy, "Phiếu đề nghị dụng cụ làm việc của bạn đã được thông qua", Url.Action("Details", new { id = id }));
+            CreateNoti(obj.Current, "Cần kiểm tra phiếu đề nghị dụng cụ làm việc", Url.Action("Details", new { id = id }));
+
             db.SaveChanges();
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
             return RedirectToAction("Index", "Home");
@@ -262,6 +260,10 @@ namespace Standard.Controllers
             if (!obj.TicketUser.Any(m => m.UserID == u.ID))
                 db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", obj.ID, u.ID));
 
+
+            CreateNoti(obj.CreatedBy, "Phiếu đề nghị dụng cụ làm việc của bạn đã được kiểm duyệt", Url.Action("Details", new { id = id }));
+            CreateNoti(obj.Current, "Cần duyệt tra phiếu đề nghị dụng cụ làm việc", Url.Action("Details", new { id = id }));
+
             db.SaveChanges();
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
             return RedirectToAction("Index", "Home");
@@ -275,6 +277,9 @@ namespace Standard.Controllers
             obj.FeedbackID = null;
             //Gán người xử lý giờ là người tạo phiếu, người tạo phiếu sẽ tiếp tục tạo phiếu thanh toán
             obj.Current = obj.CreatedBy;
+
+
+            CreateNoti(obj.CreatedBy, "Phiếu đề nghị dụng cụ làm việc của bạn đã được duyệt", Url.Action("Details", new { id = id }));
 
             db.SaveChanges();
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
@@ -311,5 +316,13 @@ namespace Standard.Controllers
             return DB.CurrentUser.ID == obj.Current && obj.Status == TicketStatus.DaDuyet && obj.CheckoutID == null;
         }
         #endregion
+
+        public class Fuck
+        {
+            public string Title { get; set; }
+            public string Reason { get; set; }
+            public string DateRequire { get; set; }
+            public int Quantity { get; set; }
+        }
     }
 }

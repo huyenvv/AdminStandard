@@ -15,5 +15,15 @@ namespace Standard.Controllers
         {
             return View("_AccessDenied");
         }
+
+        public void CreateNoti(int userID, string message, string link)
+        {
+            var obj = new WebLib.Models.fwNotification();
+            obj.UserID = userID; obj.Title = message; obj.Link = link;
+            new WebLib.DAL.fwNotificationDAL().Insert(obj);
+            var u = new WebLib.DAL.fwUserDAL().GetByID(userID);
+            u.NotiCount += 1;
+            new WebLib.DAL.fwUserDAL().Update(u);
+        }
     }
 }
