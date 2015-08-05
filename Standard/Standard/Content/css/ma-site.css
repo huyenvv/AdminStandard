@@ -25,18 +25,23 @@
 .easy-pie .pie-title {
     bottom: -32px;
 }
+
 .easy-pie .percent:after {
     content: "";
 }
+
 .table-bordered {
     border: 1px solid #D2D2D2;
 }
+
 .m-r-10 {
     margin-right: 0px !important;
 }
+
 .modal-backdrop {
     z-index: 9;
 }
+
 div#modalDefault {
     text-align: left;
 }
@@ -47,5 +52,9 @@ div#modalDefault {
 
 
 .error {
-    border: 3px solid red!important;
+    border: 3px solid red !important;
+}
+
+.edittable {
+    width: 100%;
 }

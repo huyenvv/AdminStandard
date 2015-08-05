@@ -14,32 +14,58 @@
 
 
 @section style{
+    <link href="~/Content/lib/ma/css/bootstrap-datetimepicker.css" rel="stylesheet" />
     <link href="~/Content/css/ticket.css" rel="stylesheet" />
-    <style>
-        #mainTable {
-            margin-bottom: 10px;
-        }
-    </style>
 }
+<style>
+    #mainTable {
+        margin-bottom: 10px;
+    }
+
+        #mainTable tbody tr td, #mainTable tfooter tr td {
+            padding-bottom: 0;
+        }
+
+            #mainTable tbody tr td:not(.noedit), #mainTable tfooter tr td:not(.noedit) {
+                padding: 0;
+            }
+
+    .card .card-body.card-padding {
+        overflow: inherit;
+    }
+</style>
+
+
 
 @section  scripts{
+    <script src="~/Content/lib/ma/js/moment-with-locales.js"></script>
+    <script src="~/Content/lib/ma/js/bootstrap-datetimepicker.js"></script>
     <script src="~/Content/js/ticket.js"></script>
     <script src="~/Content/lib/ma/js/fileinput.min.js"></script>
-    <script src="~/Content/lib/edit-table/editabletable.js"></script>
-    <script src="~/Content/lib/edit-table/numeric-input.js"></script>
-<script src="~/Content/js/jquery.hotkeys-0.7.9.min.js"></script>
+    @*<script src="~/Content/lib/edit-table/editabletable.js"></script>
+        <script src="~/Content/lib/edit-table/numeric-input.js"></script>*@
+    <script src="~/Content/js/jquery.hotkeys-0.7.9.min.js"></script>
     <script>
         $(document).ready(function () {
             $(document).bind('keydown', 'ctrl+r', function () {
                 AddRows('#mainTable');
+                return false;
                 //alert(1);
             });
+            $(document).on('keydown', '#mainTable tr:last-child td:last-child input', function (e) {
+                var keyCode = e.keyCode || e.which;
+                if (keyCode == 9) {
+                    AddRows('#mainTable');
+                }
+            });
         });
-        $('#mainTable').editableTableWidget();
+        //$('#mainTable').editableTableWidget();
         @if ((listTickKet == null) || (listTickKet != null && listTickKet.Count == 0))
         {
             @:AddRows('#mainTable');
-                                                                                                                }
+
+        }
+        //addInputForTableID('mainTable');
         $('#mainTable').find('td:nth(1)').focus().click();
     </script>
 }

@@ -249,12 +249,13 @@
     <Content Include="Content\js\notification.js" />
     <Content Include="Content\lib\edit-table\editabletable.js" />
     <Content Include="Content\lib\edit-table\numeric-input.js" />
+    <Content Include="Content\lib\ma\css\bootstrap-datetimepicker.css" />
+    <Content Include="Content\lib\ma\js\bootstrap-datetimepicker.js" />
     <Content Include="Content\lib\ma\js\charts.js" />
     <Content Include="Content\lib\ma\js\fileinput.min.js" />
     <Content Include="Content\lib\ma\js\input-mask.min.js" />
     <Content Include="Content\js\ma-layout.js" />
     <Content Include="Content\js\checkout.js" />
-    <Content Include="Content\lib\ma\css\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\css\common.css" />
     <Content Include="Content\css\font-awesome.min.css" />
     <Content Include="Content\css\ma-site.css" />
@@ -287,7 +288,6 @@
     <Content Include="Content\lib\ma\img\profile-menu.jpg" />
     <Content Include="Content\lib\ma\img\select.png" />
     <Content Include="Content\lib\ma\js\autosize.min.js" />
-    <Content Include="Content\lib\ma\js\bootstrap-datetimepicker.min.js" />
     <Content Include="Content\lib\ma\js\bootstrap-growl.min.js" />
     <Content Include="Content\lib\ma\js\bootstrap.min.js" />
     <Content Include="Content\lib\ma\js\demo.js" />
@@ -300,7 +300,7 @@
     <Content Include="Content\lib\ma\css\material-design-iconic-font.min1.css" />
     <Content Include="Content\lib\ma\css\socicon.min.css" />
     <Content Include="Content\lib\ma\css\sweetalert-override.min.css" />
-    <Content Include="Content\lib\ma\js\moment.min.js" />
+    <Content Include="Content\lib\ma\js\moment-with-locales.js" />
     <Content Include="Content\lib\ma\js\sweetalert.min.js" />
     <Content Include="Content\lib\ma\js\waves.min.js" />
     <Content Include="Content\lib\metis\metisMenu.css" />

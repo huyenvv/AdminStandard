@@ -119,10 +119,10 @@ function showFile(url) {
 function AddRows(id) {
     var obj = $(id + " tbody");
     var no = obj.find("tr").length + 1;
-    obj.append('<tr><td class="noedit">' + no + '</td><td></td><td class="typeNumber"></td><td></td><td class="typeDate"></td></tr>');
-    $(id).editableTableWidget();
-
-    AddEventEditTable();
+    obj.append('<tr><td class="noedit">' + no + '</td><td><input type="text" class="edittable"></td><td class="typeNumber"><input type="text" class="edittable typeNumber"></td><td><input type="text" class="edittable"></td></td><td class="typeDate"><input type="text" class="edittable typeDate"></td></td></tr>');
+    $('.typeDate').datetimepicker({
+        format: 'DD/MM/YYYY'
+    });
 }
 
 function GetDataTable(id) {
