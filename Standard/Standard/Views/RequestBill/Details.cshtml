@@ -49,13 +49,17 @@
 </div>
 <div class="row">
     <div class="col-sm-12">
-        @if (RequestBillController.CanKiemDuyet(Model))
+        @if (RequestBillController.CanKiemTra(Model))
         {
-            <button type="button" onclick="location.href='@Url.Action("KiemDuyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Đồng ý kiểm duyệt</button>
+            <button type="button" onclick="location.href='@Url.Action("KiemTra", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Đồng ý kiểm duyệt</button>
         }
         @if (RequestBillController.CanDuyet(Model))
         {
             <button type="button" onclick="location.href='@Url.Action("Duyet", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Phê duyệt</button>
+        }
+        @if (RequestBillController.CanThanhToan(Model))
+        {
+            <button type="button" onclick="location.href='@Url.Action("ThanhToan", new { id = Model.ID })'" class="btn btn-primary waves-effect"><i class="md md-check"></i> Thanh toán</button>
         }
         <button type="button" onclick="window.history.back();" class="btn btn-default waves-effect">Quay lại</button>
     </div>
