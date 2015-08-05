@@ -132,6 +132,9 @@ namespace Standard.Controllers
 
                 var details = listCheckoutDetailJson.Select(m => new CheckoutDetails()
                     {
+                        Date = m.Date,
+                        DeptCode = m.DeptCode,
+                        No = m.No,
                         Title = m.Title,
                         CheckoutID = model.ID,
                         VND = m.VND,
