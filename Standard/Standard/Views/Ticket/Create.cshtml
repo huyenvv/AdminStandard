@@ -42,15 +42,12 @@
     <script src="~/Content/lib/ma/js/bootstrap-datetimepicker.js"></script>
     <script src="~/Content/js/ticket.js"></script>
     <script src="~/Content/lib/ma/js/fileinput.min.js"></script>
-    @*<script src="~/Content/lib/edit-table/editabletable.js"></script>
-        <script src="~/Content/lib/edit-table/numeric-input.js"></script>*@
     <script src="~/Content/js/jquery.hotkeys-0.7.9.min.js"></script>
     <script>
         $(document).ready(function () {
             $(document).bind('keydown', 'ctrl+r', function () {
                 AddRows('#mainTable');
                 return false;
-                //alert(1);
             });
             $(document).on('keydown', '#mainTable tr:last-child td:last-child input', function (e) {
                 var keyCode = e.keyCode || e.which;
@@ -119,7 +116,7 @@
                 </label>
             }
             <div id="loaiticket" class="hide has-error">
-                <small id="loaiticket" class="help-block">Bạn phải chọn một trong 3 loại trên!</small>
+                <small id="loaiticket" class="help-block">Bạn phải chọn một trong @listTicketType.Count loại trên!</small>
             </div>
         </div>
     </div>
