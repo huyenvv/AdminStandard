@@ -36,23 +36,23 @@ $(function () {
 function TinhTien() {
     var vndCong = 0;
     $(".vndetail").each(function () {
-        var value = parseFloat($(this).text()) || 0;
+        var value = parseFloat($(this).children().val()) || 0;
         vndCong += value;
     });
-    var tamungVND = parseFloat($(".vndTamung").text()) || 0;
-    var phiNHVND = parseFloat($(".vndPhiNH").text()) || 0;
+    var tamungVND = parseFloat($(".vndTamung").children().val()) || 0;
+    var phiNHVND = parseFloat($(".vndPhiNH").children().val()) || 0;
     var vndTongCong = vndCong - tamungVND + phiNHVND;
     $(".vndCong").text(formatMoney(vndCong, ''));
     $(".vndTongCong").text(formatMoney(vndTongCong, ''));
 
     var usdCong = 0;
     $(".usdetail").each(function () {
-        var value = parseFloat($(this).text()) || 0;
+        var value = parseFloat($(this).children().val()) || 0;
         usdCong += value;
     });
 
-    var usdTamung = parseFloat($(".usdTamung").text()) || 0;
-    var usdPhiNH = parseFloat($(".usdPhiNH").text()) || 0;
+    var usdTamung = parseFloat($(".usdTamung").children().val()) || 0;
+    var usdPhiNH = parseFloat($(".usdPhiNH").children().val()) || 0;
     var usdTongCong = usdCong - usdTamung + usdPhiNH;
     $(".usdCong").text(formatMoney(usdCong, ''));
     $(".usdTongCong").text(formatMoney(usdTongCong, ''));
@@ -75,16 +75,16 @@ function getValueTableEdit() {
     $("#listCheckoutDetailJson").val(JSON.stringify(listCheckoutDetailJson));
 
     var tamung = {
-        VND: $("td.vndTamung").text(),
-        USD: $("td.usdTamung").text()
+        VND: $("td.vndTamung").children().val(),
+        USD: $("td.usdTamung").children().val()
     };
     $("#tamUng").val(JSON.stringify(tamung));
 
     var phiNganhang = {
-        VND: $("td.vndPhiNH").text(),
-        USD: $("td.usdPhiNH").text()
+        VND: $("td.vndPhiNH").children().val(),
+        USD: $("td.usdPhiNH").children().val()
     };
     $("#phiNganHang").val(JSON.stringify(phiNganhang));
 
-    $("#InWords").val($("#BangChu").text());
+    $("#InWords").val($("#BangChu").children().val());
 }

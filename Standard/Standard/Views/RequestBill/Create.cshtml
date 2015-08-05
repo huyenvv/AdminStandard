@@ -39,6 +39,7 @@
 
         #mainTable tbody tr td, #mainTable tfoot tr td {
             padding-bottom: 0;
+            padding-right: 5px;
         }
 
             #mainTable tbody tr td:not(.noedit), #mainTable tfoot tr td:not(.noedit) {
@@ -67,13 +68,13 @@
                     return false;
                 }
             });
-        });
-        $('input.typeDate').datetimepicker({
-            format: 'DD/MM/YYYY'//addInputForTableID('mainTable');
-        });
-        $('table td input.typeNumber').on('change', function (evt, newValue) {
-            // do something with the new cell value
-            TinhTien();
+            $('table td input.typeNumber').on('change', function () {
+                // do something with the new cell value
+                TinhTien();
+            });
+            $('input.typeDate').datetimepicker({
+                format: 'DD/MM/YYYY'//addInputForTableID('mainTable');
+            });
         });
     </script>
 }
@@ -252,8 +253,8 @@
                             <strong>Cộng</strong>
                             @*<i>(Sub-total)</i>*@
                         </td>
-                        <td class="text-right noChange vndCong">@Model.SumTotal.ToString("N2")</td>
-                        <td class="text-right noChange usdCong">@(Model.SumTotalUSD.HasValue ? Model.SumTotalUSD.Value.ToString("N2") : "0")</td>
+                        <td class="text-right noedit vndCong">@Model.SumTotal.ToString("N2")</td>
+                        <td class="text-right noedit usdCong">@(Model.SumTotalUSD.HasValue ? Model.SumTotalUSD.Value.ToString("N2") : "0")</td>
                     </tr>
                     <tr>
                         <td colspan="4" class="noedit">
@@ -276,8 +277,8 @@
                             <strong>Tổng cộng</strong>
                             @*<i>(Total)</i>*@:
                         </td>
-                        <td class="text-right noChange vndTongCong">@Model.Total.ToString("N2")</td>
-                        <td class="text-right noChange usdTongCong">@(Model.TotalUSD.HasValue ? Model.TotalUSD.Value.ToString("N2") : "0")</td>
+                        <td class="text-right noedit vndTongCong">@Model.Total.ToString("N2")</td>
+                        <td class="text-right noedit usdTongCong">@(Model.TotalUSD.HasValue ? Model.TotalUSD.Value.ToString("N2") : "0")</td>
                     </tr>
                     <tr>
                         <td class="noedit">
