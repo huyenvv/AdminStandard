@@ -40,5 +40,18 @@ namespace Standard.Controllers
 
             return null;
         }
+
+        public void ShowMessage(string message, bool isSuccess = true)
+        {
+            if (isSuccess)
+            {
+                SessionUtilities.Set(Constant.SESSION_MessageSuccess, message);
+            }
+            else
+            {
+                SessionUtilities.Set(Constant.SESSION_MessageError, message);
+            }
+
+        }
     }
 }

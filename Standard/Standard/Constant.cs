@@ -10,6 +10,9 @@ namespace Standard
         public const string SESSION_TicketDetails = "SESSION_TicketDetails";
         public const string SESSION_CheckoutDetails = "SESSION_CheckoutDetails";
 
+        public const string SESSION_MessageSuccess = "SESSION_MessageSuccess";
+        public const string SESSION_MessageError = "SESSION_MessageError";
+
     }
     public static class UploadFolder
     {

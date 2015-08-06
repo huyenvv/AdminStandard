@@ -55,7 +55,7 @@ namespace Standard.Controllers
         public ActionResult Details(int id)
         {
             var obj = db.Ticket.FirstOrDefault(m => m.ID == id);
-            
+
             if (obj.Status == TicketStatus.KhoiTao)
                 return RedirectToAction("Create", new { id = id });
             return View(obj);
@@ -109,12 +109,15 @@ namespace Standard.Controllers
                         var currentUser = fwUserDAL.GetCurrentUser();
                         // xu ly file 
                         string fileNames = "";
-                        foreach (var item in files)
+                        if (files != null)
                         {
-                            if (item != null)
+                            foreach (var item in files)
                             {
-                                var fileName = FileUpload.CreateFile(item, UploadFolder.Ticket, false);
-                                fileNames += fileName + ";#";
+                                if (item != null)
+                                {
+                                    var fileName = FileUpload.CreateFile(item, UploadFolder.Ticket, false);
+                                    fileNames += fileName + ";#";
+                                }
                             }
                         }
                         var getTicket = _ticketRepository.GetById(tick.ID);
@@ -224,10 +227,16 @@ namespace Standard.Controllers
             var userDAL = new fwUserDAL();
             var lstNhom = userDAL.GetByID(obj.CreatedBy).fwGroup.Select(m => m.ID).ToList();
             var dept = db.Dept.Where(m => lstNhom.Contains(m.GroupID)).FirstOrDefault();
-            if (dept == null) return RedirectToAction("Details", new { id = id });
+            if (dept == null)
+            {
+                ShowMessage("Hiện tại bạn chưa thuộc phòng ban nào. Bạn cần phải thuộc một phòng ban có trưởng phòng để thực hiện \"thông qua\" yêu cầu cho bạn.", false);
+                return RedirectToAction("Details", new { id = id });
+            }
 
             obj.Current = dept.LeaderUserID.Value;
             db.SaveChanges();
+            ShowMessage("Gửi yêu cầu thành công!");
+
             //Phân quyền xem
             if (!obj.TicketUser.Any(m => m.UserID == dept.LeaderUserID.Value))
                 db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", obj.ID, dept.LeaderUserID.Value));
@@ -256,6 +265,7 @@ namespace Standard.Controllers
             CreateNoti(obj.Current, "Cần kiểm tra phiếu đề nghị <br /> dụng cụ làm việc", Url.Action("Details", new { id = id }));
 
             db.SaveChanges();
+            ShowMessage("Bạn đã hoàn tất việc việc thông qua thành công!");
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
             return RedirectToAction("Index", "Home");
         }
@@ -277,6 +287,7 @@ namespace Standard.Controllers
             CreateNoti(obj.Current, "Cần duyệt tra phiếu đề nghị <br /> dụng cụ làm việc", Url.Action("Details", new { id = id }));
 
             db.SaveChanges();
+            ShowMessage("Đồng ý kiểm duyệt thành công!");
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
             return RedirectToAction("Index", "Home");
         }
@@ -294,6 +305,7 @@ namespace Standard.Controllers
             CreateNoti(obj.CreatedBy, "Phiếu đề nghị dụng cụ làm việc của bạn <br /> đã được duyệt", Url.Action("Details", new { id = id }));
 
             db.SaveChanges();
+            ShowMessage("Phê duyệt thành công!");
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
             return RedirectToAction("Index", "Home");
         }
@@ -312,6 +324,8 @@ namespace Standard.Controllers
             CreateNoti(obj.CreatedBy, "Phiếu đề nghị dụng cụ làm việc của bạn <br /> đã bị từ chối", Url.Action("Details", new { id = id }));
 
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
+
+            ShowMessage("Yêu cầu từ chối đã được gửi trả lại người yêu cầu!");
             return RedirectToAction("Index", "Ticket");
         }
         public ActionResult TaoCheckout(int ticketID)

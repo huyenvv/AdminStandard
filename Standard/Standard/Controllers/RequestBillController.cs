@@ -177,12 +177,18 @@ namespace Standard.Controllers
             obj.ChkFeedbackID = null;
             //lấy người có quyền kế toán
             var u = new fwUserDAL().ListByRole(RoleList.Accounting).FirstOrDefault();
-            if (u == null) RedirectToAction("Details", new { id = id });
+            if (u == null)
+            {
+                ShowMessage("Hiện tại hệ thống chưa có kế toán!", false);
+                RedirectToAction("Details", new { id = id });
+            }
             obj.Current = u.ID;
             if (!obj.CheckoutUser.Any(m => m.UserID == u.ID))
                 db.Database.ExecuteSqlCommand(string.Format("insert into CheckoutUser values({0},{1})", obj.ID, u.ID));
 
             db.SaveChanges();
+
+            ShowMessage("Gửi yêu cầu thành công!");
 
             CreateNoti(obj.Current, "Cần kiểm tra phiếu yêu cầu <br /> thanh toán", Url.Action("Details", new { id = id }));
 
@@ -197,13 +203,18 @@ namespace Standard.Controllers
             obj.ChkFeedbackID = null;
             //lấy người có quyền duyệt
             var u = new fwUserDAL().ListByRole(RoleList.ApproveTicket).FirstOrDefault();
-            if (u == null) RedirectToAction("Details", new { id = id });
+            if (u == null)
+            {
+                ShowMessage("Hiện tại hệ thống chưa có người duyệt phiếu thanh toán!", false);
+                RedirectToAction("Details", new { id = id });
+            }
             obj.Current = u.ID;
             if (!obj.CheckoutUser.Any(m => m.UserID == u.ID))
                 db.Database.ExecuteSqlCommand(string.Format("insert into CheckoutUser values({0},{1})", obj.ID, u.ID));
 
             db.SaveChanges();
 
+            ShowMessage("Đồng ý kiểm duyệt thành công!");
             CreateNoti(obj.Current, "Cần duyệt phiếu yêu cầu thanh toán", Url.Action("Details", new { id = id }));
             CreateNoti(obj.CreatedBy, "Phiếu yêu cầu thanh toán <br /> đã được kiểm tra", Url.Action("Details", new { id = id }));
 
@@ -218,13 +229,18 @@ namespace Standard.Controllers
             obj.ChkFeedbackID = null;
             //lấy người có quyền kế toán
             var u = new fwUserDAL().ListByRole(RoleList.Accounting).FirstOrDefault();
-            if (u == null) RedirectToAction("Details", new { id = id });
+            if (u == null)
+            {
+                ShowMessage("Hiện tại hệ thống chưa có kế toán duyệt phiếu!", false);
+                RedirectToAction("Details", new { id = id });
+            }
             obj.Current = u.ID;
             if (!obj.CheckoutUser.Any(m => m.UserID == u.ID))
                 db.Database.ExecuteSqlCommand(string.Format("insert into CheckoutUser values({0},{1})", obj.ID, u.ID));
 
             db.SaveChanges();
 
+            ShowMessage("Phê duyệt thành công!");
             CreateNoti(obj.Current, "Cần xử lý phiếu yêu cầu thanh toán", Url.Action("Details", new { id = id }));
             CreateNoti(obj.CreatedBy, "Phiếu yêu cầu thanh toán <br /> đã được duyệt", Url.Action("Details", new { id = id }));
 
@@ -241,6 +257,7 @@ namespace Standard.Controllers
 
             db.SaveChanges();
 
+            ShowMessage("Thanh toán hoàn tất!");
             CreateNoti(obj.CreatedBy, "Phiếu yêu cầu thanh toán đã <br /> được hoàn thành ", Url.Action("Details", new { id = id }));
 
             return RedirectToAction("Index", "RequestBill");
