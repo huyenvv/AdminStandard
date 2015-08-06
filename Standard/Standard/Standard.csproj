@@ -190,6 +190,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\DeptController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\NghiController.cs" />
     <Compile Include="Controllers\RequestBillController.cs" />
     <Compile Include="Controllers\TicketController.cs" />
     <Compile Include="Controllers\WebLibController.cs" />
@@ -244,6 +245,7 @@
   <ItemGroup>
     <Content Include="App_Data\script.sql" />
     <Content Include="Content\js\angular.min.js" />
+    <Content Include="Content\js\jquery.hotkeys-0.7.9.min.js" />
     <Content Include="Content\js\notification.js" />
     <Content Include="Content\lib\edit-table\editabletable.js" />
     <Content Include="Content\lib\edit-table\numeric-input.js" />
@@ -408,6 +410,7 @@
     <Content Include="Views\WebLib\AddRoleToMenu.cshtml" />
     <Content Include="Views\Ticket\ThongKe.cshtml" />
     <Content Include="Views\RequestBill\ThongKe.cshtml" />
+    <Content Include="Views\Nghi\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Uploads\Checkout\" />

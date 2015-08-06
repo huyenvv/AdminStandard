@@ -27,7 +27,14 @@
     <script src="~/Content/lib/ma/js/fileinput.min.js"></script>
     <script src="~/Content/lib/edit-table/editabletable.js"></script>
     <script src="~/Content/lib/edit-table/numeric-input.js"></script>
+<script src="~/Content/js/jquery.hotkeys-0.7.9.min.js"></script>
     <script>
+        $(document).ready(function () {
+            $(document).bind('keydown', 'ctrl+r', function () {
+                AddRows('#mainTable');
+                //alert(1);
+            });
+        });
         $('#mainTable').editableTableWidget();
         @if ((listTickKet == null) || (listTickKet != null && listTickKet.Count == 0))
         {
@@ -184,7 +191,7 @@
                 <small id="loaiticket" class="help-block">Bạn phải thêm ticket detail trước.</small>
             </div>
             <div></div>
-            <a href="#" class="btn btn-primary btn-xs pull-right" onclick="AddRows('#mainTable'); return false;"><i class="md md-add"></i> Thêm dòng</a>
+            <button class="pull-right" onclick="AddRows('#mainTable'); return false;"><i class="md md-add"></i> Thêm dòng</button>
         </div>
     </div>
 
