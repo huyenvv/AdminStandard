@@ -47,7 +47,7 @@ namespace Standard.Controllers
             }
             else
             {
-                list = list.Where(m => m.Current == DB.CurrentUser.ID && m.CheckoutID == null);
+                list = list.Where(m => !m.CheckoutID.HasValue && (m.Current == DB.CurrentUser.ID || m.Status == TicketStatus.KhoiTao));
             }
             return View(list.ToList());
         }

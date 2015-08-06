@@ -128,15 +128,21 @@ function AddRows(id) {
 
 function GetDataTable(id) {
     var data = [];
-    $(id + " tbody tr").each(function () {
+    $(id + " tbody tr.trtableedit").each(function () {
         var listtds = $(this).children();
-        var obj = {
-            Title: $(listtds[1]).children().val(),
-            Quantity: $(listtds[2]).children().val(),
-            Reason: $(listtds[3]).children().val(),
-            DateRequire: $(listtds[4]).children().val()
-        };
-        data.push(obj);
+        var title = $(listtds[1]).children().val(),
+            quantity = $(listtds[2]).children().val(),
+            reason = $(listtds[3]).children().val(),
+            dateRequire = $(listtds[4]).children().val();
+        if (title != '' || reason != '') {
+            var obj = {
+                Title: $(listtds[1]).children().val(),
+                Quantity: $(listtds[2]).children().val(),
+                Reason: $(listtds[3]).children().val(),
+                DateRequire: $(listtds[4]).children().val()
+            };
+            data.push(obj);
+        }
     });
     $("#listTicketDetailJson").val(JSON.stringify(data));
 }

@@ -60,7 +60,7 @@ function TinhTien() {
 
 function getValueTableEdit() {
     var listCheckoutDetailJson = [];
-    $("table#mainTable tbody tr").each(function () {
+    $("table#mainTable tbody tr.trtableedit").each(function () {
         var listtds = $(this).children();
         var obj = {
             DeptCode: $(listtds[0]).children().val(),

@@ -15,6 +15,7 @@ namespace Standard.Controllers
         private readonly CheckoutRepository _checkoutRepository;
         private readonly CheckoutDetailsRepository _checkoutDetailRepository;
         private readonly DeptRepository _deptRepository;
+        private readonly TicketRepository _ticketRepository;
         private DB_9CF750_dbEntities db;
 
         public RequestBillController()
@@ -23,6 +24,7 @@ namespace Standard.Controllers
             _checkoutRepository = new CheckoutRepository(db);
             _deptRepository = new DeptRepository(db);
             _checkoutDetailRepository = new CheckoutDetailsRepository(db);
+            _ticketRepository = new TicketRepository(db);
         }
         public ActionResult ThongKe(int? y, int? m)
         {
@@ -55,14 +57,33 @@ namespace Standard.Controllers
             return View(obj);
         }
 
-        public ActionResult Create(int CheckoutId = 0)
+        public ActionResult Create(int CheckoutId = 0, int ticketId = 0)
         {
             ViewBag.listDept = _deptRepository.GetKiemSoatNB();
             var checkout = _checkoutRepository.GetById(CheckoutId);
-            if (checkout == null) return View(new Checkout { Created = DateTime.Now, PaymentMethod = PaymentMethod.ChuyenKhoan });
+            if (checkout == null)
+            {
+                var ticket = _ticketRepository.GetById(ticketId);
+                if (ticket == null)
+                {
+                    ShowMessage("Không tìm thấy phiếu đề nghị dụng cụ làm việc.", false);
+                    return RedirectToAction("Index");
+                }
 
-            //if (checkout.CreatedBy != fwUserDAL.GetCurrentUser().ID || checkout.Status != CheckoutStatus.KhoiTao)
-            //    return AccessDenied();
+                if (ticket.Status != TicketStatus.DaDuyet)
+                {
+                    ShowMessage("Phiếu đề nghị dụng cụ làm việc chưa được duyệt. Bạn không thể tạo đề nghị thanh toán", false);
+                    return RedirectToAction("Index");
+                }
+                if (ticket.CheckoutID.HasValue)
+                {
+                    ShowMessage("Phiếu đề nghị thanh toán chỉ được tạo một lần cho mỗi phiếu đề nghị dụng cụ làm việc.", false);
+                    return RedirectToAction("Index");
+                }
+                return View(new Checkout { Created = DateTime.Now, PaymentMethod = PaymentMethod.ChuyenKhoan });
+            }
+            if (checkout.CreatedBy != fwUserDAL.GetCurrentUser().ID || checkout.Status != CheckoutStatus.KhoiTao)
+                return AccessDenied();
 
             SessionUtilities.Set(Constant.SESSION_CheckoutDetails, checkout.CheckoutDetails.ToList());
             return View(checkout);
