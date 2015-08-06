@@ -25,6 +25,12 @@ $(function () {
         var id = $(this).val();
         location.href = "/RequestBill/Index?status=" + id;
     });
+
+    $('.YearMonthChange').change(function () {
+        var y = $("#tk-year").val();
+        var m = $("#tk-month").val();
+        location.href = "/RequestBill/ThongKe?y=" + y + "&m=" + m;
+    });
 });
 
 function TinhTien() {

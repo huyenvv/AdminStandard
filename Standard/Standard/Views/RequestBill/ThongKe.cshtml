@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Thống kê phiếu yêu cầu";
     var userDAL = new WebLib.DAL.fwUserDAL();
-    var listColor = new[] { "danger", "warning", "primary", "success" };
+    var listColor = new[] { "danger", "warning", "primary", "success", "info", "black" };
     var y = Request.QueryString["y"];
     var m = Request.QueryString["m"];
     var t1 = Model.Count(x => x.Status == 1);
@@ -12,7 +12,7 @@
     var t4 = Model.Count(x => x.Status == 4);
 }
 @section  scripts{
-    <script src="/Content/js/ticket.js"></script>
+    <script src="/Content/js/checkout.js"></script>
 }
 
 <div class="row">

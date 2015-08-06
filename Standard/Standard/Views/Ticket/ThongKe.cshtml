@@ -3,13 +3,14 @@
 @{
     ViewBag.Title = "Thống kê phiếu yêu cầu";
     var userDAL = new WebLib.DAL.fwUserDAL();
-    var listColor = new[] { "danger", "warning", "primary", "info", "success" };
+    var listColor = new[] { "danger", "warning", "primary", "success", "info", "black" };
     var y = Request.QueryString["y"];
     var m = Request.QueryString["m"];
     var t1 = Model.Count(x => x.Status == 1);
     var t2 = Model.Count(x => x.Status == 2);
     var t3 = Model.Count(x => x.Status == 3);
     var t4 = Model.Count(x => x.Status == 4);
+    var t5 = Model.Count(x => x.Status == 5);
 }
 @section  scripts{
     <script src="/Content/js/ticket.js"></script>
@@ -50,6 +51,7 @@
         <h6>Trạng thái @TicketStatus.TicketStatusTitle[2]: <b>@t2</b></h6>
         <h6>Trạng thái @TicketStatus.TicketStatusTitle[3]: <b>@t3</b></h6>
         <h6>Trạng thái @TicketStatus.TicketStatusTitle[4]: <b>@t4</b></h6>
+        <h6>Trạng thái @TicketStatus.TicketStatusTitle[5]: <b>@t5</b></h6>
     </div>
 </div>
 <hr/>
