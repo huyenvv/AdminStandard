@@ -29,6 +29,12 @@ namespace Standard.Controllers
             _ticketDetailRepository = new TicketDetailRepository(db);
             _ticketUserRepository = new TicketUserRepository(db);
         }
+
+        public ActionResult ThongKe(int? y)
+        {
+            var list = db.Ticket.Where(m => y.HasValue ? m.Created.Year == y.Value : true).ToList();
+            return View(list);
+        }
         public ActionResult Index(int? status)
         {
             var list = DB.CurrentUser.UserName == WebLib.Constant.AdminFix ? db.Ticket : db.TicketUser.Where(m => m.UserID == DB.CurrentUser.ID).Select(m => m.Ticket);

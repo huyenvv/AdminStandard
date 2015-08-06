@@ -1,0 +1,90 @@
+﻿@model List<Ticket>
+
+@{
+    ViewBag.Title = "Thống kê phiếu yêu cầu";
+    var userDAL = new WebLib.DAL.fwUserDAL();
+    var listColor = new[] { "danger", "warning", "primary", "info", "success" };
+    var y = Request.QueryString["y"];
+    var m = Request.QueryString["m"];
+    var t1 = Model.Count(x => x.Status == 1);
+    var t2 = Model.Count(x => x.Status == 2);
+    var t3 = Model.Count(x => x.Status == 3);
+    var t4 = Model.Count(x => x.Status == 4);
+}
+@section  scripts{
+    <script src="/Content/js/ticket.js"></script>
+}
+
+<div class="row">
+    <div class="col-sm-3">
+        <div class="form-group">
+            <div class="select">
+                <select class="form-control YearMonthChange" id="tk-year">
+                    @for (int i = DateTime.Now.Year; i >= 2015; i--)
+                    {
+                        <option value="@i" @(i.ToString() == y ? "selected" : "")> Năm @i</option>
+                    }
+                </select>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="form-group">
+            <div class="select">
+                <select class="form-control YearMonthChange" id="tk-month">
+                    <option value="0"> Tất cả </option>
+                    @for (int i = 1; i < 13; i++)
+                    {
+                        <option value="@i" @(i.ToString() == m ? "selected" : "")> Tháng @i</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <h6>Tổng số: <b>@Model.Count</b></h6>
+        <h6>Trạng thái @TicketStatus.TicketStatusTitle[1]: <b>@t1</b></h6>
+        <h6>Trạng thái @TicketStatus.TicketStatusTitle[2]: <b>@t2</b></h6>
+        <h6>Trạng thái @TicketStatus.TicketStatusTitle[3]: <b>@t3</b></h6>
+        <h6>Trạng thái @TicketStatus.TicketStatusTitle[4]: <b>@t4</b></h6>
+    </div>
+</div>
+<hr/>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Ngày tạo</th>
+                    <th>Người yêu cầu</th>
+                    <th>Nội dung</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+            @foreach (var item in Model)
+            {
+                var u = userDAL.GetByID(item.CreatedBy);
+                var first = item.TicketDetails.FirstOrDefault();
+                string title = first != null ? first.Title + " ..." : "";
+            <tr>
+                <td>
+                    <a href="@Url.Action("Details", new { id = item.ID })">@item.Created.ToString("dd/MM/yyyy")</a>
+                </td>
+                <td>
+                    @(u == null ? null : u.Name)
+                </td>
+                <td>
+                    @title
+                </td>
+                <td>
+                    <button class="btn btn-@listColor[item.Status] btn-xs" disabled="disabled">@TicketStatus.TicketStatusTitle[item.Status]</button>
+                </td>
+            </tr>
+            }
+
+        </table>
+    </div>
+</div>

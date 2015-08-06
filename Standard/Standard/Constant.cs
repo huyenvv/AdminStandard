@@ -23,6 +23,7 @@ namespace Standard
         public const string ApproveTicket = "ApproveTicket";
         public const string Normal = "Normal";
         public const string Accounting = "Accounting";
+        public const string Statistic = "Statistic";
     }
     public class DeptType
     {

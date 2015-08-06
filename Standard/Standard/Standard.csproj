@@ -406,6 +406,8 @@
     <Content Include="Views\Home\ListTicketType.cshtml" />
     <Content Include="Views\Home\EditTicketType.cshtml" />
     <Content Include="Views\WebLib\AddRoleToMenu.cshtml" />
+    <Content Include="Views\Ticket\ThongKe.cshtml" />
+    <Content Include="Views\RequestBill\ThongKe.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Uploads\Checkout\" />

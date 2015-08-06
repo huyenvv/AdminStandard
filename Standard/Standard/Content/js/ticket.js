@@ -1,4 +1,8 @@
-﻿$(function () {
+﻿//$(document).ready(function () {
+//    notify('Welcome back Mallinda Hollaway', 'inverse');
+//});
+$(function () {
+
     $('#ThemChiTiet').click(function () {
 
         var check = true;
@@ -48,6 +52,11 @@
     $('#TicketStatusChange').change(function () {
         var id = $(this).val();
         location.href = "/Ticket/Index?status=" + id;
+    });
+    $('.YearMonthChange').change(function () {
+        var y = $("#tk-year").val();
+        var m = $("#tk-month").val();
+        location.href = "/Ticket/ThongKe?y=" + y + "&m=" + m;
     });
 });
 
