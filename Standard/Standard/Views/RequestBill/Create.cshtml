@@ -9,19 +9,22 @@
     {
         listType[Model.PaymentMethod.Value] = "checked='checked'";
     }
-    var listIDGRoup = currentUser.fwGroup.Select(m=>m.ID).ToList();
+    var listIDGRoup = currentUser.fwGroup.Select(m => m.ID).ToList();
     var currentDept = DB.Entities.Dept.Where(m => listIDGRoup.Contains(m.GroupID)).ToList();
-    
+
     var listDetail = Model.CheckoutDetails;
-    var ticketID = int.Parse(Request.QueryString["ticketID"]);
+    var ticketID = Model.ID == 0 ? int.Parse(Request.QueryString["ticketID"]) : DB.Entities.Ticket.FirstOrDefault(m => m.CheckoutID == Model.ID).ID;
     var db = DB.Entities;
     var tick = db.Ticket.FirstOrDefault(m => m.ID == ticketID);
     var ticketTitle = tick.Created.ToString("dd/MM/yyyy") + " - " + tick.TicketDetails.FirstOrDefault().Title + " ...";
 
-    var lstChkDetails = new List<CheckoutDetails>();
-    foreach (var item in tick.TicketDetails)
-    {
-        lstChkDetails.Add(new CheckoutDetails() { Title = item.Title, ID = item.ID });
+    var lstChkDetails = Model.ID == 0 ? new List<CheckoutDetails>() : db.CheckoutDetails.Where(m => m.CheckoutID == Model.ID).ToList();
+    if (Model.ID == 0)
+    { 
+        foreach (var item in tick.TicketDetails)
+        {
+            lstChkDetails.Add(new CheckoutDetails() { Title = item.Title, ID = item.ID });
+        }
     }
 }
 <style>
@@ -46,7 +49,7 @@
         @if ((lstChkDetails == null) || (lstChkDetails != null && lstChkDetails.Count == 0))
         {
             @:AddRows('#mainTable');
-                                                                                }
+                                                                                                        }
         $('#mainTable').find('td:nth(4)').focus().click();
         AddEventEditTable();
     </script>
@@ -70,14 +73,14 @@
     @Html.Hidden("listCheckoutDetailJson")
     @Html.Hidden("tamUng")
     @Html.Hidden("phiNganHang")
-    @Html.HiddenFor(m=>m.InWords)
+    @Html.HiddenFor(m => m.InWords)
 
 
     @Html.ValidationSummary(true)
     <div class="row">
         <div class="col-md-12">
             @*<button type="submit" class="btn btn-primary" onclick="return CheckCheckout(false);">Lưu lại</button>*@
-            <button type="submit" class="btn btn-primary" onclick="return CheckCheckout(true);">Gửi đề nghị</button>
+            <button type="submit" class="btn btn-primary" onclick="return CheckCheckout(true);"> @(Model.ID == 0 ? "Gửi đề nghị" : "Thanh toán")</button>
             <a href="@Request.QueryString["returnUrl"]" class="btn btn-default">Hủy</a>
         </div>
     </div>
@@ -234,39 +237,39 @@
                             <strong>Cộng</strong>
                             @*<i>(Sub-total)</i>*@
                         </td>
-                        <td class="text-right noChange vndCong"></td>
-                        <td class="text-right noChange usdCong"></td>
+                        <td class="text-right noChange vndCong">@Model.SumTotal</td>
+                        <td class="text-right noChange usdCong">@Model.SumTotal</td>
                     </tr>
                     <tr>
                         <td colspan="4" class="noedit">
                             <strong>Tạm ứng</strong>
                             @*<i>(Advance payment)</i>*@:
                         </td>
-                        <td class="text-right typeNumber vndTamung"></td>
-                        <td class="text-right typeNumber usdTamung"></td>
+                        <td class="text-right typeNumber vndTamung">@Model.AdvandPayment</td>
+                        <td class="text-right typeNumber usdTamung">@Model.AdvandPaymentUSD</td>
                     </tr>
                     <tr>
                         <td colspan="4" class="noedit">
                             <strong>Phí ngân hàng</strong>
                             @*<i>(Bank charge)</i>*@:
                         </td>
-                        <td class="text-right typeNumber vndPhiNH"></td>
-                        <td class="text-right typeNumber usdPhiNH"></td>
+                        <td class="text-right typeNumber vndPhiNH">@Model.BankingCharge</td>
+                        <td class="text-right typeNumber usdPhiNH">@Model.BankingChargeUSD</td>
                     </tr>
                     <tr>
                         <td colspan="4" class="noedit">
                             <strong>Tổng cộng</strong>
                             @*<i>(Total)</i>*@:
                         </td>
-                        <td class="text-right noChange vndTongCong"></td>
-                        <td class="text-right noChange usdTongCong"></td>
+                        <td class="text-right noChange vndTongCong">@Model.Total</td>
+                        <td class="text-right noChange usdTongCong">@Model.TotalUSD</td>
                     </tr>
                     <tr>
                         <td class="noedit">
                             <strong> Bằng chữ </strong>
                             @*<i>(in words): </i>*@         :
                         </td>
-                        <td colspan="5" id="BangChu"></td>
+                        <td colspan="5" id="BangChu">@Model.InWords</td>
                     </tr>
                 </tfoot>
             </table>

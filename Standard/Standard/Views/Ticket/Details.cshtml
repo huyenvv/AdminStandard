@@ -11,6 +11,8 @@
     ViewBag.Title = "ĐỀ NGHỊ DỤNG CỤ LÀM VIỆC/ REQUEST FOR WORKING FACILITIES";
     var listFiles = !string.IsNullOrEmpty(Model.FilePath) ? Model.FilePath.Split(new string[] { ";#" }, StringSplitOptions.RemoveEmptyEntries) : new string[0];
 
+    var ykcount = DB.Entities.Feedback.Count(m => m.TicketID == Model.ID);
+    ViewBag.Title += (Model.Status!=TicketStatus.KhoiTao && Model.Status!=TicketStatus.Reject)?null: " (lần thứ " + (ykcount + 1) + ")";
     string ykien = null;
     if (Model.FeedbackID != null)
     { ykien = DB.Entities.Feedback.FirstOrDefault(m => m.ID == Model.FeedbackID.Value).Title; }
@@ -114,13 +116,13 @@
     <br />
     <div class="row">
         <div class="col-sm-4">
-            <span>Ngày đề nghị: </span><h4 class="color-blue">@Model.Created.ToString("dd/MM/yyyy")</h4>
+            <span>Ngày đề nghị: </span><b>@Model.Created.ToString("dd/MM/yyyy")</b>
         </div>
         <div class="col-sm-4">
-            <span>Người đề nghị: </span><h4 class="color-blue">@createby.Name</h4>
+            <span>Người đề nghị: </span><b>@createby.Name</b>
         </div>
         <div class="col-sm-4">
-            <span>Bộ phận: </span><h4 class="color-blue">@dept.Title</h4>
+            <span>Bộ phận: </span><b>@dept.Title</b>
         </div>
     </div>
     <br />
@@ -200,7 +202,7 @@
         </div>
     </div>
 }
-@if (ykien != null)
+@if (ykien != null && Model.Status == TicketStatus.KhoiTao)
 {   <br />
     <div class="row">
         <div class="col-sm-12">
@@ -216,7 +218,23 @@
         </div>
     </div>
 }
-@if (Model.Status != TicketStatus.KhoiTao && Model.Status != TicketStatus.DaDuyet && Model.Current == DB.CurrentUser.ID)
+@if (ykien != null && Model.Status == TicketStatus.Reject)
+{   <br />
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group fg-float">
+                <div class="fg-line">
+                    <label>
+                        Lý do từ chối
+                    </label>
+                    <textarea class="form-control fg-input input-lg" rows="3">@ykien</textarea>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+@if (Model.Status != TicketStatus.KhoiTao && Model.Status != TicketStatus.DaDuyet && Model.Status != TicketStatus.Reject && Model.Current == DB.CurrentUser.ID)
 {
     using (Html.BeginForm("PhanHoi", "Ticket", FormMethod.Post))
     {
@@ -243,4 +261,31 @@
         </div>
     }
 }
+<br /><br />
+@if (Model.Status != TicketStatus.KhoiTao && Model.Status != TicketStatus.DaDuyet && Model.Status != TicketStatus.Reject && Model.Current == DB.CurrentUser.ID)
+{
+    using (Html.BeginForm("TuChoi", "Ticket", FormMethod.Post))
+    {
+        @Html.Hidden("id", Model.ID)
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group fg-float">
+                    <div class="fg-line">
+                        <label>
+                            Lý do từc chối
+                        </label>
+                        <textarea class="form-control fg-input input-lg" id="txtPhanHoi" rows="3" name="ykien"></textarea>
+                    </div>
 
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div id="messerror" class="hide field-validation-error">Bạn cần nhập lý du từ chối!</div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-sm-6">
+                <button type="submit" class="btn btn-primary btn-icon-text waves-effect"><i class="md md-arrow-back"></i>  Từ chối duyệt</button>
+            </div>
+        </div>
+    }
+}

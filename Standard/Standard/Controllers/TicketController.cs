@@ -30,9 +30,9 @@ namespace Standard.Controllers
             _ticketUserRepository = new TicketUserRepository(db);
         }
 
-        public ActionResult ThongKe(int? y)
+        public ActionResult ThongKe(int? y, int? m)
         {
-            var list = db.Ticket.Where(m => y.HasValue ? m.Created.Year == y.Value : true).ToList();
+            var list = db.Ticket.Where(x => (y.HasValue ? x.Created.Year == y.Value : true) && (m.HasValue ? x.Created.Month == m.Value : true)).ToList();
             return View(list);
         }
         public ActionResult Index(int? status)
@@ -54,7 +54,11 @@ namespace Standard.Controllers
 
         public ActionResult Details(int id)
         {
-            return View(db.Ticket.FirstOrDefault(m => m.ID == id));
+            var obj = db.Ticket.FirstOrDefault(m => m.ID == id);
+            
+            if (obj.Status == TicketStatus.KhoiTao)
+                return RedirectToAction("Create", new { id = id });
+            return View(obj);
         }
         public JsonResult AddTicketDetail(TicketDetails detail)
         {
@@ -159,7 +163,6 @@ namespace Standard.Controllers
                         // isSend = true => send for lead dept
                         if (isSend)
                         {
-                            //Lấy trưởng phòng của người tạo
                             return RedirectToAction("GuiYeuCau", new { id = getTicket.ID });
                         }
                     }
@@ -204,6 +207,9 @@ namespace Standard.Controllers
             obj.FeedbackID = feedback.ID;
             obj.Current = obj.CreatedBy;
             db.SaveChanges();
+
+            CreateNoti(obj.CreatedBy, "Phiếu đề nghị dụng cụ làm việc của bạn <br /> đã có phản hồi", Url.Action("Details", new { id = id }));
+
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
             return RedirectToAction("Index", "Ticket");
         }
@@ -226,7 +232,7 @@ namespace Standard.Controllers
             if (!obj.TicketUser.Any(m => m.UserID == dept.LeaderUserID.Value))
                 db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", obj.ID, dept.LeaderUserID.Value));
 
-            CreateNoti(obj.Current, "Cần thông qua phiếu đề nghị dụng cụ làm việc", Url.Action("Details", new { id = id }));
+            CreateNoti(obj.Current, "Cần thông qua phiếu đề nghị <br /> dụng cụ làm việc", Url.Action("Details", new { id = id }));
 
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
             return RedirectToAction("Index", "Home");
@@ -246,8 +252,8 @@ namespace Standard.Controllers
             if (!obj.TicketUser.Any(m => m.UserID == u.ID))
                 db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", obj.ID, u.ID));
 
-            CreateNoti(obj.CreatedBy, "Phiếu đề nghị dụng cụ làm việc của bạn đã được thông qua", Url.Action("Details", new { id = id }));
-            CreateNoti(obj.Current, "Cần kiểm tra phiếu đề nghị dụng cụ làm việc", Url.Action("Details", new { id = id }));
+            CreateNoti(obj.CreatedBy, "Phiếu đề nghị dụng cụ làm việc của bạn <br /> đã được thông qua", Url.Action("Details", new { id = id }));
+            CreateNoti(obj.Current, "Cần kiểm tra phiếu đề nghị <br /> dụng cụ làm việc", Url.Action("Details", new { id = id }));
 
             db.SaveChanges();
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
@@ -267,8 +273,8 @@ namespace Standard.Controllers
                 db.Database.ExecuteSqlCommand(string.Format("insert into TicketUser values({0},{1})", obj.ID, u.ID));
 
 
-            CreateNoti(obj.CreatedBy, "Phiếu đề nghị dụng cụ làm việc của bạn đã được kiểm duyệt", Url.Action("Details", new { id = id }));
-            CreateNoti(obj.Current, "Cần duyệt tra phiếu đề nghị dụng cụ làm việc", Url.Action("Details", new { id = id }));
+            CreateNoti(obj.CreatedBy, "Phiếu đề nghị dụng cụ làm việc của bạn <br /> đã được kiểm duyệt", Url.Action("Details", new { id = id }));
+            CreateNoti(obj.Current, "Cần duyệt tra phiếu đề nghị <br /> dụng cụ làm việc", Url.Action("Details", new { id = id }));
 
             db.SaveChanges();
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
@@ -285,13 +291,29 @@ namespace Standard.Controllers
             obj.Current = obj.CreatedBy;
 
 
-            CreateNoti(obj.CreatedBy, "Phiếu đề nghị dụng cụ làm việc của bạn đã được duyệt", Url.Action("Details", new { id = id }));
+            CreateNoti(obj.CreatedBy, "Phiếu đề nghị dụng cụ làm việc của bạn <br /> đã được duyệt", Url.Action("Details", new { id = id }));
 
             db.SaveChanges();
             if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
             return RedirectToAction("Index", "Home");
         }
+        public ActionResult TuChoi(int id, string ykien, string returnUrl)
+        {
+            var obj = db.Ticket.FirstOrDefault(m => m.ID == id);
+            var feedback = db.Feedback.Add(new Feedback() { Created = DateTime.Now, TicketID = id, UserID = DB.CurrentUser.ID, Title = ykien });
+            db.SaveChanges();
 
+            obj.Status = TicketStatus.Reject;
+            obj.Track += ";#" + DB.CurrentUser.ID;
+            obj.FeedbackID = feedback.ID;
+            obj.Current = obj.CreatedBy;
+            db.SaveChanges();
+
+            CreateNoti(obj.CreatedBy, "Phiếu đề nghị dụng cụ làm việc của bạn <br /> đã bị từ chối", Url.Action("Details", new { id = id }));
+
+            if (!string.IsNullOrEmpty(returnUrl)) Redirect(returnUrl);
+            return RedirectToAction("Index", "Ticket");
+        }
         public ActionResult TaoCheckout(int ticketID)
         {
             var obj = db.Ticket.FirstOrDefault(m => m.ID == ticketID);
@@ -320,6 +342,10 @@ namespace Standard.Controllers
         public static bool CanTaoCheckout(Ticket obj)
         {
             return DB.CurrentUser.ID == obj.Current && obj.Status == TicketStatus.DaDuyet && obj.CheckoutID == null;
+        }
+        public static bool CanTuChoi(Ticket obj)
+        {
+            return DB.CurrentUser.ID == obj.Current && obj.Status != TicketStatus.DaDuyet && obj.Status != TicketStatus.KhoiTao;
         }
         #endregion
 

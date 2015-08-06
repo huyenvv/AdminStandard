@@ -39,7 +39,7 @@
                             @*Put list notification here*@
                         </div>
 
-                        <a class="lv-footer" href="@(Url.Action("ListNotification", "Home"))">Cũ hơn</a>
+                        @*<a class="lv-footer" href="@(Url.Action("ListNotification", "Home"))">Cũ hơn</a>*@
                     </div>
 
                     <div id="ascrail2003" class="nicescroll-rails nicescroll-rails-vr" style="width: 0px; z-index: 9; cursor: default; position: absolute; top: 0px; left: 298px; height: 275px; display: none;"><div class="nicescroll-cursors" style="position: relative; top: 0px; float: right; width: 0px; height: 0px; border: 0px; border-radius: 0px; background-color: rgba(0, 0, 0, 0.498039); background-clip: padding-box;"></div></div><div id="ascrail2003-hr" class="nicescroll-rails nicescroll-rails-hr" style="height: 0px; z-index: 9; top: 275px; left: 0px; position: absolute; cursor: default; display: none;"><div class="nicescroll-cursors" style="position: absolute; top: 0px; height: 0px; width: 0px; border: 0px; border-radius: 0px; background-color: rgba(0, 0, 0, 0.498039); background-clip: padding-box;"></div></div>
@@ -48,6 +48,9 @@
             <li class="dropdown">
                 <a data-toggle="dropdown" class="tm-settings" href=""></a>
                 <ul class="dropdown-menu dm-icon pull-right">
+                    <li>
+                        <a href="@Url.Action("Create", "Ticket")"><i class="md md-check"></i> Tạo phiếu yêu cầu</a>
+                    </li>
                     <li>
                         <a data-action="fullscreen" href=""><i class="md md-fullscreen"></i> Toggle Fullscreen</a>
                     </li>

@@ -1,6 +1,7 @@
 ﻿@model Ticket
 @using WebLib.DAL
 @{
+    Model.Type = Model.Type == 0 ? 1 : Model.Type;
     var currentUser = fwUserDAL.GetCurrentUser();
     var listTickKet = WebLib.SessionUtilities.Exist(Constant.SESSION_TicketDetails) ? (List<TicketDetails>)WebLib.SessionUtilities.Get(Constant.SESSION_TicketDetails) : null;
     var listDept = (List<Dept>)ViewBag.listDept;

@@ -40,8 +40,9 @@ namespace Standard
         public const int ChoKiemDuyet = 2;
         public const int ChoDuyet = 3;
         public const int DaDuyet = 4;
+        public const int Reject = 5;
 
-        public static string[] TicketStatusTitle = new string[] { "Khởi tạo", "Chờ thông qua", "Chờ kiểm duyệt", "Chờ duyệt", "Đã duyệt" };
+        public static string[] TicketStatusTitle = new string[] { "Khởi tạo", "Chờ thông qua", "Chờ kiểm duyệt", "Chờ duyệt", "Đã duyệt", "Từ chối duyệt" };
     }
     public class CheckoutStatus
     {

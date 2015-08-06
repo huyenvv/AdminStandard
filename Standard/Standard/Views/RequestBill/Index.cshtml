@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Các phiếu yêu cầu thanh toán/ PAYMENT VOUCHER";
     var userDAL = new WebLib.DAL.fwUserDAL();
-    var listColor = new[] { "danger", "warning", "primary", "success" };
+    var listColor = new[] { "danger", "warning", "primary", "success", "info", "black" };
     var status = Request.QueryString["status"];
 }
 
@@ -44,25 +44,26 @@
                 var u = userDAL.GetByID(item.CreatedBy);
                 var first = item.CheckoutDetails.FirstOrDefault();
                 string title = first != null ? first.Title : "";
+                var url = item.Status == CheckoutStatus.DaDuyet && item.Current == DB.CurrentUser.ID ? Url.Action("Create", new { CheckoutId = item.ID, returnUrl = Request.RawUrl }) : Url.Action("Details", new { id = item.ID, returnUrl = Request.RawUrl });
                 <tr>
                     <td>
                         @if (DB.CurrentUser.ID == item.Current)
                         {
-                            <b><a href="@Url.Action("Details", new { id = item.ID })">@(u == null ? null : u.Name)</a></b>
+                            <b><a href="@url">@(u == null ? null : u.Name)</a></b>
                         }
                         else
                         {
-                            <a href="@Url.Action("Details", new { id = item.ID })">@(u == null ? null : u.Name)</a>
+                            <a href="@url">@(u == null ? null : u.Name)</a>
                         }
                     </td>
                     <td>
                         @if (DB.CurrentUser.ID == item.Current)
                         {
-                            <b><a href="@Url.Action("Details", new { id = item.ID })">@title</a></b>
+                            <b><a href="@url">@title</a></b>
                         }
                         else
                         {
-                            <a href="@Url.Action("Details", new { id = item.ID })">@title</a>
+                            <a href="@url">@title</a>
                         }
                     </td>
                     <td>
