@@ -47,7 +47,7 @@
         {
             @:AddRows('#mainTable');
                                                                                 }
-        $('#mainTable').find('td:nth(0)').focus().click();
+        $('#mainTable').find('td:nth(4)').focus().click();
         AddEventEditTable();
     </script>
 
@@ -230,7 +230,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="4">
+                        <td colspan="4" class="noedit">
                             <strong>Cộng</strong>
                             @*<i>(Sub-total)</i>*@
                         </td>
@@ -238,7 +238,7 @@
                         <td class="text-right noChange usdCong"></td>
                     </tr>
                     <tr>
-                        <td colspan="4">
+                        <td colspan="4" class="noedit">
                             <strong>Tạm ứng</strong>
                             @*<i>(Advance payment)</i>*@:
                         </td>
@@ -246,7 +246,7 @@
                         <td class="text-right typeNumber usdTamung"></td>
                     </tr>
                     <tr>
-                        <td colspan="4">
+                        <td colspan="4" class="noedit">
                             <strong>Phí ngân hàng</strong>
                             @*<i>(Bank charge)</i>*@:
                         </td>
@@ -254,7 +254,7 @@
                         <td class="text-right typeNumber usdPhiNH"></td>
                     </tr>
                     <tr>
-                        <td colspan="4">
+                        <td colspan="4" class="noedit">
                             <strong>Tổng cộng</strong>
                             @*<i>(Total)</i>*@:
                         </td>
@@ -262,7 +262,7 @@
                         <td class="text-right noChange usdTongCong"></td>
                     </tr>
                     <tr>
-                        <td>
+                        <td class="noedit">
                             <strong> Bằng chữ </strong>
                             @*<i>(in words): </i>*@         :
                         </td>
