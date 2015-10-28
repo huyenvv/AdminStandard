@@ -20,6 +20,7 @@ namespace WebLib.DAL
         public string _TableName;
         public string GetString(object dr)
         {
+            if (Convert.IsDBNull(dr)) return null;
             return dr == null ? null : dr.ToString();
         }
         public int GetInt(object dr)

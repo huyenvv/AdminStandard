@@ -6,6 +6,8 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Xml.Serialization;
+using System.Xml;
 
 namespace WebLib
 {
@@ -35,7 +37,72 @@ namespace WebLib
                         "ýỳỵỷỹ",                        
                         "ÝỲỴỶỸ"
         };
+        public class Utf8StringWriter : StringWriter
+        {
+            public override Encoding Encoding
+            {
+                get { return Encoding.UTF8; }
+            }
+        }
+        public static string GetStringFromList(List<object> lst, string sapretor = ";")
+        {
+            if (lst == null) return null;
+            string s = null;
+            foreach (var item in lst)
+            {
+                s += item + sapretor;
+            }
+            return s;
+        }
+        public static List<int> GetList(string value, string sapretor = ";")
+        {
+            var lst = new List<int>();
+            if (string.IsNullOrEmpty(value)) return lst;
+            foreach (var item in value.Split(new string[] { sapretor }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                lst.Add(int.Parse(item));
+            }
+            return lst;
+        }
+        public static List<string> GetListString(string value, string sapretor = ";")
+        {
+            var lst = new List<string>();
+            if (string.IsNullOrEmpty(value)) return lst;
+            foreach (var item in value.Split(new string[] { sapretor }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                lst.Add(item);
+            }
+            return lst;
+        }
+        public static string XMLSerialize(object data)
+        {
+            var serializer = new XmlSerializer(data.GetType());
+            string utf8;
+            using (StringWriter writer = new Utf8StringWriter())
+            {
+                serializer.Serialize(writer, data);
+                utf8 = writer.ToString();
+                return utf8;
+            }
 
+
+            //XmlSerializer SerializerObj = new XmlSerializer(data.GetType());
+            //System.IO.StringWriter sww = new System.IO.StringWriter();
+            //XmlWriter writer = XmlWriter.Create(sww);
+
+            //SerializerObj.Serialize(writer, data);
+            //return sww.ToString();
+        }
+
+        public static T XMLDeserialize<T>(string xml, Type type)
+        {
+            XmlSerializer mySerializer = new XmlSerializer(type);
+            //XmlReader reader = XmlReader.Create(xml);
+
+            XmlTextReader reader = new XmlTextReader(new StringReader(xml));
+
+            return (T)mySerializer.Deserialize(reader);
+        }
         public static string RemoveSign4Vietnamese(string str)
         {
 

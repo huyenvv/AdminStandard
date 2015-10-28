@@ -153,7 +153,7 @@ namespace Standard.Controllers
                         // create ticket detail
                         var listDetail = listTicketDetails.Select(item => new TicketDetails
                         {
-                            DateRequire = DateTime.Parse(item.DateRequire),
+                            DateRequire = Culture.ToDateTime(item.DateRequire),
                             Quantity = item.Quantity,
                             Reason = item.Reason,
                             Title = item.Title,

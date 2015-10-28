@@ -12,10 +12,13 @@ namespace WebLib.Models
         public string UserName { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Address { get; set; }
         public int Status { get; set; }
         public bool Locked { get; set; }
         public string Avata { get; set; }
         public int NotiCount { get; set; }
+        public DateTime? Birthday { get; set; }
         public string Pass { get; set; }
         public List<fwMenu> Menu()
         {

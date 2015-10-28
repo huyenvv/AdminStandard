@@ -10,6 +10,7 @@ namespace WebLib
         public const string Session_CurrentUser = "Session_CurrentUser";
 
         public const string AdminFix = "admin";
+        public const string FREFIX_FACEBOOK_ACCOUNT = "fbx1x2_";
     }
 
     public static class fwConfigType

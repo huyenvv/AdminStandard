@@ -65,9 +65,12 @@ namespace WebLib
             fileName = string.Format("{0}/{1}", dir, fileName).Replace("//", "/");
             return fileName;
         }
-
+        /// <summary>
+        /// Kiểm tra file có tồn tại hay không. Nếu tên file = null or empty thì return false
+        /// </summary>
         public static bool FileExist(string fullName)
         {
+            if (string.IsNullOrEmpty(fullName)) return false;
             return System.IO.File.Exists(HttpContext.Current.Server.MapPath(fullName));
         }
 
@@ -153,7 +156,7 @@ namespace WebLib
         {
             date = date == null ? DateTime.Now : date;
             var fullName = CreateFullName(file.FileName, folder, date.Value, id);
-            file.SaveAs(fullName);
+            file.SaveAs(HttpContext.Current.Server.MapPath(fullName));
             return fullName;
         }
         /// <summary>
@@ -183,31 +186,18 @@ namespace WebLib
         }
 
         /// <summary>
-        /// Tạo file đồng thời tạo thư mục con dạng Năm/Tháng/FileName lấy từ biến date. fileName sẽ được xử lý về dạng chuẩn. Nếu có bất kì file nào tồn tại với tên file sau khi được xử lý, hệ thống sẽ tự động thêm tiền tố vào tên file cho đến khi không trùng với bất kì tên file nào trong cùng folder.
+        /// Tạo file đồng thời tạo thư mục con dạng folder/Năm/Tháng/id-FileName lấy từ biến date. fileName sẽ được xử lý về dạng chuẩn. Return fullName được chuẩn hóa
         /// </summary>
-        public static void CreateFile(byte[] data, string fileName, out string fullName, DateTime? date = null)
-        {
-            CreateFile(data, fileName, out fullName, false);
-        }
-
-        /// <summary>
-        /// Tạo file đồng thời tạo thư mục con dạng Năm/Tháng/FileName lấy từ biến date. fileName sẽ được xử lý về dạng chuẩn. Nếu overrideExist = false và có bất kì file nào tồn tại với tên file sau khi được xử lý, hệ thống sẽ tự động thêm tiền tố vào tên file cho đến khi không trùng với bất kì tên file nào trong cùng folder, ngược lại thì file bị ghi đè
-        /// </summary>
-        public static void CreateFile(byte[] data, string fileName, out string fullName, bool overrideExist, DateTime? date = null)
+        public static string CreateFile(byte[] data, string fileName, string folder, int id, DateTime? date = null)
         {
             date = date == null ? DateTime.Now : date;
-            CreateDirectory(date.Value.Year.ToString());
-            string monthDir = date.Value.Year + "/" + date.Value.Month;
-            CreateDirectory(monthDir);
-            fullName = CreateFullName(fileName, monthDir);
-            while (!overrideExist && FileExist(fullName))
-            {
-                fileName = DateTime.Now.Millisecond + "-" + fileName;
-                fullName = CreateFullName(fileName, monthDir);
-            }
+            var fullName = CreateFullName(fileName, folder, date.Value, id);
             CreateFile(data, fullName);
+            return fullName;
         }
-
+        /// <summary>
+        /// Tạo file, giữ nguyên fullName. Nếu trong fullName có folder chưa tồn tại trên hệ thống thì sẽ báo lỗi
+        /// </summary>
         public static void CreateFile(byte[] data, string fullName, bool overrideExists = false)
         {
             if (overrideExists)
@@ -217,7 +207,9 @@ namespace WebLib
                 filestream.Write(data, 0, data.Length);
             }
         }
-
+        /// <summary>
+        /// Không xảy ra exception nếu file ko tồn tại hoặc tên file = null or empty
+        /// </summary>
         public static void DeleteFile(string fullName)
         {
             if (FileExist(fullName))

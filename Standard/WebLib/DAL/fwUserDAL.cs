@@ -26,11 +26,13 @@ namespace WebLib.DAL
             obj.UserName = (string)row["UserName"];
             obj.Name = GetString(row["Name"]);
             obj.Email = GetString(row["Email"]);
+            obj.PhoneNumber = GetString(row["PhoneNumber"]);
+            obj.Address = GetString(row["Address"]);
             obj.Status = (int)row["Status"];
             obj.Locked = (bool)row["Locked"];
             obj.Avata = GetString(row["Avata"]);
             obj.NotiCount = GetInt(row["NotiCount"]);
-            obj.Avata = GetString(row["Pass"]);
+            obj.Pass = GetString(row["Pass"]);
             return obj;
         }
 
@@ -93,7 +95,7 @@ namespace WebLib.DAL
 inner join fwUserGroup ug on ug.UserID=u.ID
 inner join fwRoleGroup rg on rg.GroupID=ug.GroupID
 inner join fwRole r on r.ID=rg.RoleID
-where r.Code='" + roleCode+"'";
+where r.Code='" + roleCode + "'";
             var lst = new List<fwUser>();
             DataTable dt = DataUtilities.GetTable(query, CommandType.Text);
             foreach (DataRow row in dt.Rows)
@@ -134,11 +136,12 @@ where r.Code='" + roleCode+"'";
                 else return null;
             return (fwUser)SessionUtilities.Get(Constant.Session_CurrentUser);
         }
-        public bool Login(string username, string pass)
+        public bool Login(string username, string pass, bool rememberMe = true)
         {
             var user = GetByUserName(username);
             if (user == null || user.Pass != pass) return false;
-            StringHelper.HttpContext.Response.Cookies.Add(new System.Web.HttpCookie(Constant.Session_CurrentUser, user.ID.ToString()));
+            if (rememberMe)
+                StringHelper.HttpContext.Response.Cookies.Add(new System.Web.HttpCookie(Constant.Session_CurrentUser, user.ID.ToString()));
             SessionUtilities.Add(Constant.Session_CurrentUser, user);
             return true;
         }
