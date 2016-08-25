@@ -1,0 +1,56 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static int TryFill(int[] vessels, int m, int C)
+        {
+            int container = 1;
+            int capacity = C;
+            for (int i = 0; i < vessels.Length; ++i)
+            {
+                // neu sua trong binh chua > suc chua cua container
+                // No container can contain so much milk.
+                if (vessels[i] > C)
+                    return 0;
+
+                if (vessels[i] > capacity)
+                {
+                    // Already m containers are filled.
+                    if (container == m)
+                        return 0;
+                    ++container;
+                    capacity = C;
+                }
+                capacity -= vessels[i];
+            }
+            return 1;
+        }
+
+        static void Main(string[] args)
+        {
+            int n = 5, m = 3;
+            int[] ves = new int[] { 1, 2, 3, 4, 5 };
+
+            // The capacity 1<=c<=1000000000.
+            int L = 1, U = 20, C = 0;
+            while (L <= U)
+            {
+                int mid = (L + U) / 2;
+                if (TryFill(ves, m, mid) == 1)
+                {
+                    C = mid;
+                    U = mid - 1;
+                }
+                else
+                    L = mid + 1;
+            }
+            Console.WriteLine(C);
+        }
+    }
+}
